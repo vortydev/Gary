@@ -2,10 +2,16 @@
 I'm proud to offer you guys my now open-sourced Discord bot, Gary! :D - TheV0rtex
 
 # Setting it up:
+
 1. Rename `config.json.example` to `config.json` and fill in the details.
 2. Run `$ node Gary.js`
 
+# Roles:
+
+Rename `roles.json.example` to `roles.json`. Add roles (case-sensitively!) to the file. Set `isAssignable` to `true` if you want your users to be able to assign themselves the role using the `role` command.
+
 # Available commands:
+
 1. Make
 2. Dem
 3. List
