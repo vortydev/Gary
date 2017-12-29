@@ -2,12 +2,8 @@
 I'm proud to offer you guys my now open-sourced Discord bot, Gary! :D - TheV0rtex
 
 # Setting it up:
-1. Download the repo on your folder and extract it.
-2. Open a command prompt in the folder.
-3. Run `node Gary.js` (or whatever you've renamed the file).
-4. *Oh no, it crashed!* Fill in your token, your prefix and your user ID.
-5. Run `node Gary.js`again.
-6. Voilà!
+1. Rename `config.json.example` to `config.json` and fill in the details.
+2. Run `$ node Gary.js`
 
 # Available commands:
 1. Make

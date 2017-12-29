@@ -1,11 +1,18 @@
 ﻿const Discord = require('discord.js');
 const client = new Discord.Client();
-const config = require("./config.json");
 var https = require('https');
 var http = require('http');
+
+const config = require('./config.json');
 var token = config.token;
 var prefix = config.prefix;
 var ownerID = config.ownerID;
+
+if (token == '' || prefix == '' || ownerID == '') {
+    console.log('Please fill in config.json');
+    process.exit(1);
+}
+
 const TairaGamesDevSquad = "279771993681952769";
 const Clink = "265167936119898122";
 const monodokimes = "176799548532981760";
