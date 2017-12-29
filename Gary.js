@@ -1,6 +1,6 @@
 ﻿const Discord = require('discord.js');
 const client = new Discord.Client();
-const config = require("./config_Gary.json");
+const config = require("./config.json");
 var https = require('https');
 var http = require('http');
 var token = config.token;
