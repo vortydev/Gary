@@ -63,8 +63,6 @@ if (message.content.includes("*") && message.channel.type === 'dm') {
     return;
 }
 
-var url = 'https://felix.technology/tracking/pixel.php?id=998&rand=' + (new Date()).getTime();
-https.get(url, function(res){});
 
 if (message.author.bot) {
     if (message.content.includes("help has been sent.")) message.delete(5000);
