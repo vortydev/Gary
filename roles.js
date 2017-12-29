@@ -1,133 +1,130 @@
 var roles = {};
-roles.onMessage =  function (message) {
 
-    if (message.content.toLowerCase().startsWith("*role 3d artist")) {
-        let role = message.guild.roles.find("name", "3D Artist");
-        let member = message.member;
-        message.delete(5000);
-        if (!message.member.roles.has(role.id)) {
-            member.addRole(role).catch(console.error);
-            message.reply("the role has been **added**.");
-        }
-        if (message.member.roles.has(role.id)) {
-            member.removeRole(role).catch(console.error);
-            message.reply("the role has been **removed**.");
-        }
+var roleList = [ // roles with spaces won't work
+    "Animator",
+    // "3D Artist",
+    "Artist",
+    // "Audio Engineer",
+    "Composer",
+    "Designer",
+    // "Game Tester",
+    "Marketer",
+    "Programmer",
+    "Translator",
+    // "Voice Actor",
+    "Writer",
+    "Newbies"
+];
+
+var deniedRoleList = [
+    "Admin",
+    "Mods",
+    "Guru"
+];
+
+var rolesList = [
+    {
+        name: 'Admin',
+        isAssignable: false
+    },
+    {
+        name: 'Mods',
+        isAssignable: false
+    },
+    {
+        name: 'Guru',
+        isAssignable: false
+    },
+    {
+        name: 'Bot',
+        isAssignable: false
+    },
+    {
+        name: 'Animator',
+        isAssignable: true
+    },
+    {
+        name: '3D Artist',
+        isAssignable: true
+    },
+    {
+        name: 'Artist',
+        isAssignable: true
+    },
+    {
+        name: 'Programmer',
+        isAssignable: true
     }
+];
 
-    if (message.content.toLowerCase().startsWith("*role audio engineer")) {
-        let role = message.guild.roles.find("name", "Audio Engineer");
-        let member = message.member;
-        message.delete(5000);
-        if (!message.member.roles.has(role.id)) {
-            member.addRole(role).catch(console.error);
-            message.reply("the role has been **added**.");
-        }
-        if (message.member.roles.has(role.id)) {
-        member.removeRole(role).catch(console.error);
-        message.reply("the role has been **removed**.");
-        }
-    }
-
-    if (message.content.toLowerCase().startsWith("*role game tester")) {
-        let role = message.guild.roles.find("name", "Game Tester");
-        let member = message.member;
-        message.delete(5000);
-        if (!message.member.roles.has(role.id)) {
-            member.addRole(role).catch(console.error);
-            message.reply("the role has been **added**.");
-        }
-        if (message.member.roles.has(role.id)) {
-            member.removeRole(role).catch(console.error);
-            message.reply("the role has been **removed**.");
-        }
-    }
-
-    if (message.content.toLowerCase().startsWith("*role voice actor")) {
-        let role = message.guild.roles.find("name", "Voice Actor");
-        let member = message.member;
-        message.delete(5000);
-        if (!message.member.roles.has(role.id)) {
-            member.addRole(role).catch(console.error);
-            message.reply("the role has been **added**.");
-        }
-        if (message.member.roles.has(role.id)) {
-            member.removeRole(role).catch(console.error);
-            message.reply("the role has been **removed**.");
-        }
-    }
-
-    if (message.content.toLowerCase().startsWith("*role bot")) {
-        message.channel.send("**[Scanning complete]**\nHuman detected. Access denied.");
-        message.delete(5000);
-    }
-
-    var roleList = [ // roles with spaces won't work
-        "Animator",
-        // "3D Artist",
-        "Artist",
-        // "Audio Engineer",
-        "Composer",
-        "Designer",
-        // "Game Tester",
-        "Marketer",
-        "Programmer",
-        "Translator",
-        // "Voice Actor",
-        "Writer",
-        "Newbies"
-    ];
-
-    var deniedRoleList = [
-        "Admin",
-        "Mods",
-        "Guru"
-    ];
-
+roles.onMessage = function (message) {
     message.delete(5000);
-    var getRoleName = function() {
-        return message.content.substr(6,1).toUpperCase() + message.content.toLowerCase().substr(7);
-    }
-    
-    if (roleList.includes(getRoleName())) {
-        let role = message.guild.roles.find("name", getRoleName());
-        let member = message.member;
-        
-        if (role == null)
-            return;
-    
-        if (!message.member.roles.has(role.id)) {
-            member.addRole(role).catch(console.error);
-            message.reply("the role has been **added**.");
 
-            let newbies = message.guild.roles.find("name", "Newbies");
-            if (newbies == null) {
-                console.log('server has no Newbies role');
-            } else if (message.member.roles.has(newbies.id)) {
-                member.removeRole(newbies).catch(console.error);
-                message.reply("the role **Newbies** has also been **removed**.");
-            }
+    var roleName = message.content
+        .split(' ')
+        .splice(1)
+        .join(' ');
+
+    var role = null;
+    for (var i = 0, len = rolesList.length; i < len; i++) {
+        var r = rolesList[i];
+        if (r.name.toLowerCase() == roleName.toLowerCase()) {
+            role = r;
+            break;
         }
-        if (message.member.roles.has(role.id)) {
-            member.removeRole(role).catch(console.error);
-            message.reply("the role has been **removed**.");
-        }
-    } else if (deniedRoleList.includes(getRoleName())) {
-        let role = message.guild.roles.find("name", getRoleName());
-        let member = message.member;
-    
-        if (role == null) return;
-    
-        if (!message.member.roles.has(role.id)) {
-            message.reply("you do not have the permission to use this command.");
-        }
-    
-        if (message.member.roles.has(role.id)) {
-            message.reply("you already have this role!");
-        }
-    } else {
-        message.reply("that's not an available role!").then(m => m.delete(5000));
     }
+
+    if (role == null) {
+        message.reply('**' + roleName + '** is not a valid role')
+            .then(m => m.delete(5000));
+        return;
+    } else if (!role.isAssignable) {
+        message.reply('this role is off limits!')
+            .then(m => m.delete(5000));
+        return;
+    }
+    
+    var serverRole = message.guild.roles.find("name", role.name);
+    if (serverRole == null) {
+        console.log('found no role on server matching: ' + role.name);
+        return;
+    }
+
+    if (!message.member.roles.has(serverRole.id)) {
+        addRole(message, serverRole);
+    } else {
+        removeRole(message, serverRole);
+    }
+}
+
+function addRole(message, serverRole) {
+    var member = message.member;
+    
+    member.addRole(serverRole)
+        .catch(console.error);
+
+    message.reply('the role **' + serverRole.name + '** has been **added**')
+        .then(m => m.delete(5000));
+
+    var newbiesRole = message.guild.roles.find("name", "Newbies");
+    if (newbiesRole == null) {
+        console.log('server has no Newbies role');
+        return;
+    } 
+    
+    if (message.member.roles.has(newbiesRole.id)) {
+        removeRole(message, newbiesRole);
+    }
+}
+
+function removeRole(message, serverRole) {
+    var member = message.member;
+
+    member.removeRole(serverRole)
+        .catch(console.error);
+
+    message.reply('the role **' + serverRole.name + '** has been **removed**')
+        .then(m => m.delete(5000));
 }
 
 module.exports = roles;
