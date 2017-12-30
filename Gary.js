@@ -27,6 +27,7 @@ client.on('ready', () => {
 
 client.on('error', (e) => console.error(e));
 
+// MEMBERS
 client.on('guildMemberAdd', member => {
            var serverName = member.guild.name;
            const channel = member.guild.channels.find('name', 'member-log');
@@ -55,6 +56,7 @@ client.on('guildMemberRemove', member => {
          });
 
 var roles = require('./roles.js');
+roles.init(client, config);
 
 client.on('message', message => {
 var msgcontent = message.content
@@ -87,11 +89,6 @@ if (message.author.bot) {
 // if (message.content.includes("@334058663239221254")) {
 //
 // }
-
-// ROLES
-if (message.content.startsWith(prefix + 'role')) {
-    roles.onMessage(message);
-}
 
 if (message.content.includes("discord.gg")) {
     let role = message.guild.roles.find("name", "Mods");

@@ -1,7 +1,16 @@
 var roles = {};
 var rolesList = require('./roles.json');
 
-roles.onMessage = function (message) {
+roles.init = function (client, config) {
+    client.on('message', m => {
+        if (!m.content.startsWith(config.prefix + 'role'))
+            return;
+
+        run(m);
+    });
+}
+
+function run (message) {
     message.delete(5000);
 
     var roleName = message.content
