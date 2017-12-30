@@ -138,6 +138,38 @@ if (command === 'help') {
     message.author.send({embed: helpEmbed});
 }
 
+if (command === 'joined') {
+    var member = message.mentions.members.first();
+
+    if (message.mentions.members.array().length < 1) {
+        message.channel.send("Please mention a user!")
+        return;
+    }
+
+    message.channel.send(member.user.username + " joined on " + neatenDate(member.joinedAt));
+    //NameHere joined on 30/12/2017 at 16:56
+}
+   
+function neatenDate(date) {
+    //Turns an ugly Date into a nice and simple to read one
+    //Currently in format DD/MM/YYYY at HH:MM
+    //e.g. 30/12/2017 at 16:56
+    
+    var year = date.getFullYear();
+    var month = date.getMonth();
+    var day = date.getDate();
+
+    var hours = date.getHours();
+    var mins = date.getMinutes();
+
+    var str = day + "/" + month.toString() + "/" + year.toString() + " at " + hours.toString() + ":" + mins.toString();
+
+    if (mins.toString().length == 1)
+        str += "0";
+    
+    return str;
+}
+    
 if (command === 'rule' || command === 'rules') {
     message.delete(5000);
     message.reply("rules have been sent.");
