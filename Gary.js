@@ -13,6 +13,9 @@ if (token == '' || prefix == '' || ownerID == '') {
     process.exit(1);
 }
 
+var roles = require('./roles/roles.js');
+roles.init(client, config);
+
 const TairaGamesDevSquad = "279771993681952769";
 const Clink = "265167936119898122";
 const monodokimes = "176799548532981760";
@@ -54,9 +57,6 @@ client.on('guildMemberRemove', member => {
              .setTimestamp()
            channel.send({embed: leftEmbed});
          });
-
-var roles = require('./roles.js');
-roles.init(client, config);
 
 client.on('message', message => {
 var msgcontent = message.content
