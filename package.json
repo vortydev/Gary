@@ -1,0 +1,12 @@
+{
+  "name": "GaryDaBot",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheV0rtex/GaryDaBot"
+  },
+  "license": "GPL-3.0",
+  "dependencies": {
+    "discord.js": "^11.2.1"
+  }
+}
