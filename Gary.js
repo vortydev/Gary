@@ -72,8 +72,17 @@ if (message.content.includes("discord.gg")) {
     if (!message.member.roles.has(role.id)) message.delete();
 }
 
-if (!msgcontent.startsWith("*")) return;
-const args = message.content.slice(1).trim().split(/ +/g);
+if (!message.content.startsWith(config.prefix)) 
+    return;
+
+// All commands should be immediately deleted
+message.delete();
+// Handle commands
+const args = message.content
+    .slice(1)
+    .trim()
+    .split(/ +/g);
+
 const command = args.shift().toLowerCase();
 
 if (command === 'help') {
@@ -169,107 +178,6 @@ if (command === 'roll') {
     message.reply("you rolled **"+die+"** "+face+"-sided die(s).");
     message.channel.send(`Your total number is **${total}** !`);
 }
-
-if (command === 'members') {
-    message.delete();
-    if (message.author.id !== ownerID) return;
-    message.channel.send("There are currently **"+message.guild.memberCount+"** members on this server.");
-}
-
-  if (command === 'memberlist') {
-      message.delete();
-      if (message.author.id !== ownerID) return;
-      let gc = message.guild.memberCount;
-
-      let role1 = message.guild.roles.find("name", "Admin");
-      let r1 = role1.members.keyArray().length / gc*100;
-
-      let role2 = message.guild.roles.find("name", "Mods");
-      let r2 = role2.members.keyArray().length / gc*100;
-
-      let role3 = message.guild.roles.find("name", "Guru");
-      let r3 = role3.members.keyArray().length / gc*100;
-
-      let role4 = message.guild.roles.find("name", "Artist");
-      let r4 = role4.members.keyArray().length / gc*100;
-
-      let role5 = message.guild.roles.find("name", "3D Artist");
-      let r5 = role5.members.keyArray().length / gc*100;
-
-      let role6 = message.guild.roles.find("name", "Animator");
-      let r6 = role6.members.keyArray().length / gc*100;
-
-      let role7 = message.guild.roles.find("name", "Audio Engineer");
-      let r7 = role7.members.keyArray().length / gc*100;
-
-      let role8 = message.guild.roles.find("name", "Composer");
-      let r8 = role8.members.keyArray().length / gc*100;
-
-      let role9 = message.guild.roles.find("name", "Designer");
-      let r9 = role9.members.keyArray().length / gc*100;
-
-      let role10 = message.guild.roles.find("name", "Marketer");
-      let r10 = role10.members.keyArray().length / gc*100;
-
-      let role11 = message.guild.roles.find("name", "Voice Actor");
-      let r11 = role11.members.keyArray().length / gc*100;
-
-      let role12 = message.guild.roles.find("name", "Translator");
-      let r12 = role12.members.keyArray().length / gc*100;
-
-      let role13 = message.guild.roles.find("name", "Writer");
-      let r13 = role13.members.keyArray().length / gc*100;
-
-      let role14 = message.guild.roles.find("name", "Youtuber / Streamer");
-      let r14 = role14.members.keyArray().length / gc*100;
-
-      let role15 = message.guild.roles.find("name", "Game Tester");
-      let r15 = role15.members.keyArray().length / gc*100;
-
-      let role16 = message.guild.roles.find("name", "Programmer");
-      let r16 = role16.members.keyArray().length / gc*100;
-
-      let role17 = message.guild.roles.find("name", "Newbies");
-      let r17 = role17.members.keyArray().length / gc *100;
-
-      let rr1 = Math.round(r1 * 100) / 100;
-      let rr2 = Math.round(r2 * 100) / 100;
-      let rr3 = Math.round(r3 * 100) / 100;
-      let rr4 = Math.round(r4 * 100) / 100;
-      let rr5 = Math.round(r5 * 100) / 100;
-      let rr6 = Math.round(r6 * 100) / 100;
-      let rr7 = Math.round(r7 * 100) / 100;
-      let rr8 = Math.round(r8 * 100) / 100;
-      let rr9 = Math.round(r9 * 100) / 100;
-      let rr10 = Math.round(r10 * 100) / 100;
-      let rr11 = Math.round(r11 * 100) / 100;
-      let rr12 = Math.round(r12 * 100) / 100;
-      let rr13 = Math.round(r13 * 100) / 100;
-      let rr14 = Math.round(r14 * 100) / 100;
-      let rr15 = Math.round(r15 * 100) / 100;
-      let rr16 = Math.round(r16 * 100) / 100;
-      let rr17 = Math.round(r17 * 100) / 100;
-
-      message.channel.send("There are currently **"+gc+"** members on this server:\r\n"+
-                            role1.members.keyArray().length+" **Admin** ("+rr1+"%)\r\n"+
-                            role2.members.keyArray().length+" **Mods** ("+rr2+"%)\r\n"+
-                            role3.members.keyArray().length+" **Gurus** ("+rr3+"%)\r\n"+
-                            role4.members.keyArray().length+" **2D Artists** ("+rr4+"%)\r\n"+
-                            role5.members.keyArray().length+" **3D Artists** ("+rr5+"%)\r\n"+
-                            role6.members.keyArray().length+" **Animators** ("+rr6+"%)\r\n"+
-                            role7.members.keyArray().length+" **Audio Engineers** ("+rr7+"%)\r\n"+
-                            role8.members.keyArray().length+" **Composers** ("+rr8+"%)\r\n"+
-                            role9.members.keyArray().length+" **Designers** ("+rr9+"%)\r\n"+
-                            role10.members.keyArray().length+" **Marketers** ("+rr10+"%)\r\n"+
-                            role11.members.keyArray().length+" **Voice Actors** ("+rr11+"%)\r\n"+
-                            role12.members.keyArray().length+" **Translators** ("+rr12+"%)\r\n"+
-                            role13.members.keyArray().length+" **Writers** ("+rr13+"%)\r\n"+
-                            role14.members.keyArray().length+" **Youtubers/Streamers** ("+rr14+"%)\r\n"+
-                            role15.members.keyArray().length+" **Game Testers** ("+rr15+"%)\r\n"+
-                            role16.members.keyArray().length+" **Programmers** ("+rr16+"%)\r\n"+
-                            role17.members.keyArray().length+" **Newbies** ("+rr17+"%)");
-}
-
 
 if (command === 'say') {
     message.delete();

@@ -18,6 +18,38 @@ members.init = function (client, config) {
     
     client.on('guildMemberAdd', memberAdd);
     client.on('guildMemberRemove', memberRemove);
+
+    client.on('message', m => {
+        if (m.author.id != config.ownerID)
+            return;
+        
+        if (m.content == config.prefix + 'members') {
+            membersCommand(m);
+        }
+
+        if (m.content == config.prefix + 'memberlist') {
+            memberListCommand(m);
+        }
+    });
+}
+
+// Commands
+function membersCommand(message) {
+    message.channel.send("There are currently **" + message.guild.memberCount + "** members on this server.");
+}
+
+function memberListCommand(message) {
+    var roles = message.guild.roles
+        .filter(n => n != '@everyone');
+    var reply = '';
+    
+    reply += 'There are currently **' + message.guild.memberCount + '** members on this server\n';
+
+    for (var [_, role] of roles) {
+        reply += '**' + role.name + '**: ' + role.members.keyArray().length + '\n';
+    }
+
+    message.channel.send(reply);
 }
 
 function memberAdd(member) { 
