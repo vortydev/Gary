@@ -4,10 +4,9 @@ var discord = require('discord.js'),
 var members = {};
 var logChannelName = 'member-log';
 var welcomeTextPath = 'members/welcome.md';
-var welcomeText = "a*";
+var welcomeText;
 
 members.init = function (client, config) {
-    /*
     fs.readFile(welcomeTextPath, 'utf8', (err, data) => {
         if (err) {
             console.error(err);
@@ -16,7 +15,6 @@ members.init = function (client, config) {
 
         welcomeText = data;
     });
-    */
     
     client.on('guildMemberAdd', memberAdd);
     client.on('guildMemberRemove', memberRemove);
@@ -30,10 +28,6 @@ members.init = function (client, config) {
     });
 }
 
-function getWelcomeText() {
-    return welcomeText == '' ? 'hi!' : welcomeText;
-}
-
 function memberAdd(member) { 
     log(member, member + ' joined the server');
 
@@ -45,7 +39,10 @@ function memberAdd(member) {
     } else {
         console.log('there is no Newbies role on the server');
     }
-
+    
+    // This produces an UnhandledPromiseRejectionWarning when special characters
+    // are included in welcomeText. Raised an issue at https://github.com/hydrabolt/discord.js/issues/2207
+    console.log('IGNORE WARNING MESSAGE'); 
     member.send(welcomeText).catch(console.error);
 }
 
