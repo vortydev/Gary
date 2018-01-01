@@ -18,14 +18,6 @@ members.init = function (client, config) {
     
     client.on('guildMemberAdd', memberAdd);
     client.on('guildMemberRemove', memberRemove);
-    
-    client.on('message', msg => {
-        if (msg == 'testjoin') {
-            memberAdd(msg.member);    
-        } else if (msg == 'testleave') {
-            memberRemove(msg.member);
-        }
-    });
 }
 
 function memberAdd(member) { 
