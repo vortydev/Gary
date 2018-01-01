@@ -31,32 +31,8 @@ client.on('ready', () => {
 client.on('error', (e) => console.error(e));
 
 // MEMBERS
-client.on('guildMemberAdd', member => {
-           var serverName = member.guild.name;
-           const channel = member.guild.channels.find('name', 'member-log');
-           if (!channel) return;
-           const joinedEmbed = new Discord.RichEmbed()
-             .setColor(0x18bb68)
-             .setAuthor("Gary", "https://imgur.com/lVpLGeA.png")
-             .setDescription(""+member+" joined the server.")
-             .setTimestamp()
-           channel.send({embed: joinedEmbed});
-           let role = member.guild.roles.find("name", "Newbies");
-           member.addRole(role).catch(console.error);
-           member.send("Hello "+member+"! Welcome to **TairaGames Dev Squad**!\nWe all hope you enjoy your time here!\n\nMake sure to read the rules by entering the `*rules` command on the server.\n\nTo get started, why not present yourself in **#introductions** and claim your game dev roles in **#role-request**?\n\nWhenever you want to send a rather big chunk of code, please send it in *endented* (``` before and after your code).\n\nIf you have any questions or concerns, do not hesitate to contact the Moderators!");
-          });
-
-client.on('guildMemberRemove', member => {
-           var serverName = member.guild.name;
-           const channel = member.guild.channels.find('name', 'member-log');
-           if (!channel) return;
-           const leftEmbed = new Discord.RichEmbed()
-             .setColor(0xe9890f)
-             .setAuthor("Gary", "https://imgur.com/lVpLGeA.png")
-             .setDescription(""+member+" left the server.")
-             .setTimestamp()
-           channel.send({embed: leftEmbed});
-         });
+var members = require('./members/members.js');
+members.init(client, config);
 
 client.on('message', message => {
 var msgcontent = message.content
