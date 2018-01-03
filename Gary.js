@@ -18,11 +18,9 @@ const Clink = "265167936119898122";
 const monodokimes = "176799548532981760";
 
 
-var plugins = require('./plugins.js');
-plugins.init(this, client, config);
-
 var commands = {};
-this.addCommand = function() {}
+var plugins = require('./plugins.js');
+plugins.init(commands, client, config);
 
 client.on('error', (e) => console.error(e));
 
@@ -91,6 +89,10 @@ client.on('message', message => {
         .split(/ +/g);
 
     const command = args.shift().toLowerCase();
+    
+    if (command in commands) {
+        commands[command].process(message);
+    }
 
     if (command === 'help') {
         message.reply("help has been sent.");

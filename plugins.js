@@ -18,7 +18,7 @@ if (!fs.existsSync(pluginDirectory)) {
     pluginFolders = getDirectories(pluginDirectory);
 }
 
-function loadPlugins(bot, client, config) {
+function loadPlugins(commands, client, config) {
     for (var i = 0; i < pluginFolders.length; i++) {
         var plugin;
         try {
@@ -30,6 +30,14 @@ function loadPlugins(bot, client, config) {
         if (plugin) {
             plugin.init(client, config);
             console.log(pluginFolders[i] + ' loaded');
+            if ('commands' in plugin) {
+                for (var j = 0; j < plugin.commands.length; j++) {
+                    if (plugin.commands[j] in plugin) {
+                        commands[plugin.commands[j]] = plugin[plugin.commands[j]];
+                        console.log('added command: ' + plugin.commands[j]);
+                    }
+                }
+            }
         }
     }
 }
