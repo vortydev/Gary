@@ -17,10 +17,14 @@ const TairaGamesDevSquad = "279771993681952769";
 const Clink = "265167936119898122";
 const monodokimes = "176799548532981760";
 
-client.on('error', (e) => console.error(e));
 
 var plugins = require('./plugins.js');
-plugins.init(client, config);
+plugins.init(this, client, config);
+
+var commands = {};
+this.addCommand = function() {}
+
+client.on('error', (e) => console.error(e));
 
 client.on('ready', () => {
            var serversCount = client.guilds.size;

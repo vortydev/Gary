@@ -16,13 +16,22 @@ if (!fs.existsSync(pluginDirectory)) {
     console.log('no plugins directory available');
 } else {
     pluginFolders = getDirectories(pluginDirectory);
-    console.log(pluginFolders);
 }
 
-
-function loadPlugins(client, config) {
-    require('./members/members.js').init(client, config);
-    require('./roles/roles.js').init(client, config);
+function loadPlugins(bot, client, config) {
+    for (var i = 0; i < pluginFolders.length; i++) {
+        var plugin;
+        try {
+            plugin = require(pluginDirectory + pluginFolders[i]);
+        } catch (err) {
+            console.log(pluginFolders[i] + ' failed to load: ' + err);
+        }
+        
+        if (plugin) {
+            plugin.init(client, config);
+            console.log(pluginFolders[i] + ' loaded');
+        }
+    }
 }
 
 exports.init = loadPlugins;

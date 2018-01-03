@@ -3,10 +3,10 @@ var discord = require('discord.js'),
 
 var members = {};
 var logChannelName = 'member-log';
-var welcomeTextPath = 'members/welcome.md';
+var welcomeTextPath = './plugins/members/welcome.md';
 var welcomeText;
 
-members.init = function (client, config) {
+exports.init = function (client, config) {
     fs.readFile(welcomeTextPath, 'utf8', (err, data) => {
         if (err) {
             console.error(err);
@@ -89,5 +89,3 @@ function log(member, message) {
         channel.send({ embed: embed });
     }
 }
-
-module.exports = members;
