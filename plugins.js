@@ -29,12 +29,12 @@ function loadPlugins(commands, client, config) {
         
         if (plugin) {
             plugin.init(client, config);
-            console.log(pluginFolders[i] + ' loaded');
+            console.log('loading plugin: ' + pluginFolders[i]);
             if ('commands' in plugin) {
                 for (var j = 0; j < plugin.commands.length; j++) {
                     if (plugin.commands[j] in plugin) {
                         commands[plugin.commands[j]] = plugin[plugin.commands[j]];
-                        console.log('added command: ' + plugin.commands[j]);
+                        console.log(':: loaded command: ' + plugin.commands[j]);
                     }
                 }
             }
