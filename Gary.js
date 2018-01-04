@@ -149,17 +149,6 @@ client.on('message', message => {
         message.author.send({embed: rulesEmbed});
     }
 
-    if (command === 'avatar') {
-        message.delete(5000)
-        const avatarEmbed = new Discord.RichEmbed()
-          .setColor(0x7a7a7a)
-          .setDescription("[Direct Link]("+message.author.avatarURL+")")
-          .setImage(message.author.avatarURL)
-          .setFooter("Brought to you by TheV0rtex™")
-        message.reply("your avatar:");
-        message.channel.send({embed: avatarEmbed});
-    }
-
     if (command === 'coin' || command === 'coinflip' || command === 'cointoss' || command === 'flip' || command === 'flipcoin') {
         message.delete(5000);
         var flip = Math.floor(Math.random() * 2 + 1);

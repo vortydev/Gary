@@ -7,7 +7,8 @@ var welcomeText;
 
 exports.commands = [
     'members',
-    'memberlist'
+    'memberlist',
+    'avatar'
 ];
 
 exports.init = function (client, config) {
@@ -44,6 +45,21 @@ exports['memberlist'] = {
         }
 
         message.channel.send(reply);
+    }
+}
+
+exports['avatar'] = {
+    process: function (message, args) {
+        var embed = new Discord.RichEmbed()
+            .setColor(0x7a7a7a)
+            .setDescription('[Direct Link](' + message.author.avatarURL + ')')
+            .setImage(message.author.avatarURL)
+            .setFooter('Brought to you by TheV0rtex™');
+
+        message.reply('your avatar:');
+        message.channel.send({ embed: embed })
+            .then(() => { })
+            .catch(() => { });
     }
 }
 
