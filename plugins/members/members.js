@@ -1,4 +1,4 @@
-var discord = require('discord.js'),
+var Discord = require('discord.js'),
     fs = require('fs');
 
 var logChannelName = 'member-log';
@@ -7,7 +7,8 @@ var welcomeText;
 
 exports.commands = [
     'members',
-    'memberlist'
+    'memberlist',
+    'memberadd'
 ];
 
 exports.init = function (client, config) {
@@ -47,6 +48,20 @@ exports['memberlist'] = {
     }
 }
 
+exports['memberadd'] = {
+    process: function (message, args) {
+        var member;
+        for (var [_, m] of message.guild.members) {
+            if (m.id == message.author.id) {
+                member = m;
+                break;
+            }
+        }
+        memberAdd(member);
+
+    }
+}
+
 function memberAdd(member) { 
     log(member, member + ' joined the server');
 
@@ -54,15 +69,21 @@ function memberAdd(member) {
     var role = member.guild.roles.find('name', 'Newbies');
     if (role) {
         member.addRole(role)
+            .then(() => { })
             .catch(console.error);
     } else {
         console.log('there is no Newbies role on the server');
     }
     
-    // This produces an UnhandledPromiseRejectionWarning when special characters
-    // are included in welcomeText. Raised an issue at https://github.com/hydrabolt/discord.js/issues/2207
-    console.log('IGNORE WARNING MESSAGE'); 
-    member.send(welcomeText).catch(console.error);
+    var embed = new Discord.RichEmbed()
+        .setColor(0x7a7a7a)
+        .setAuthor('Gary', 'https://imgur.com/lVpLGeA.png')
+        .addField('Welcome!', welcomeText)
+        .setTimestamp();
+
+    member.send({embed: embed})
+        .then(() => { })
+        .catch(() => { });
 }
 
 function memberRemove(member) { 
@@ -75,7 +96,7 @@ function log(member, message) {
         console.log('no #' + logChannelName + ' on this server');
         console.log(message);
     } else {
-        var embed = new discord.RichEmbed()
+        var embed = new Discord.RichEmbed()
             .setColor(0x18bb68)
             .setAuthor('Gary', 'https://imgur.com/lVpLGeA.png')
             .setDescription(message)
