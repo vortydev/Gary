@@ -81,7 +81,10 @@ client.on('message', message => {
         return;
 
     // All commands should be immediately deleted
-    message.delete();
+    message.delete()
+        .then(() => { })
+        .catch(console.error);
+
     // Handle commands
     const args = message.content
         .slice(1)
@@ -91,7 +94,7 @@ client.on('message', message => {
     const command = args.shift().toLowerCase();
     
     if (command in commands) {
-        commands[command].process(message);
+        commands[command].process(message, args);
     }
 
     if (command === 'help') {
@@ -187,55 +190,6 @@ client.on('message', message => {
         message.reply("you rolled **"+die+"** "+face+"-sided die(s).");
         message.channel.send(`Your total number is **${total}** !`);
     }
-
-    if (command === 'say') {
-        message.delete();
-        if (message.author.id !== ownerID) return;
-        msgcontent = message.content.substring(5);
-        message.channel.send(msgcontent);
-      }
-
-    if (command === 'setgame') {
-        message.delete();
-        if (message.author.id !== ownerID) return;
-        msgcontent = msgcontent.substring(9);
-        client.user.setPresence({game:{name:''+msgcontent+'', type:0}});
-    }
-
-    if (command === 'setstatus') {
-        message.delete();
-        if (message.author.id !== ownerID) return;
-        msgcontent = msgcontent.substring(11);
-        client.user.setStatus(msgcontent);  //online, idle, dnd, invisible
-    }
-
-    if (command ==='setnickname') {
-        message.delete();
-        if (message.author.id !== ownerID) return;
-        msgcontent = msgcontent.substring(13);
-        message.guild.member(client.user).setNickname(msgcontent);
-    }
-
-    if (command === 'reset') {
-        message.delete();
-        if (message.author.id !== ownerID) return;
-        client.user.setPresence({game:{name:'?help', type:0}});
-        client.user.setStatus('online');
-        message.guild.member(client.user).setNickname('');
-    }
-
-    if (command === 'purge') {
-        // if (message.author.id !== ownerID) return;
-        let role = message.guild.roles.find("name", "Mods");
-        let member = message.member;
-        if (!message.member.roles.has(role.id)) message.delete();
-        if (message.member.roles.has(role.id)) message.channel.bulkDelete(args[0], false);
-    }
-
-
-
-
-
 });
 
 client.login(token);
