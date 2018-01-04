@@ -7,8 +7,7 @@ var welcomeText;
 
 exports.commands = [
     'members',
-    'memberlist',
-    'memberadd'
+    'memberlist'
 ];
 
 exports.init = function (client, config) {
@@ -48,20 +47,6 @@ exports['memberlist'] = {
     }
 }
 
-exports['memberadd'] = {
-    process: function (message, args) {
-        var member;
-        for (var [_, m] of message.guild.members) {
-            if (m.id == message.author.id) {
-                member = m;
-                break;
-            }
-        }
-        memberAdd(member);
-
-    }
-}
-
 function memberAdd(member) { 
     log(member, member + ' joined the server');
 
@@ -77,8 +62,9 @@ function memberAdd(member) {
     
     var embed = new Discord.RichEmbed()
         .setColor(0x7a7a7a)
+        .setTitle('Welcome!')
         .setAuthor('Gary', 'https://imgur.com/lVpLGeA.png')
-        .addField('Welcome!', welcomeText)
+        .setDescription(welcomeText)
         .setTimestamp();
 
     member.send({embed: embed})
