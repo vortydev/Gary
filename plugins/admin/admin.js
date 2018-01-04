@@ -8,7 +8,8 @@ exports.commands = [
     'setstatus',
     'setnickname',
     'reset',
-    'purge'
+    'purge',
+    'ping'
 ]
 
 exports.init = function (client, config) {
@@ -56,6 +57,17 @@ exports['purge'] = {
             return;
         
         message.channel.bulkDelete(number + 1, false)
+            .then(() => { })
+            .catch(() => { });
+    }
+}
+
+exports['ping'] = {
+    process: function (message, args) {
+        if (message.author.id != ownerId)
+            return;
+
+        message.channel.send('Latency of **' + Math.round(botClient.ping) + '** ms')
             .then(() => { })
             .catch(() => { });
     }

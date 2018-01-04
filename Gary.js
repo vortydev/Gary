@@ -66,9 +66,6 @@ client.on('message', message => {
         
         if (message.content.includes("you rolled **" && "-sided die(s).")) 
             message.delete(5000);
-        
-        if (message.content.includes("Latency of")) 
-            message.delete(5000);
     }
 
     if (message.content.includes("discord.gg")) {
@@ -150,12 +147,6 @@ client.on('message', message => {
           "7. Do not annoy others in the voice channels.")
           .setTimestamp() // By default today's date.
         message.author.send({embed: rulesEmbed});
-    }
-
-    if (command === 'ping') {
-        message.delete();
-        if (message.author.id !== ownerID) return;
-        message.channel.send("Latency of **"+Math.round(client.ping)+"** ms.");
     }
 
     if (command === 'avatar') {
