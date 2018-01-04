@@ -64,28 +64,6 @@ client.on('message', message => {
     if (command in commands) {
         commands[command].process(message, args);
     }
-
-    if (command === 'coin' || command === 'coinflip' || command === 'cointoss' || command === 'flip' || command === 'flipcoin') {
-        message.delete(5000);
-        var flip = Math.floor(Math.random() * 2 + 1);
-        if (flip === 1) {
-            message.channel.send("You flipped **Tails** !");
-        }
-        else {
-            message.channel.send("You flipped **Heads** !");
-        }
-    }
-
-    if (command === 'roll') {
-        message.delete();
-        var messageString = message.content.slice(6);
-        var values = messageString.split(" ");
-        var die = parseFloat(values[1]);
-        var face = parseFloat(values[2]);
-        var total = (Math.floor(die * ((Math.random() * face) + 1)));
-        message.reply("you rolled **"+die+"** "+face+"-sided die(s).");
-        message.channel.send(`Your total number is **${total}** !`);
-    }
 });
 
 client.login(token);
