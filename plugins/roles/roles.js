@@ -7,6 +7,7 @@ exports.commands = [
 exports.init = function (client, config) { }
 
 exports['role'] = {
+    usage: 'role <role name> | toggle the specified role',
     process: function (message) {
         var roleName = message.content
             .split(' ')

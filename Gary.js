@@ -40,9 +40,6 @@ client.on('message', message => {
     }
 
     if (message.author.bot) {
-        if (message.content.includes("help has been sent.")) 
-            message.delete(5000);
-        
         if (message.content.includes("rules have been sent.")) 
             message.delete(5000);
         
@@ -93,10 +90,9 @@ client.on('message', message => {
     if (command in commands) {
         commands[command].process(message, args);
     }
-
+/*
     if (command === 'help') {
         message.reply("help has been sent.");
-        message.delete(5000);
         const helpEmbed = new Discord.RichEmbed()
           .setColor(0x7a7a7a)
           .setTitle("Gary Commands")
@@ -131,7 +127,7 @@ client.on('message', message => {
           .setTimestamp() // By default today's date.
         message.author.send({embed: helpEmbed});
     }
-
+*/
     if (command === 'rule' || command === 'rules') {
         message.delete(5000);
         message.reply("rules have been sent.");

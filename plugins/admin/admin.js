@@ -19,6 +19,7 @@ exports.init = function (client, config) {
 }
 
 exports['say'] = {
+    usage: 'say <message> | Have the bot say a message',
     process: function (message, args) {
         if (message.author.id != ownerId)
             return;
@@ -28,18 +29,22 @@ exports['say'] = {
 }
 
 exports['setgame'] = {
+    usage: 'setgame <game> | Set \'playing\'',
     process: setGame
 }
 
 exports['setstatus'] = {
+    usage: 'setstatus <status> | Set active/away/dnd/invisible',
     process: setStatus
 }
 
 exports['setnickname'] = {
+    usage: 'setnickname <nick> | Set bot\'s nick', 
     process: setNickname
 }
 
 exports['reset'] = {
+    usage: 'reset | Reset bot\'s \'playing\', status and nickname',
     process: function (message, args) {
         setGame(message, [ prefix + ' help' ]);
         setStatus(message, [ 'online' ]);
@@ -48,6 +53,7 @@ exports['reset'] = {
 }
 
 exports['purge'] = {
+    usage: 'purge <number> | Bulk delete most recent messages in a channel',
     process: function (message, args) {
         if (message.author.id != ownerId)
             return;
@@ -63,6 +69,7 @@ exports['purge'] = {
 }
 
 exports['ping'] = {
+    usage: 'Get bot response time',
     process: function (message, args) {
         if (message.author.id != ownerId)
             return;

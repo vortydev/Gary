@@ -1,4 +1,5 @@
-var fs = require('fs'),
+var Discord = require('discord.js'),
+    fs = require('fs'),
     path = require('path');
 
 var pluginDirectory = './plugins/';
@@ -18,7 +19,7 @@ if (!fs.existsSync(pluginDirectory)) {
     pluginFolders = getDirectories(pluginDirectory);
 }
 
-function loadPlugins(commands, client, config) {
+exports.init = function (commands, client, config) {
     for (var i = 0; i < pluginFolders.length; i++) {
         var plugin;
         try {
@@ -39,7 +40,41 @@ function loadPlugins(commands, client, config) {
                 }
             }
         }
-    }
-}
+    } 
+    
+    console.log('loading special commands');
+    // TODO: Filter available commands based on user perms
+    commands['help'] = {
+        usage: 'Send the user a list of available commands',
+        process: function (message, args) {
+            var result = '';
+            for (commandName in commands) {
+                var command = commands[commandName];
+                var commandText = config.prefix + commandName + ' - ';
+                
+                if (command.usage) {
+                    commandText += command.usage;                
+                } else {
+                    commandText += 'No usage defined';
+                }
 
-exports.init = loadPlugins;
+                result += commandText + '\n';
+                console.log(commandText);
+            }
+
+            var embed = new Discord.RichEmbed()
+                .setColor(0x7a7a7a)
+                .setTitle('Gary Commands')
+                .setDescription(result)
+                .setThumbnail('https://imgur.com/lVpLGeA.png')
+                .setFooter('For additional help, contact TheV0rtex#4553')
+                .setTimestamp();
+
+            message.author.send({ embed: embed })
+                .then(() => { })
+                .catch(console.error);
+                
+        }
+    }
+    console.log(':: loaded command: help');
+}
