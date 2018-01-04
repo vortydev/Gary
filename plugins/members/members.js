@@ -3,12 +3,14 @@ var Discord = require('discord.js'),
 
 var logChannelName = 'member-log';
 var welcomeTextPath = './plugins/members/welcome.md';
+var rulesTextPath = './plugins/members/rules.md';
 var welcomeText;
 
 exports.commands = [
     'members',
     'memberlist',
-    'avatar'
+    'avatar',
+    'rules'
 ];
 
 exports.init = function (client, config) {
@@ -60,6 +62,32 @@ exports['avatar'] = {
         message.channel.send({ embed: embed })
             .then(() => { })
             .catch(() => { });
+    }
+}
+
+exports['rules'] = {
+    usage: 'DM the user with rules',
+    process: function (message) {
+        fs.readFile(rulesTextPath, 'utf8', (err, data) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+
+            var embed = new Discord.RichEmbed()
+                .setColor(0x7a7a7a)
+                .setTitle('Rules')
+                .setAuthor('Gary', 'https://imgur.com/lVpLGeA.png')
+                .setDescription(data);
+
+            message.reply('rules have been sent.')
+                .then(m => m.delete(5000))
+                .catch(console.error);
+
+            message.author.send({embed: embed})
+                .then(() => { })
+                .catch(console.error);
+        }); 
     }
 }
 

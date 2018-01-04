@@ -59,7 +59,6 @@ exports.init = function (commands, client, config) {
                 }
 
                 result += commandText + '\n';
-                console.log(commandText);
             }
 
             var embed = new Discord.RichEmbed()
@@ -69,6 +68,10 @@ exports.init = function (commands, client, config) {
                 .setThumbnail('https://imgur.com/lVpLGeA.png')
                 .setFooter('For additional help, contact TheV0rtex#4553')
                 .setTimestamp();
+            
+            message.author.reply('help has been sent.')
+                .then(m => m.delete(5000))
+                .catch(console.error);
 
             message.author.send({ embed: embed })
                 .then(() => { })

@@ -39,32 +39,6 @@ client.on('message', message => {
         return;
     }
 
-    if (message.author.bot) {
-        if (message.content.includes("rules have been sent.")) 
-            message.delete(5000);
-        
-        if (message.content.includes("you do not have the permission to use this command.")) 
-            message.delete(5000);
-        
-        if (message.content.includes("you already have this role!")) 
-            message.delete(5000);
-        
-        if (message.content.includes("only mods are permitted to pin messages.")) 
-            message.delete(5000);
-        
-        if (message.content.includes("**[Scanning complete]**\nHuman detected. Access denied.")) 
-            message.delete(5000);
-        
-        if (message.content.includes("You flipped **" && "** !")) 
-            message.delete(5000);
-        
-        if (message.content.includes("Your total number is **" && "** !")) 
-            message.delete(10000);
-        
-        if (message.content.includes("you rolled **" && "-sided die(s).")) 
-            message.delete(5000);
-    }
-
     if (message.content.includes("discord.gg")) {
         let role = message.guild.roles.find("name", "Mods");
         let member = message.member;
@@ -89,60 +63,6 @@ client.on('message', message => {
     
     if (command in commands) {
         commands[command].process(message, args);
-    }
-/*
-    if (command === 'help') {
-        message.reply("help has been sent.");
-        const helpEmbed = new Discord.RichEmbed()
-          .setColor(0x7a7a7a)
-          .setTitle("Gary Commands")
-          .setDescription("A complete list of the available commands.")
-          .setThumbnail("https://imgur.com/lVpLGeA.png")
-          .addField("Basic Commands:", // Max 25 fields
-                    "`*help ` - Sends the user a list of the available commands.\n"+
-                    "`*rules` - Sends the user the rules of the server.\n"+
-                    "`*ping` - Checks the bot's latency.\n"+
-                    "`*avatar` - Sends the user his own avatar.\n"+
-                    "`*coinflip` - Flips a coin.\n"+
-                    "`*roll [# of dies] [# of faces]` - Rolls dice with set parameters.")
-          .addField("Role Command",
-                    "`*role <keyword>` - Will assign the user the said role. The available roles are as follow:\n\n"+
-                    "`Artist` **|** `3D Artist` **|** `Animator` **|** `Audio Engineer`\n"+
-                    "`Composer` **|** `Designer` **|** `Game Tester` **|** `Marketer`\n"+
-                    "`Programmer` **|** `Translator` **|** `Voice Actor` **|** `Writer`\n"+
-                    "`Youtuber / Streamer` **|** `Newbies` (Given by default.)",
-                     true)
-          .addField("Owner Commands:",
-                    "`*ping` - Sends the latency of the bot.\n"+
-                    "`*member` - Sends the number of members on the server.\n"+
-                    "`*memberlist` - Sends a detailed list of members on the server.\n"+
-                    "`*gif [keyword]` - Sends a random GIF from the keyword.\n"+
-                    "`*say [message]`- Sends the said message as if you were the bot.\n"+
-                    "`*setgame [keyword]` - Changes the game the bot is playing.\n"+
-                    "`*setstatus [keyword]` - Changes the bot's status.\n"+
-                    "`*setnickname [keyword]` - Sets the bot's nickname.\n"+
-                    "`*purge [value]` - Deletes a number of messages. (Max 100)",
-                     true)
-          .setFooter("For additional help, contact TheV0rtex#4553") // , "https://imgur.com/lVpLGeA.png")
-          .setTimestamp() // By default today's date.
-        message.author.send({embed: helpEmbed});
-    }
-*/
-    if (command === 'rule' || command === 'rules') {
-        message.delete(5000);
-        message.reply("rules have been sent.");
-        const rulesEmbed = new Discord.RichEmbed()
-          .setColor(0x7a7a7a)
-          .setTitle("TairaGames Dev Squad Rules")
-          .setDescription("1. Respect fellow developers.\n"+
-          "2. Don't spam.\n"+
-          "3. Don't stalk.\n"+
-          "4. Do not pretend to be somebody else.\n"+
-          "5. Keep each text channel on-topic.\n"+
-          "6. Do not send illegal links or files.\n"+
-          "7. Do not annoy others in the voice channels.")
-          .setTimestamp() // By default today's date.
-        message.author.send({embed: rulesEmbed});
     }
 
     if (command === 'coin' || command === 'coinflip' || command === 'cointoss' || command === 'flip' || command === 'flipcoin') {
