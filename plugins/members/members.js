@@ -8,7 +8,6 @@ var welcomeText;
 
 exports.commands = [
     'members',
-    'memberlist',
     'avatar',
     'rules'
 ];
@@ -34,22 +33,6 @@ exports['members'] = {
     }
 }
 
-exports['memberlist'] = {
-    process: function(message) {
-        var roles = message.guild.roles
-            .filter(n => n != '@everyone');
-        var reply = '';
-
-        reply += 'There are currently **' + message.guild.memberCount + '** members on this server\n';
-
-        for (var [_, role] of roles) {
-            reply += '**' + role.name + '**: ' + role.members.keyArray().length + '\n';
-        }
-
-        message.channel.send(reply);
-    }
-}
-
 exports['avatar'] = {
     process: function (message, args) {
         var embed = new Discord.RichEmbed()
@@ -61,7 +44,7 @@ exports['avatar'] = {
         message.reply('your avatar:');
         message.channel.send({ embed: embed })
             .then(() => { })
-            .catch(() => { });
+            .catch(console.error);
     }
 }
 

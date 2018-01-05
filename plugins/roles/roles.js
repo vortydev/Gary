@@ -2,7 +2,8 @@ var rolesList = require('./roles.json');
 
 exports.commands = [
     'role',
-    'roleslist'
+    'roleslist',
+    'memberlist'
 ];
 
 exports.init = function (client, config) { 
@@ -72,6 +73,27 @@ exports['roleslist'] = {
         }
 
         message.reply('available roles are: ' + availableRoles.join(', '))
+            .catch(console.error);
+    }
+}
+
+exports['memberlist'] = {
+    usage: 'list makeup of server by roles',
+    process: function (message) {
+        var reply = '';
+
+        var orderedRoles = rolesList.sort((a, b) => a.sortOrder - b.sortOrder);
+        reply += 'There are currently **' + message.guild.memberCount + '** member on this server\n';
+        
+        var serverRoles = message.guild.roles
+            .filter(r => r != '@everyone');
+
+        for (var i = 0; i < orderedRoles.length; i++) {
+            var role = message.guild.roles.find('name', orderedRoles[i].name);
+            reply += '**' + role.name + '**: ' + role.members.keyArray().length + '\n';
+        }
+
+        message.channel.send(reply)
             .catch(console.error);
     }
 }
