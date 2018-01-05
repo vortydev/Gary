@@ -1,10 +1,22 @@
 var rolesList = require('./roles.json');
 
 exports.commands = [
-    'role'
+    'role',
+    'roleslist'
 ];
 
-exports.init = function (client, config) { }
+exports.init = function (client, config) { 
+    client.on('memberAdd', member => {
+        var defaultRole = member.guild.roles
+            .find('name', rolesList.find(r => r.defaultRole).name);
+
+        if (!defaultRole)
+            return;
+
+        member.addRole(defaultRole)
+            .catch(console.error);
+    });
+}
 
 exports['role'] = {
     usage: 'role <role name> | toggle the specified role',
@@ -47,6 +59,23 @@ exports['role'] = {
     }
 }
 
+exports['roleslist'] = {
+    usage: 'list assignable roles',
+    process: function (message) {
+        var availableRoles = [];
+        
+        for (var i = 0; i < rolesList.length; i++) {
+            var role = rolesList[i];
+            if (role.isAssignable && message.guild.roles.find('name', role.name)) {
+                availableRoles.push(role.name);
+            }
+        }
+
+        message.reply('available roles are: ' + availableRoles.join(', '))
+            .catch(console.error);
+    }
+}
+
 function addRole(message, serverRole) {
     var member = message.member;
 
@@ -56,14 +85,16 @@ function addRole(message, serverRole) {
     message.reply('the role **' + serverRole.name + '** has been **added**')
         .then(m => m.delete(5000));
 
-    var newbRole = message.guild.roles.find("name", "Newcomer");
-    if (newbRole == null) {
-        console.log('Server has no Newcomer role');
+    var defaultRole = message.guild.roles
+        .find("name", rolesList.find(r => r.defaultRole).name);
+
+    if (!defaultRole) {
+        console.log('Server has no default role');
         return;
     }
 
-    if (message.member.roles.has(newbRole.id)) {
-        removeRole(message, newbRole);
+    if (message.member.roles.has(defaultRole.id)) {
+        removeRole(message, defaultRole);
     }
 }
 

@@ -94,16 +94,6 @@ exports['rules'] = {
 function memberAdd(member) {
     log(member, member + ' joined the server');
 
-    // TODO: use general roles code for this
-    var role = member.guild.roles.find('name', 'Newcomer');
-    if (role) {
-        member.addRole(role)
-            .then(() => { })
-            .catch(console.error);
-    } else {
-        console.log('there is no Newcomer role on the server');
-    }
-
     var embed = new Discord.RichEmbed()
         .setColor(0x7a7a7a)
         .setTitle('Welcome!')
