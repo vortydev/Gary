@@ -18,7 +18,7 @@ client.on('ready', () => {
     console.log(`Gary ready! Serving ${serversCount} servers.`);
 
     client.user.setStatus('online'); //online, idle, dnd, invisible
-    client.user.setPresence({ game: { name: config.prefix + 'help | v2.0.0', type:0 } });
+    client.user.setPresence({ game: { name: config.prefix + 'help | v2.0.1', type:0 } });
 });
 
 client.on('message', message => {
