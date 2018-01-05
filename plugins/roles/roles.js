@@ -9,6 +9,7 @@ exports.init = function (client, config) { }
 exports['role'] = {
     usage: 'role <role name> | toggle the specified role',
     process: function (message) {
+        message.delete();
         var roleName = message.content
             .split(' ')
             .splice(1)
@@ -32,10 +33,10 @@ exports['role'] = {
                 .then(m => m.delete(5000));
             return;
         }
-        
+
         var serverRole = message.guild.roles.find("name", role.name);
         if (serverRole == null) {
-            console.log('found no role on server matching: ' + role.name);
+            console.log('Found no role on server matching: ' + role.name);
             return;
         }
 
@@ -49,21 +50,21 @@ exports['role'] = {
 
 function addRole(message, serverRole) {
     var member = message.member;
-    
+
     member.addRole(serverRole)
         .catch(console.error);
 
     message.reply('the role **' + serverRole.name + '** has been **added**')
         .then(m => m.delete(5000));
 
-    var newbiesRole = message.guild.roles.find("name", "Newbies");
-    if (newbiesRole == null) {
-        console.log('server has no Newbies role');
+    var newbRole = message.guild.roles.find("name", "Newcomer");
+    if (newbRole == null) {
+        console.log('Server has no Newcomer role');
         return;
-    } 
-    
-    if (message.member.roles.has(newbiesRole.id)) {
-        removeRole(message, newbiesRole);
+    }
+
+    if (message.member.roles.has(newbRole.id)) {
+        removeRole(message, newbRole);
     }
 }
 

@@ -8,8 +8,9 @@ exports.commands = [
 exports['coinflip'] = {
     usage: 'Flip a coin',
     process: function (message) {
+        message.delete();
         var flip = Math.floor(Math.random() * 2 + 1 == 1) ? 'Tails' : 'Heads';
-        message.channel.send('You flipped **' + flip  + '**')
+        message.reply('you flipped **' + flip + '**')
             .then(m => m.delete(5000))
             .catch(console.error);
     }
@@ -18,6 +19,7 @@ exports['coinflip'] = {
 exports['roll'] = {
     usage: 'roll <n> <f> | Roll n f-sided dice, sum the result',
     process: function (message, args) {
+        message.delete(5000);
         var dice = parseInt(args[0]);
         var sides = parseInt(args[1]);
 

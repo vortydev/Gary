@@ -9,12 +9,12 @@ function getDirectories(srcPath) {
     return fs.readdirSync(srcPath)
         .filter(f => {
             return fs.statSync(path.join(srcPath, f))
-                .isDirectory(); 
+                .isDirectory();
         });
 }
 
 if (!fs.existsSync(pluginDirectory)) {
-    console.log('no plugins directory available');
+    console.log('No plugins directory available');
 } else {
     pluginFolders = getDirectories(pluginDirectory);
 }
@@ -27,7 +27,7 @@ exports.init = function (commands, client, config) {
         } catch (err) {
             console.log(pluginFolders[i] + ' failed to load: ' + err);
         }
-        
+
         if (plugin) {
             plugin.init(client, config);
             console.log('loading plugin: ' + pluginFolders[i]);
@@ -40,20 +40,21 @@ exports.init = function (commands, client, config) {
                 }
             }
         }
-    } 
-    
+    }
+
     console.log('loading special commands');
     // TODO: Filter available commands based on user perms
     commands['help'] = {
         usage: 'Send the user a list of available commands',
         process: function (message, args) {
+            message.delete();
             var result = '';
             for (commandName in commands) {
                 var command = commands[commandName];
                 var commandText = config.prefix + commandName + ' - ';
-                
+
                 if (command.usage) {
-                    commandText += command.usage;                
+                    commandText += command.usage;
                 } else {
                     commandText += 'No usage defined';
                 }
@@ -68,15 +69,15 @@ exports.init = function (commands, client, config) {
                 .setThumbnail('https://imgur.com/lVpLGeA.png')
                 .setFooter('For additional help, contact TheV0rtex#4553')
                 .setTimestamp();
-            
-            message.author.reply('help has been sent.')
+
+            message.reply('help has been sent.')
                 .then(m => m.delete(5000))
                 .catch(console.error);
 
             message.author.send({ embed: embed })
                 .then(() => { })
                 .catch(console.error);
-                
+
         }
     }
     console.log(':: loaded command: help');

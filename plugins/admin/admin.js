@@ -21,6 +21,7 @@ exports.init = function (client, config) {
 exports['say'] = {
     usage: 'say <message> | Have the bot say a message',
     process: function (message, args) {
+        message.delete();
         if (message.author.id != ownerId)
             return;
 
@@ -39,14 +40,15 @@ exports['setstatus'] = {
 }
 
 exports['setnickname'] = {
-    usage: 'setnickname <nick> | Set bot\'s nick', 
+    usage: 'setnickname <nick> | Set bot\'s nick',
     process: setNickname
 }
 
 exports['reset'] = {
     usage: 'reset | Reset bot\'s \'playing\', status and nickname',
     process: function (message, args) {
-        setGame(message, [ prefix + ' help' ]);
+        message.delete();
+        setGame(message, [ prefix + 'help' ]);
         setStatus(message, [ 'online' ]);
         setNickname(message, [ '' ]);
     }
@@ -57,11 +59,11 @@ exports['purge'] = {
     process: function (message, args) {
         if (message.author.id != ownerId)
             return;
-       
+
         var number = parseInt(args[0]);
-        if (!number) 
+        if (!number)
             return;
-        
+
         message.channel.bulkDelete(number + 1, false)
             .then(() => { })
             .catch(() => { });
@@ -81,6 +83,7 @@ exports['ping'] = {
 }
 
 function setGame(message, args) {
+    message.delete();
     if (message.author.id != ownerId)
         return;
 
@@ -96,6 +99,7 @@ function setGame(message, args) {
 }
 
 function setStatus(message, args) {
+    message.delete();
     if (message.author.id != ownerId)
         return;
 
@@ -106,6 +110,7 @@ function setStatus(message, args) {
 }
 
 function setNickname(message, args) {
+    message.delete();
     if (message.author.id != ownerId)
         return;
 
@@ -116,4 +121,3 @@ function setNickname(message, args) {
     message.guild.member(user)
         .setNickname(args.join(' '));
 }
-

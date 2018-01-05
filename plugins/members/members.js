@@ -22,7 +22,7 @@ exports.init = function (client, config) {
 
         welcomeText = data;
     });
-    
+
     client.on('guildMemberAdd', memberAdd);
     client.on('guildMemberRemove', memberRemove);
 }
@@ -30,16 +30,18 @@ exports.init = function (client, config) {
 // Commands
 exports['members'] = {
     process: function (message) {
+        message.delete();
         message.channel.send("There are currently **" + message.guild.memberCount + "** members on this server.");
     }
 }
 
 exports['memberlist'] = {
     process: function(message) {
+        message.delete();
         var roles = message.guild.roles
             .filter(n => n != '@everyone');
         var reply = '';
-        
+
         reply += 'There are currently **' + message.guild.memberCount + '** members on this server\n';
 
         for (var [_, role] of roles) {
@@ -52,6 +54,7 @@ exports['memberlist'] = {
 
 exports['avatar'] = {
     process: function (message, args) {
+        message.delete();
         var embed = new Discord.RichEmbed()
             .setColor(0x7a7a7a)
             .setDescription('[Direct Link](' + message.author.avatarURL + ')')
@@ -68,6 +71,7 @@ exports['avatar'] = {
 exports['rules'] = {
     usage: 'DM the user with rules',
     process: function (message) {
+        message.delete();
         fs.readFile(rulesTextPath, 'utf8', (err, data) => {
             if (err) {
                 console.error(err);
@@ -87,23 +91,23 @@ exports['rules'] = {
             message.author.send({embed: embed})
                 .then(() => { })
                 .catch(console.error);
-        }); 
+        });
     }
 }
 
-function memberAdd(member) { 
+function memberAdd(member) {
     log(member, member + ' joined the server');
 
     // TODO: use general roles code for this
-    var role = member.guild.roles.find('name', 'Newbies');
+    var role = member.guild.roles.find('name', 'Newcomer');
     if (role) {
         member.addRole(role)
             .then(() => { })
             .catch(console.error);
     } else {
-        console.log('there is no Newbies role on the server');
+        console.log('there is no Newcomer role on the server');
     }
-    
+
     var embed = new Discord.RichEmbed()
         .setColor(0x7a7a7a)
         .setTitle('Welcome!')
@@ -116,7 +120,7 @@ function memberAdd(member) {
         .catch(() => { });
 }
 
-function memberRemove(member) { 
+function memberRemove(member) {
     log(member, member + ' left the server');
 }
 
