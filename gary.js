@@ -1,6 +1,7 @@
 ﻿var Discord = require('discord.js'),
     config = require('./config.json'),
-    plugins = require('./plugins.js');
+    plugins = require('./plugins.js'),
+    package = require('./package.json');
 
 if (config.token == '' || config.prefix == '' || config.ownerID == '') {
     console.log('Please fill in config.json');
@@ -18,7 +19,7 @@ client.on('ready', () => {
     console.log(`Gary ready! Serving ${serversCount} servers.`);
 
     client.user.setStatus('online'); //online, idle, dnd, invisible
-    client.user.setPresence({ game: { name: config.prefix + 'help | v2.0.1', type:0 } });
+    client.user.setPresence({ game: { name: config.prefix + 'help | v' + package.version, type:0 } });
 });
 
 client.on('message', message => {
