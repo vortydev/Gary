@@ -31,7 +31,7 @@ client.on('ready', () => {
 client.on('error', (e) => console.error(e));
 
 // MEMBERS
-client.on('guildMemberAdd', member => {
+client.on('guildMemberAdd', async member => {
            var serverName = member.guild.name;
            const channel = member.guild.channels.find('name', 'member-log');
            if (!channel) return;
@@ -139,14 +139,10 @@ if (command === 'help') {
 }
 
 if (command === 'joined') {
-    var member = message.mentions.members.first();
+    
+    var member = await message.channel.guild.fetchMember(message.author);
 
-    if (message.mentions.members.array().length < 1) {
-        message.channel.send("Please mention a user!")
-        return;
-    }
-
-    message.channel.send(member.user.username + " joined on " + neatenDate(member.joinedAt));
+    message.channel.send("You joined on " + neatenDate(member.joinedAt));
     //NameHere joined on 30/12/2017 at 16:56
 }
    
