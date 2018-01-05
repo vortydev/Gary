@@ -8,7 +8,7 @@ I'm proud to offer you guys my now open-sourced Discord bot, Gary! :D - TheV0rte
 
 # Roles:
 
-Rename `roles.json.example` to `roles.json`. Add roles (case-sensitively!) to the file. Set `isAssignable` to `true` if you want your users to be able to assign themselves the role using the `role` command.
+Rename `roles.json.example` to `roles.json`. Add roles (case-sensitively!) to the file. Set `isAssignable` to `true` if you want your users to be able to assign themselves the role using the `role` command. Use `sortOrder` to specify the order in which `memberlist` displays roles, starting from 0.
 
 # Permissions:
 
