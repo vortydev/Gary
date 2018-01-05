@@ -21,10 +21,8 @@ exports.init = function (client, config) {
 exports['say'] = {
     usage: 'say <message> | Have the bot say a message',
     process: function (message, args) {
-        if (message.author.id != ownerId)
-            return;
-
-        message.channel.send(args.join(' '));
+        message.channel.send(args.join(' '))
+            .catch(console.error);
     }
 }
 
@@ -55,9 +53,6 @@ exports['reset'] = {
 exports['purge'] = {
     usage: 'purge <number> | Bulk delete most recent messages in a channel',
     process: function (message, args) {
-        if (message.author.id != ownerId)
-            return;
-
         var number = parseInt(args[0]);
         if (!number || number <= 1)
             return;
@@ -71,9 +66,6 @@ exports['purge'] = {
 exports['ping'] = {
     usage: 'Get bot response time',
     process: function (message, args) {
-        if (message.author.id != ownerId)
-            return;
-
         message.channel.send('Latency of **' + Math.round(botClient.ping) + '** ms')
             .then(() => { })
             .catch(() => { });
@@ -81,9 +73,6 @@ exports['ping'] = {
 }
 
 function setGame(message, args) {
-    if (message.author.id != ownerId)
-        return;
-
     botClient.user
         .setPresence({
             game: {
@@ -96,9 +85,6 @@ function setGame(message, args) {
 }
 
 function setStatus(message, args) {
-    if (message.author.id != ownerId)
-        return;
-
     if (!botClient.user)
         return;
 
@@ -106,9 +92,6 @@ function setStatus(message, args) {
 }
 
 function setNickname(message, args) {
-    if (message.author.id != ownerId)
-        return;
-
     var user = botClient.user;
     if (!user)
         return;
