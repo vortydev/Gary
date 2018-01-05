@@ -40,18 +40,21 @@ client.on('message', message => {
         return;
 
     // All commands should be immediately deleted
+    message.delete()
+        .then(() => { 
+            // Handle commands
+            var args = message.content
+                .slice(1)
+                .trim()
+                .split(/ +/g);
 
-    // Handle commands
-    const args = message.content
-        .slice(1)
-        .trim()
-        .split(/ +/g);
+            var command = args.shift().toLowerCase();
 
-    const command = args.shift().toLowerCase();
-
-    if (command in commands) {
-        commands[command].process(message, args);
-    }
+            if (command in commands) {
+                commands[command].process(message, args);
+            }
+        })
+        .catch(console.error);
 });
 
 client.login(config.token);

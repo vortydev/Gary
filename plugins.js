@@ -47,7 +47,6 @@ exports.init = function (commands, client, config) {
     commands['help'] = {
         usage: 'Send the user a list of available commands',
         process: function (message, args) {
-            message.delete();
             var result = '';
             for (commandName in commands) {
                 var command = commands[commandName];

@@ -9,7 +9,6 @@ exports.init = function (client, config) { }
 exports['role'] = {
     usage: 'role <role name> | toggle the specified role',
     process: function (message) {
-        message.delete();
         var roleName = message.content
             .split(' ')
             .splice(1)
