@@ -1,5 +1,6 @@
 config.json
 roles.json
+permissiongroups.json
 
 *.old
 *.bat

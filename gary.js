@@ -1,7 +1,8 @@
 ﻿var Discord = require('discord.js'),
     config = require('./config.json'),
     plugins = require('./plugins.js'),
-    package = require('./package.json');
+    package = require('./package.json'),
+    permissions = require('./permissions.js');
 
 if (config.token == '' || config.prefix == '' || config.ownerID == '') {
     console.log('Please fill in config.json');
@@ -48,10 +49,13 @@ client.on('message', message => {
                 .trim()
                 .split(/ +/g);
 
-            var command = args.shift().toLowerCase();
+            var commandName = args.shift().toLowerCase();
 
-            if (command in commands) {
-                commands[command].process(message, args);
+            if (commandName in commands) {
+                if (permissions.hasPermission(message.member, commandName)) {
+                    var command = commands[commandName];
+                    command.process(message, args);
+                }
             }
         })
         .catch(console.error);
