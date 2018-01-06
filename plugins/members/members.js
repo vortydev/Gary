@@ -10,7 +10,8 @@ exports.commands = [
     'members',
     'memberlist',
     'avatar',
-    'rules'
+    'rules',
+    'joined'
 ];
 
 exports.init = function (client, config) {
@@ -88,6 +89,29 @@ exports['rules'] = {
                 .then(() => { })
                 .catch(console.error);
         });
+    }
+}
+
+exports['joined'] = {
+    process: async function (message, args) {
+        var member = await message.channel.guild.fetchMember(message.author);
+        var date = member.joinedAt;
+
+        var year = date.getFullYear();
+        var month = date.getMonth();
+        var day = date.getDate();
+        var hours = date.getHours();
+        var mins = date.getMinutes();
+
+        var end = day.toString() + "/" + month.toString() + "/" + year.toString() + " at " + hours.toString() + ":" + mins.toString();
+
+        if (mins.toString().length == 1)
+            end += "0";
+
+        //NameHere joined on 30/12/2017 at 16:56
+        message.channel.send(member.user.username + " joined on " + end)
+            .then(() => { })
+            .catch(() => { });
     }
 }
 
