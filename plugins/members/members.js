@@ -99,7 +99,7 @@ exports['joined'] = {
 }
 
 function memberAdd(member) {
-    log(member, member + ' joined the server');
+    log(member, 'joined the server', 0x18bb68);
 
     var embed = new Discord.RichEmbed()
         .setColor(0x7a7a7a)
@@ -114,19 +114,19 @@ function memberAdd(member) {
 }
 
 function memberRemove(member) {
-    log(member, member + ' left the server');
+    log(member, 'left the server', 0xff8c00);
 }
 
-function log(member, message) {
+function log(member, message, colour) {
     var channel = member.guild.channels.find('name', logChannelName);
     if (!channel) {
         console.log('no #' + logChannelName + ' on this server');
         console.log(message);
     } else {
         var embed = new Discord.RichEmbed()
-            .setColor(0x18bb68)
+            .setColor(colour)
             .setAuthor('Gary', 'https://imgur.com/lVpLGeA.png')
-            .setDescription(message)
+            .setDescription(member + ' ' + message)
             .setTimestamp();
 
         channel.send({ embed: embed });
