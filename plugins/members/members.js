@@ -81,7 +81,7 @@ exports['joined'] = {
         var date = member.joinedAt;
 
         var year = date.getFullYear();
-        var month = date.getMonth();
+        var month = date.getMonth() + 1;
         var day = date.getDate();
         var hours = date.getHours();
         var mins = date.getMinutes();
