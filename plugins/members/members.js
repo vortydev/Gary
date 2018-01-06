@@ -86,10 +86,12 @@ exports['joined'] = {
         var hours = date.getHours();
         var mins = date.getMinutes();
 
-        var end = day.toString() + "/" + month.toString() + "/" + year.toString() + " at " + hours.toString() + ":" + mins.toString();
+        var end = day.toString() + "/" + month.toString() + "/" + year.toString() + " at " + hours.toString() + ":";
 
         if (mins.toString().length == 1)
             end += "0";
+
+        end += mins.toString();
 
         //NameHere joined on 30/12/2017 at 16:56
         message.channel.send(member.user.username + " joined on " + end)
