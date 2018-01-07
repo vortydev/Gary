@@ -29,12 +29,14 @@ exports.init = function (client, config) {
 
 // Commands
 exports['members'] = {
+    usage: 'Gets how many people are on the server',
     process: function (message) {
         message.channel.send("There are currently **" + message.guild.memberCount + "** members on this server.");
     }
 }
 
 exports['avatar'] = {
+    usage: 'Sends author his avatar',
     process: function (message, args) {
         var embed = new Discord.RichEmbed()
             .setColor(0x7a7a7a)
@@ -76,6 +78,7 @@ exports['rules'] = {
 }
 
 exports['joined'] = {
+    usage: "Gets author's date and time of arrival on the server",
     process: async function (message, args) {
         var member = await message.channel.guild.fetchMember(message.author);
         var date = member.joinedAt;
@@ -86,7 +89,8 @@ exports['joined'] = {
         var hours = date.getHours();
         var mins = date.getMinutes();
 
-        var end = day.toString() + "/" + month.toString() + "/" + year.toString() + " at " + hours.toString() + ":";
+        // minutes can be added by inserting "mins.toString()"
+        var end = "**" + day.toString() + "/" + month.toString() + "/" + year.toString() + "** at " + hours.toString() + ":";
 
         if (mins.toString().length == 1)
             end += "0";
@@ -94,7 +98,7 @@ exports['joined'] = {
         end += mins.toString();
 
         //NameHere joined on 30/12/2017 at 16:56
-        message.channel.send(member.user.username + " joined on " + end)
+        message.reply("you joined on " + end)
             .then(() => { })
             .catch(() => { });
     }

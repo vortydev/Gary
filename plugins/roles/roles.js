@@ -6,7 +6,7 @@ exports.commands = [
     'memberlist'
 ];
 
-exports.init = function (client, config) { 
+exports.init = function (client, config) {
     client.on('memberAdd', member => {
         var defaultRole = member.guild.roles
             .find('name', rolesList.find(r => r.defaultRole).name);
@@ -20,7 +20,7 @@ exports.init = function (client, config) {
 }
 
 exports['role'] = {
-    usage: 'role <role name> | toggle the specified role',
+    usage: 'role <role name> | Toggle the specified role',
     process: function (message) {
         var roleName = message.content
             .split(' ')
@@ -61,10 +61,10 @@ exports['role'] = {
 }
 
 exports['roleslist'] = {
-    usage: 'list assignable roles',
+    usage: 'List assignable roles',
     process: function (message) {
         var availableRoles = [];
-        
+
         for (var i = 0; i < rolesList.length; i++) {
             var role = rolesList[i];
             if (role.isAssignable && message.guild.roles.find('name', role.name)) {
@@ -78,13 +78,13 @@ exports['roleslist'] = {
 }
 
 exports['memberlist'] = {
-    usage: 'list makeup of server by roles',
+    usage: 'List of server members by role',
     process: function (message) {
         var reply = '';
 
         var orderedRoles = rolesList.sort((a, b) => a.sortOrder - b.sortOrder);
         reply += 'There are currently **' + message.guild.memberCount + '** member on this server\n';
-        
+
         var serverRoles = message.guild.roles
             .filter(r => r != '@everyone');
 
