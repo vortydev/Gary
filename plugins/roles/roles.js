@@ -2,7 +2,7 @@ var rolesList = require('./roles.json');
 
 exports.commands = [
     'role',
-    'roleslist',
+    'rolelist',
     'memberlist'
 ];
 
@@ -60,7 +60,7 @@ exports['role'] = {
     }
 }
 
-exports['roleslist'] = {
+exports['rolelist'] = {
     usage: 'List assignable roles',
     process: function (message) {
         var availableRoles = [];
