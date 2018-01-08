@@ -1,4 +1,5 @@
 var self = this;
+var botClient;
 
 var Discord = require('discord.js'),
     fs = require('fs'),
@@ -29,6 +30,7 @@ if (!fs.existsSync(pluginDirectory)) {
 exports.init = function (commands, client, config, package) {
     self.commands = commands;
     self.config = config;
+    botClient = client;
 
     for (var i = 0; i < pluginFolders.length; i++) {
         var plugin;
@@ -102,9 +104,9 @@ function help(message) {
 
     var embed = new Discord.RichEmbed()
         .setColor(0x7a7a7a)
-        .setTitle('Gary Commands')
+        .setTitle(botClient.user.username + ' Commands')
         .setDescription(result)
-        .setThumbnail('https://imgur.com/lVpLGeA.png')
+        .setThumbnail(botClient.user.avatarURL)
         .setFooter('For additional help, contact TheV0rtex#4553')
         .setTimestamp();
 
