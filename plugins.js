@@ -64,11 +64,11 @@ exports.init = function (commands, client, config) {
     console.log('::loaded command: help');
 }
 
-function help(message, args, client) {
+function help(message) {
     var result = '';
     var member = message.member;
     
-    // add default commands
+    result += '`' + self.config.prefix + 'help` - ' + self.commands['help'].usage + '\n\n';
 
     for (var p = 0; p < self.plugins.length; p++) {
         var pluginName = self.plugins[p].name;
@@ -97,9 +97,9 @@ function help(message, args, client) {
 
     var embed = new Discord.RichEmbed()
         .setColor(0x7a7a7a)
-        .setTitle(client.user.username + ' Commands')
+        .setTitle('Gary Commands')
         .setDescription(result)
-        .setThumbnail(client.user.avatarURL)
+        .setThumbnail('https://imgur.com/lVpLGeA.png')
         .setFooter('For additional help, contact TheV0rtex#4553')
         .setTimestamp();
 
