@@ -11,7 +11,7 @@ if (config.token == '' || config.prefix == '' || config.ownerID == '') {
 
 var client = new Discord.Client();
 var commands = {};
-plugins.init(commands, client, config);
+plugins.init(commands, client, config, package);
 
 client.on('error', console.error);
 

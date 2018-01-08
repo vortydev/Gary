@@ -1,6 +1,7 @@
 var ownerId;
 var botClient;
 var prefix;
+var version;
 
 exports.commands = [
     'say',
@@ -12,10 +13,11 @@ exports.commands = [
     'ping'
 ]
 
-exports.init = function (client, config) {
+exports.init = function (client, config, package) {
     botClient = client;
     ownerId = config.ownerID;
     prefix = config.prefix;
+    version = package.version
 }
 
 exports['say'] = {
@@ -43,10 +45,10 @@ exports['setnickname'] = {
 
 exports['reset'] = {
     usage: 'reset | Reset bot\'s \'playing\', status and nickname',
-    process: function (message, args) {
-        setGame(message, [ prefix + 'help' ]);
-        setStatus(message, [ 'online' ]);
-        setNickname(message, [ '' ]);
+    process: function (message, args, client) {
+        setGame(message, [ prefix + 'help | v' + version], client);
+        setStatus(message, [ 'online' ], client);
+        setNickname(message, [ '' ], client);
     }
 }
 
@@ -72,8 +74,8 @@ exports['ping'] = {
     }
 }
 
-function setGame(message, args) {
-    botClient.user
+function setGame(message, args, client) {
+    client.user
         .setPresence({
             game: {
                 name: args.join(' '),
@@ -85,17 +87,10 @@ function setGame(message, args) {
 }
 
 function setStatus(message, args) {
-    if (!botClient.user)
-        return;
-
-    botClient.user.setStatus(args.join(' ')); // online, idle, dnd, invisible
+    client.user.setStatus(args.join(' ')); // online, idle, dnd, invisible
 }
 
 function setNickname(message, args) {
-    var user = botClient.user;
-    if (!user)
-        return;
-
-    message.guild.member(user)
+    message.guild.member(client.user)
         .setNickname(args.join(' '));
 }

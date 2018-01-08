@@ -26,7 +26,7 @@ if (!fs.existsSync(pluginDirectory)) {
     pluginFolders = getDirectories(pluginDirectory);
 }
 
-exports.init = function (commands, client, config) {
+exports.init = function (commands, client, config, package) {
     self.commands = commands;
     self.config = config;
 
@@ -41,7 +41,7 @@ exports.init = function (commands, client, config) {
         if (plugin) {
             self.plugins.push({ name: pluginFolders[i], plugin: plugin});
 
-            plugin.init(client, config);
+            plugin.init(client, config, package);
             console.log('loading plugin: ' + pluginFolders[i]);
             if ('commands' in plugin) {
                 for (var j = 0; j < plugin.commands.length; j++) {
