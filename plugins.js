@@ -61,7 +61,7 @@ exports.init = function (commands, client, config, package) {
         process: help
     }
 
-    console.log('::loaded command: help');
+    console.log(':: loaded command: help');
 }
 
 function help(message) {
