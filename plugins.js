@@ -70,9 +70,14 @@ function help(message) {
     
     result += '`' + self.config.prefix + 'help` - ' + self.commands['help'].usage + '\n\n';
 
-    for (var p = 0; p < self.plugins.length; p++) {
-        var pluginName = self.plugins[p].name;
-        var plugin = self.plugins[p].plugin;
+    var pluginOrder = require('./pluginorder.json')
+        .sort((a, b) => a.sortOrder - b.sortOrder);
+    
+    for (var p = 0; p < pluginOrder.length; p++) {
+        var pluginData = self.plugins.find(pd => pd.name == pluginOrder[p].name);
+
+        var pluginName = pluginData.name;
+        var plugin = pluginData.plugin;
 
         var commandLines = [];
         for (var c = 0; c < plugin.commands.length; c++) {
