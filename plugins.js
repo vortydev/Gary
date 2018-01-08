@@ -64,7 +64,7 @@ exports.init = function (commands, client, config) {
     console.log('::loaded command: help');
 }
 
-function help(message) {
+function help(message, args, client) {
     var result = '';
     var member = message.member;
     
@@ -91,9 +91,9 @@ function help(message) {
 
     var embed = new Discord.RichEmbed()
         .setColor(0x7a7a7a)
-        .setTitle('Gary Commands')
+        .setTitle(client.user.username + ' Commands')
         .setDescription(result)
-        .setThumbnail('https://imgur.com/lVpLGeA.png')
+        .setThumbnail(client.user.avatarURL)
         .setFooter('For additional help, contact TheV0rtex#4553')
         .setTimestamp();
 
