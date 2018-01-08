@@ -36,6 +36,9 @@ client.on('message', message => {
         if (!message.member.roles.has(role.id))
             message.delete();
     }
+    
+    if(message.author.bot)
+        return;
 
     if (!message.content.startsWith(config.prefix))
         return;
