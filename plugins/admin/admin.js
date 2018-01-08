@@ -1,7 +1,10 @@
+var self = this;
+
 var ownerId;
-var botClient;
 var prefix;
 var version;
+
+self.client = null;
 
 exports.commands = [
     'say',
@@ -14,7 +17,7 @@ exports.commands = [
 ]
 
 exports.init = function (client, config, package) {
-    botClient = client;
+    self.client = client;
     ownerId = config.ownerID;
     prefix = config.prefix;
     version = package.version
@@ -45,10 +48,10 @@ exports['setnickname'] = {
 
 exports['reset'] = {
     usage: 'reset | Reset bot\'s \'playing\', status and nickname',
-    process: function (message, args, client) {
-        setGame(message, [ prefix + 'help | v' + version], client);
-        setStatus(message, [ 'online' ], client);
-        setNickname(message, [ '' ], client);
+    process: function (message, args) {
+        setGame(message, [ prefix + 'help | v' + version]);
+        setStatus(message, [ 'online' ]);
+        setNickname(message, [ '' ]);
     }
 }
 
@@ -68,14 +71,14 @@ exports['purge'] = {
 exports['ping'] = {
     usage: 'Get bot response time',
     process: function (message, args) {
-        message.channel.send('Latency of **' + Math.round(botClient.ping) + '** ms')
+        message.channel.send('Latency of **' + Math.round(self.client.ping) + '** ms')
             .then(() => { })
             .catch(() => { });
     }
 }
 
-function setGame(message, args, client) {
-    client.user
+function setGame(message, args) {
+    self.client.user
         .setPresence({
             game: {
                 name: args.join(' '),
@@ -87,10 +90,10 @@ function setGame(message, args, client) {
 }
 
 function setStatus(message, args) {
-    client.user.setStatus(args.join(' ')); // online, idle, dnd, invisible
+    self.client.user.setStatus(args.join(' ')); // online, idle, dnd, invisible
 }
 
 function setNickname(message, args) {
-    message.guild.member(client.user)
+    message.guild.member(self.client.user)
         .setNickname(args.join(' '));
 }

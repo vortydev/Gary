@@ -57,7 +57,7 @@ client.on('message', message => {
             if (commandName in commands) {
                 if (permissions.hasPermission(message.member, commandName)) {
                     var command = commands[commandName];
-                    command.process(message, args, client);
+                    command.process(message, args);
                 }
             }
         })
