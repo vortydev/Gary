@@ -6,9 +6,11 @@ var Discord = require('discord.js'),
     permissions = require('./permissions.js');
 
 var pluginDirectory = './plugins/';
-var pluginFolders;
+var pluginFolders = null;
+
 self.commands = null;
 self.config = null;
+self.plugins = [];
 
 function getDirectories(srcPath) {
     return fs.readdirSync(srcPath)
@@ -37,6 +39,8 @@ exports.init = function (commands, client, config) {
         }
 
         if (plugin) {
+            self.plugins.push({ name: pluginFolders[i], plugin: plugin});
+
             plugin.init(client, config);
             console.log('loading plugin: ' + pluginFolders[i]);
             if ('commands' in plugin) {
@@ -50,7 +54,7 @@ exports.init = function (commands, client, config) {
         }
     }
 
-    console.log('loading special commands');
+    console.log('loading default commands');
     
     commands['help'] = {
         usage: 'Send the user a list of available commands',
@@ -63,21 +67,26 @@ exports.init = function (commands, client, config) {
 function help(message) {
     var result = '';
     var member = message.member;
+    
+    // add default commands
 
-    for (commandName in self.commands) {
-        if (!permissions.hasPermission(member, commandName))
-            continue;
+    for (var p = 0; p < self.plugins.length; p++) {
+        var pluginName = self.plugins[p].name;
+        var plugin = self.plugins[p].plugin;
 
-        var command = self.commands[commandName];
-        var commandText = self.config.prefix + commandName + ' - ';
+        result += '**' + pluginName + ':**\n';
 
-        if (command.usage) {
-            commandText += command.usage;
-        } else {
-            commandText += 'No usage defined';
+        for (var c = 0; c < plugin.commands.length; c++) {
+            var commandName = plugin.commands[c];
+            var command = plugin[commandName];
+
+            var commandText = self.config.prefix + commandName + ' - ';
+            var command = command;
+
+            commandText += command.usage ? command.usage : 'No usage defined';
+
+            result += commandText + '\n';
         }
-
-        result += commandText + '\n';
     }
 
     var embed = new Discord.RichEmbed()
