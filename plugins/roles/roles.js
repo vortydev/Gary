@@ -90,6 +90,10 @@ exports['memberlist'] = {
 
         for (var i = 0; i < orderedRoles.length; i++) {
             var role = message.guild.roles.find('name', orderedRoles[i].name);
+            if (!role) {
+                console.log('could not find role on server: ' + orderedRoles[i].name);
+                continue;
+            }
             reply += '**' + role.name + '**: ' + role.members.keyArray().length + '\n';
         }
 
