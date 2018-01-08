@@ -74,19 +74,25 @@ function help(message, args, client) {
         var pluginName = self.plugins[p].name;
         var plugin = self.plugins[p].plugin;
 
-        result += '**' + pluginName + ':**\n';
-
+        var commandLines = [];
         for (var c = 0; c < plugin.commands.length; c++) {
             var commandName = plugin.commands[c];
+            if (!permissions.hasPermission(member, commandName))
+                continue;
+            
             var command = plugin[commandName];
+            var commandText = '`' + self.config.prefix + commandName + '` - ';
 
-            var commandText = self.config.prefix + commandName + ' - ';
-            var command = command;
-
-            commandText += command.usage ? command.usage : 'No usage defined';
-
-            result += commandText + '\n';
+            commandLines.push(commandText + (command.usage ? command.usage : 'No usage defined') + '\n');
         }
+
+        if (commandLines.length) {
+            pluginName = pluginName.charAt(0).toUpperCase() + pluginName.slice(1);
+
+            result += '**' + pluginName + '**\n';
+            result += commandLines.join('');
+            result += '\n';
+        } 
     }
 
     var embed = new Discord.RichEmbed()
