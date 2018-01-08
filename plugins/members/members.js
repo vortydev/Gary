@@ -7,9 +7,9 @@ var rulesTextPath = './plugins/members/rules.md';
 var welcomeText;
 
 exports.commands = [
+    'rules',
     'members',
     'avatar',
-    'rules',
     'joined'
 ];
 
