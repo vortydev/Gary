@@ -7,3 +7,6 @@ pluginorder.json
 *.bat
 *.swp
 *.swo
+*.sh
+
+output.txt
