@@ -4,7 +4,8 @@ var botClient;
 var Discord = require('discord.js'),
     fs = require('fs'),
     path = require('path'),
-    permissions = require('./permissions.js');
+    permissions = require('./permissions.js'),
+    package = require('./package.json');
 
 var pluginDirectory = './plugins/';
 var pluginFolders = null;
@@ -64,6 +65,13 @@ exports.init = function (commands, client, config, package) {
     }
 
     console.log(':: loaded command: help');
+
+    commands['version'] = {
+        usage: 'Get the current version',
+        process: version
+    }
+
+    console.log(':: loaded command: version');
 }
 
 function help(message) {
@@ -117,4 +125,8 @@ function help(message) {
     message.author.send({ embed: embed })
         .then(() => { })
         .catch(console.error);
+}
+
+function version(message) {
+    message.author.send("Currrently version **" + package.version + "**.");
 }
