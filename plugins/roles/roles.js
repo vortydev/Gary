@@ -7,13 +7,18 @@ exports.commands = [
 ];
 
 exports.init = function (client, config) {
-    client.on('memberAdd', member => {
+    client.on('guildMemberAdd', member => {
+
         var defaultRole = member.guild.roles
             .find('name', rolesList.find(r => r.defaultRole).name);
 
-        if (!defaultRole)
+        if (!defaultRole) {
+            console.log('no default role available'); 
             return;
+        }
 
+        console.log(member.user.username + ' joined. Adding role: ' + defaultRole.name);
+        
         member.addRole(defaultRole)
             .catch(console.error);
     });
