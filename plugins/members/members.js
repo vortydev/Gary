@@ -9,6 +9,7 @@ var rulesTextPath = './plugins/members/rules.md';
 var welcomeText;
 
 self.client = null;
+self.logger = null;
 
 exports.commands = [
     'rules',
@@ -17,7 +18,7 @@ exports.commands = [
     'joined'
 ];
 
-exports.init = function (client, config) {
+exports.init = function (client, config, package, logger) {
     fs.readFile(welcomeTextPath, 'utf8', (err, data) => {
         if (err) {
             console.error(err);
@@ -28,6 +29,7 @@ exports.init = function (client, config) {
     });
 
     self.client = client;
+    self.logger = logger;
 
     client.on('guildMemberAdd', memberAdd);
     client.on('guildMemberRemove', memberRemove);
@@ -132,16 +134,19 @@ function memberRemove(member) {
 
 function log(member, message, colour) {
     var channel = member.guild.channels.find('name', logChannelName);
-    if (!channel) {
-        console.log('no #' + logChannelName + ' on this server');
-        console.log(message);
-    } else {
-        var embed = new Discord.RichEmbed()
-            .setColor(colour)
-            .setAuthor(self.client.user.username, self.client.user.avatarURL)
-            .setDescription('<@' + member.user.id + '> ' + message)
-            .setTimestamp();
+    self.logger.logStr(member.user.username + ' ' + message);
 
-        channel.send({ embed: embed });
+    if (!channel) {
+        self.logger.logStr('no #' + logChannelName + ' on this server');
+        return;
     }
+    
+    var embed = new Discord.RichEmbed()
+        .setColor(colour)
+        .setAuthor(self.client.user.username, self.client.user.avatarURL)
+        .setDescription('<@' + member.user.id + '> ' + message)
+        .setTimestamp();
+
+    channel.send({ embed: embed });
+    
 }

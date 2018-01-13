@@ -1,3 +1,5 @@
+var self = this;
+
 var rolesList = require('./roles.json');
 
 exports.commands = [
@@ -6,7 +8,9 @@ exports.commands = [
     'memberlist'
 ];
 
-exports.init = function (client, config) {
+self.logger = null;
+
+exports.init = function (client, config, _, logger) {
     client.on('guildMemberAdd', member => {
 
         var defaultRole = member.guild.roles
@@ -17,11 +21,11 @@ exports.init = function (client, config) {
             return;
         }
 
-        console.log(member.user.username + ' joined. Adding role: ' + defaultRole.name);
-        
         member.addRole(defaultRole)
             .catch(console.error);
     });
+
+    self.logger = logger;
 }
 
 exports['role'] = {
@@ -111,6 +115,9 @@ function addRole(message, serverRole) {
     var member = message.member;
 
     member.addRole(serverRole)
+        .then(() => {
+            self.logger.logStr('Added role ' + serverRole.name + ' to ' + member.user.username);
+        })
         .catch(console.error);
 
     message.reply('the role **' + serverRole.name + '** has been **added**')
@@ -133,8 +140,11 @@ function removeRole(message, serverRole) {
     var member = message.member;
 
     member.removeRole(serverRole)
+        .then(() => {
+            self.logger.logStr('Removed role ' + serverRole.name + ' from ' + member.user.username);
+        })
         .catch(console.error);
-
+    
     message.reply('the role **' + serverRole.name + '** has been **removed**')
         .then(m => m.delete(5000));
 }

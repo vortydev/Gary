@@ -4,6 +4,10 @@ exports.logCommand = function (message) {
     log(name + ' ran command: ' + message.content);
 }
 
+exports.logStr = function (str) {
+    log(str);
+}
+
 function log(message) {
     var now = new Date();
     

@@ -12,7 +12,7 @@ if (config.token == '' || config.prefix == '' || config.ownerID == '') {
 
 var client = new Discord.Client();
 var commands = {};
-plugins.init(commands, client, config, package);
+plugins.init(commands, client, config, package, Logger);
 
 client.on('error', console.error);
 
