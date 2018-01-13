@@ -13,6 +13,7 @@
     "libsodium-wrappers": "^0.5.4",
     "node-opus": "^0.2.7",
     "opusscript": "0.0.3",
+    "request": "^2.83.0",
     "sodium": "^2.0.3",
     "uws": "^0.14.5"
   }

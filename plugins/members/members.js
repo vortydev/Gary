@@ -6,6 +6,9 @@ var welcomeTextPath = './plugins/members/welcome.md';
 var rulesTextPath = './plugins/members/rules.md';
 var welcomeText;
 
+var self = this;
+self.client = null;
+
 exports.commands = [
     'rules',
     'members',
@@ -22,6 +25,8 @@ exports.init = function (client, config) {
 
         welcomeText = data;
     });
+
+    self.client = client;
 
     client.on('guildMemberAdd', memberAdd);
     client.on('guildMemberRemove', memberRemove);
@@ -88,8 +93,7 @@ exports['joined'] = {
         var day = date.getDate();
         var hours = date.getHours();
         var mins = date.getMinutes();
-
-        // minutes can be added by inserting "mins.toString()"
+        
         var end = "**" + day.toString() + "/" + month.toString() + "/" + year.toString() + "** at " + hours.toString() + ":";
 
         if (mins.toString().length == 1)
@@ -110,7 +114,7 @@ function memberAdd(member) {
     var embed = new Discord.RichEmbed()
         .setColor(0x7a7a7a)
         .setTitle('Welcome!')
-        .setAuthor('Gary', 'https://imgur.com/lVpLGeA.png')
+        .setAuthor(self.client.user.username, self.client.user.avatarURL)
         .setDescription(welcomeText)
         .setTimestamp();
 
@@ -131,8 +135,8 @@ function log(member, message, colour) {
     } else {
         var embed = new Discord.RichEmbed()
             .setColor(colour)
-            .setAuthor('Gary', 'https://imgur.com/lVpLGeA.png')
-            .setDescription(member + ' ' + message)
+            .setAuthor(self.client.user.username, self.client.user.avatarURL)
+            .setDescription('<@'+member.user.id+'> ' + message)
             .setTimestamp();
 
         channel.send({ embed: embed });

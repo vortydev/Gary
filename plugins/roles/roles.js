@@ -7,7 +7,7 @@ exports.commands = [
 ];
 
 exports.init = function (client, config) {
-    client.on('memberAdd', member => {
+    client.on('guildMemberAdd', member => {
         var defaultRole = member.guild.roles
             .find('name', rolesList.find(r => r.defaultRole).name);
 
