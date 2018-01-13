@@ -85,28 +85,30 @@ exports['rules'] = {
 
 exports['joined'] = {
     usage: "Gets author's date and time of arrival on the server",
-    process: async function (message, args) {
-        var member = await message.channel.guild.fetchMember(message.author);
-        var date = member.joinedAt;
+    process: function (message, args) {
+        var member = message.channel.guild.fetchMember(message.author)
+            .then(member => {
+                var date = member.joinedAt;
 
-        var year = date.getFullYear();
-        var month = date.getMonth() + 1;
-        var day = date.getDate();
-        var hours = date.getHours();
-        var mins = date.getMinutes();
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                var day = date.getDate();
+                var hours = date.getHours();
+                var mins = date.getMinutes();
 
-        var end = "**" + day.toString() + "/" + month.toString() + "/" + year.toString() + "** at " + hours.toString() + ":";
+                var end = "**" + day.toString() + "/" + month.toString() + "/" + year.toString() + "** at " + hours.toString() + ":";
 
-        if (mins.toString().length == 1)
-            end += "0";
+                if (mins.toString().length == 1)
+                    end += "0";
 
-        end += mins.toString();
+                end += mins.toString();
 
-        //NameHere joined on 30/12/2017 at 16:56
-        message.reply("you joined on " + end)
-            .then(() => { })
-            .catch(() => { });
-    }
+                //NameHere joined on 30/12/2017 at 16:56
+                message.reply("you joined on " + end)
+                    .then(() => { })
+                    .catch(() => { });
+            });
+   }
 }
 
 function memberAdd(member) {
