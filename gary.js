@@ -2,7 +2,8 @@
     config = require('./config.json'),
     plugins = require('./plugins.js'),
     package = require('./package.json'),
-    permissions = require('./permissions.js');
+    permissions = require('./permissions.js'),
+    Logger = require('./logger.js');
 
 if (config.token == '' || config.prefix == '' || config.ownerID == '') {
     console.log('Please fill in config.json');
@@ -58,6 +59,8 @@ client.on('message', message => {
                 if (permissions.hasPermission(message.member, commandName)) {
                     var command = commands[commandName];
                     command.process(message, args);
+
+                    Logger.logCommand(message);
                 }
             }
         })
