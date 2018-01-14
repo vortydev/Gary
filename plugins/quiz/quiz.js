@@ -4,6 +4,7 @@ var request = require("request");
 var self = this;
 self.client = null;
 
+var quizChannelName = 'test-room';
 var currentQuiz = null;
 var correctAnswer = null;
 var participantsAnsweredQuestion = 0;
@@ -20,6 +21,13 @@ exports.init = function (client, config) {
 exports['quiz'] = {
     usage: 'Start a quiz with `quiz start [number of players]`',
     process: function (message, args) {
+        if (message.channel.name != quizChannelName) {
+            message.reply('please use **#' + quizChannelName + '**')
+                .then(m => m.delete(5000))
+                .catch(console.error);
+            return;
+        }
+
         //If no argument was provided, send help and return.
         if (args[0] == null) {
             console.log('send help');
