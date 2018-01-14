@@ -217,8 +217,13 @@ function askQuestion(message) {
     var embed = new Discord.RichEmbed()
         .setTitle("**Question #" + (currentQuiz.currentQuestion + 1) + "**");
 
+    var q = question.question;
+
+    q = q.replace(/&quot;/g, '"');
+    q = q.replace(/&#039;/g, "'");
+
     //Make the text variable
-    var text = question.question + "\n\n";
+    var text = q + "\n\n";
 
     //Create array of answers and shuffle
     var answers = [question.correct_answer, question.incorrect_answers[0], question.incorrect_answers[1], question.incorrect_answers[2]];
