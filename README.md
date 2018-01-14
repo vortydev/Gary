@@ -14,6 +14,10 @@ Rename `roles.json.example` to `roles.json`. Add roles (case-sensitively!) to th
 
 Rename `permissiongroups.json.example` to `permissiongroups.json`. By default a command is available to everyone. To limit the availability of a command, create a new group. Only the roles listed in the `roles` section of the group will be able to use a command listed in `commands`.
 
+# Links:
+
+Rename `links.json.example` to `links.json`. Available links can be listed be calling the `links` command without parameters.
+
 # Available commands:
 
 Available commands can be listed with the `help` command. 
