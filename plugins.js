@@ -72,6 +72,13 @@ exports.init = function (commands, client, config, package, logger) {
     }
 
     console.log(':: loaded command: version');
+
+    commands['stop'] = {
+        usage: 'Stop execution',
+        process: stop
+    }
+
+    console.log(':: loaded command: stop');
 }
 
 function help(message) {
@@ -129,4 +136,9 @@ function help(message) {
 
 function version(message) {
     message.author.send("Currrently version **" + package.version + "**.");
+}
+
+function stop() {
+    console.log('stopping bot...');
+    process.exit(0);
 }
