@@ -15,6 +15,30 @@ self.config = null;
 self.plugins = [];
 self.logger = null;
 
+var specialCommands = [
+    {
+        name: 'help',
+        command: {
+            usage: 'Send the user a list of available commands',
+            process: help
+        }
+    },
+    {
+        name: 'version',
+        command: {
+            usage: 'Get the current version',
+            process: version
+        }
+    },
+    {
+        name: 'stop',
+        command: {
+            usage: 'Kill bot process',
+            process: stop
+        }
+    }
+]
+
 function getDirectories(srcPath) {
     return fs.readdirSync(srcPath)
         .filter(f => {
@@ -58,36 +82,29 @@ exports.init = function (commands, client, config, package, logger) {
             }
         }
     }
-
+   
     self.logger.logStr('loading default commands');
-
-    commands['help'] = {
-        usage: 'Send the user a list of available commands',
-        process: help
+    for (var i = 0; i < specialCommands.length; i++) {
+        var commandData = specialCommands[i];
+        commands[commandData.name] = commandData.command;
+        self.logger.logStr(':: loaded command: ' + commandData.name);
     }
-
-    self.logger.logStr(':: loaded command: help');
-
-    commands['version'] = {
-        usage: 'Get the current version',
-        process: version
-    }
-
-    self.logger.logStr(':: loaded command: version');
-
-    commands['stop'] = {
-        usage: 'Stop execution',
-        process: stop
-    }
-
-    self.logger.logStr(':: loaded command: stop');
 }
 
 function help(message) {
     var result = '';
     var member = message.member;
     
-    result += '`' + self.config.prefix + 'help` - ' + self.commands['help'].usage + '\n\n';
+    for (var i = 0; i < specialCommands.length; i++) {
+        var commandData = specialCommands[i];
+        if(!permissions.hasPermission(member, commandData.name))
+            continue;
+
+        result += '`' + self.config.prefix + commandData.name + '` - ';
+        result += commandData.command.usage + '\n';
+    }
+
+    result += '\n';
 
     var pluginOrder = require('./pluginorder.json')
         .sort((a, b) => a.sortOrder - b.sortOrder);
@@ -141,6 +158,6 @@ function version(message) {
 }
 
 function stop() {
-    console.log('stopping bot...');
+    self.logger.logStr('Stopping...');
     process.exit(0);
 }
