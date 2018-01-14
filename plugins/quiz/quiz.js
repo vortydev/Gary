@@ -3,7 +3,6 @@ var request = require("request");
 
 var self = this;
 self.client = null;
-self.prefix = null;
 
 var currentQuiz = null;
 var correctAnswer = null;
@@ -11,19 +10,19 @@ var participantsAnsweredQuestion = 0;
 
 exports.commands = [
     "quiz"
-];
+]
 
 exports.init = function (client, config) {
     self.client = client;
-    self.prefix = config.prefix;
-};
+}
 
 // Commands
 exports['quiz'] = {
-    usage: "get quiz commands",
+    usage: 'Start a quiz with `quiz start [number of players]`',
     process: function (message, args) {
         //If no argument was provided, send help and return.
         if (args[0] == null) {
+            console.log('send help');
             sendHelp(message);
             return;
         }
@@ -32,7 +31,9 @@ exports['quiz'] = {
         switch (args[0].toLowerCase()) {
             case "start": {
                 //You cannot start a quiz if one is already open.
+                
                 if (currentQuiz != null) {
+                    console.log('quiz already in progress');
                     message.reply("the quiz is already in progress.")
                         .then((msg) => { msg.delete(2000) })
                         .catch((error) => { console.log(error) });
@@ -41,6 +42,7 @@ exports['quiz'] = {
 
                 //You just provide the 'numOfParticipants' argument.
                 if (args[1] == null) {
+                    console.log('incorrect syntax');
                     message.reply("the correct syntax is `$quiz start [numOfParticipants].`")
                         .then((msg) => { msg.delete(2000) })
                         .catch((error) => { console.log(error) });
