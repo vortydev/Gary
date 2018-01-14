@@ -8,6 +8,10 @@ exports.logStr = function (str) {
     log(str);
 }
 
+exports.logError = function (err) {
+    log('ERROR: ' + err);
+}
+
 function log(message) {
     var now = new Date();
     

@@ -18,8 +18,10 @@ client.on('error', console.error);
 
 client.on('ready', () => {
     var serversCount = client.guilds.size;
-    console.log(`Gary ready! Serving ${serversCount} servers.`);
-
+    
+    Logger.logStr('Gary v' + package.version + ' ready');
+    Logger.logStr('Serving ' + serversCount + ' servers.');
+    
     client.user.setStatus('online'); //online, idle, dnd, invisible
     client.user.setPresence({ game: { name: config.prefix + 'help | v' + package.version, type:0 } });
 });

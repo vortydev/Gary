@@ -13,6 +13,7 @@ var pluginFolders = null;
 self.commands = null;
 self.config = null;
 self.plugins = [];
+self.logger = null;
 
 function getDirectories(srcPath) {
     return fs.readdirSync(srcPath)
@@ -22,63 +23,64 @@ function getDirectories(srcPath) {
         });
 }
 
-if (!fs.existsSync(pluginDirectory)) {
-    console.log('No plugins directory available');
-} else {
-    pluginFolders = getDirectories(pluginDirectory);
-}
-
 exports.init = function (commands, client, config, package, logger) {
     self.commands = commands;
     self.config = config;
+    self.logger = logger;
     botClient = client;
 
+    if (!fs.existsSync(pluginDirectory)) {
+        self.logger.logError('No plugins directory available');
+    } else {
+        pluginFolders = getDirectories(pluginDirectory);
+    }
+   
     for (var i = 0; i < pluginFolders.length; i++) {
         var plugin;
         try {
             plugin = require(pluginDirectory + pluginFolders[i]);
         } catch (err) {
-            console.log(pluginFolders[i] + ' failed to load: ' + err);
+            self.logger.logError(pluginFolders[i] + ' failed to load: ' + err);
         }
 
         if (plugin) {
             self.plugins.push({ name: pluginFolders[i], plugin: plugin});
 
             plugin.init(client, config, package, logger);
-            console.log('loading plugin: ' + pluginFolders[i]);
+            self.logger.logStr('loading plugin: ' + pluginFolders[i]);
             if ('commands' in plugin) {
                 for (var j = 0; j < plugin.commands.length; j++) {
                     if (plugin.commands[j] in plugin) {
                         commands[plugin.commands[j]] = plugin[plugin.commands[j]];
-                        console.log(':: loaded command: ' + plugin.commands[j]);
+                        self.logger.logStr(':: loaded command: ' + plugin.commands[j]);
                     }
                 }
             }
         }
     }
 
-    console.log('loading default commands');
-    
+    self.logger.logStr('loading default commands');
+
     commands['help'] = {
         usage: 'Send the user a list of available commands',
         process: help
     }
 
-    console.log(':: loaded command: help');
+    self.logger.logStr(':: loaded command: help');
 
     commands['version'] = {
         usage: 'Get the current version',
         process: version
     }
 
-    console.log(':: loaded command: version');
+    self.logger.logStr(':: loaded command: version');
 
     commands['stop'] = {
         usage: 'Stop execution',
         process: stop
     }
 
-    console.log(':: loaded command: stop');
+    self.logger.logStr(':: loaded command: stop');
 }
 
 function help(message) {
