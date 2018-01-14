@@ -12,7 +12,6 @@ self.logger = null;
 
 exports.init = function (client, config, _, logger) {
     client.on('guildMemberAdd', member => {
-
         var defaultRole = member.guild.roles
             .find('name', rolesList.find(r => r.defaultRole).name);
 

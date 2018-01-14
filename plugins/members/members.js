@@ -99,7 +99,7 @@ exports['joined'] = {
                 var mins = date.getMinutes();
 
                 var end = "**" + day.toString() + "/" + month.toString() + "/" + year.toString() + "** at " + hours.toString() + ":";
-
+        
                 if (mins.toString().length == 1)
                     end += "0";
 
