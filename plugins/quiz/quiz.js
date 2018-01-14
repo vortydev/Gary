@@ -4,6 +4,7 @@ var request = require("request");
 var self = this;
 self.client = null;
 
+var prefix = null;
 var quizChannelName = 'test-room';
 var currentQuiz = null;
 var correctAnswer = null;
@@ -15,6 +16,7 @@ exports.commands = [
 
 exports.init = function (client, config) {
     self.client = client;
+    prefix = config.prefix;
 }
 
 // Commands
@@ -51,7 +53,7 @@ exports['quiz'] = {
                 //You just provide the 'numOfParticipants' argument.
                 if (args[1] == null) {
                     console.log('incorrect syntax');
-                    message.reply("the correct syntax is `$quiz start [numOfParticipants].`")
+                    message.reply("the correct syntax is `" + prefix + "quiz start [numOfParticipants].`")
                         .then((msg) => { msg.delete(2000) })
                         .catch((error) => { console.log(error) });
                     return;
@@ -59,7 +61,7 @@ exports['quiz'] = {
 
                 //Generates quiz and sends feedback to user.
                 generateQuiz(args[1], 10); 
-                message.channel.send("**A " + args[1] + " player quiz with 10 questions has been created**\nUse `$quiz join` to join it.");
+                message.channel.send("**A " + args[1] + " player quiz with 10 questions has been created**\nUse `" + prefix + "quiz join` to join it.");
                 break;
             }
             case "join": {
@@ -122,7 +124,7 @@ exports['quiz'] = {
                 
                 //You must provide a choice
                 if (args[1] == null) {
-                    message.reply("correct usage is `$quiz answer [letter]`")
+                    message.reply("correct usage is `" + prefix + "quiz answer [letter]`")
                         .then((msg) => { msg.delete(2000) })
                         .catch((error) => { console.log(error) });
                     return;
@@ -156,7 +158,7 @@ exports['quiz'] = {
 
                 //You cannot answer with a choice other than 'A', 'B', 'C' or 'D'
                 if (choice != 'a' && choice != 'b' && choice != 'c' && choice != 'd') {
-                    message.reply("please use `$quiz answer a`, `$quiz answer b`, `$quiz answer c` or `$quiz answer b`")
+                    message.reply("please use `" + prefix + "quiz answer a`, `" + prefix + "quiz answer b`, `" + prefix + "quiz answer c` or `" + prefix + "quiz answer b`")
                         .then((msg) => { msg.delete(2000) })
                         .catch((error) => { console.log(error) });
                     return;
@@ -227,7 +229,7 @@ function askQuestion(message) {
     text += "**B** " + answers[1] + "\n";
     text += "**C** " + answers[2] + "\n";
     text += "**D** " + answers[3] + "\n";
-    text += "\nAnswer with `$quiz answer [letter]`";
+    text += "\nAnswer with `" + prefix + "quiz answer [letter]`";
 
     //Find out which letter is the correct answer (we forgot in the shuffling)
     var correct_Answer = "";
@@ -325,6 +327,7 @@ function generateQuiz(participantsToStart, numOfQuestions) {
         url: url,
         json: false
     }, function (error, response, body) {
+
         questions = JSON.parse(body).results;
 
         var quiz = {
