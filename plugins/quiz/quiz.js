@@ -31,7 +31,8 @@ exports.init = function (client, config, _, logger) {
             }
 
             // Remove line breaks
-            quizChannelName = data.replace(/(\r\n|\n|\r)/gm," ");
+            quizChannelName = data.replace(/(\r\n|\n|\r)/gm,"");
+
             if (quizChannelName == '') {
                 self.logger.logStr('quiz channel not set. See README');
                 return;
@@ -49,6 +50,9 @@ exports['quiz'] = {
     usage: 'Start a quiz with `quiz start [number of players]`',
     process: function (message, args) {
         if (message.channel.name != quizChannelName && quizChannelName != '') {
+            self.logger.logStr('|' + message.channel.name + ' | ' + quizChannelName + '|');
+            self.logger.logStr(message.channel.name == quizChannelName);
+            self.logger.logStr(message.channel.name === quizChannelName);
             message.reply('please use **#' + quizChannelName + '**')
                 .then(m => m.delete(5000))
                 .catch(console.error);
