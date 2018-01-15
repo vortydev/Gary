@@ -304,13 +304,16 @@ function revealAnswer(message) {
     //Leaderboard text variable.
     var text = "";
 
+    var sorted = currentQuiz.participants;
+    sorted.sort(function (a, b) { return a.score - b.score });
+
     //Populate leaderboard.
-    for (var i = 0; i < currentQuiz.participants.length; i++) {
+    for (var i = 0; i < sorted.length; i++) {
         //Get user from participant id.
         var user = self.client.users.get(currentQuiz.participants[i].id);
 
         //Add the username and their last answer.
-        text += user.username + " | **" + currentQuiz.participants[i].lastAnswer + "** | ";
+        text += "#" + (i + 1) + " - " + user.username + " | **" + currentQuiz.participants[i].lastAnswer + "** | ";
 
         //Add positive sign.
         if (currentQuiz.participants[i].lastScoreModifier > 0)
