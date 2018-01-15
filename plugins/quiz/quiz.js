@@ -1,11 +1,15 @@
-var Discord = require("discord.js");
-var request = require("request");
+var Discord = require("discord.js"),
+    request = require("request"),
+    fs = require('fs');
 
 var self = this;
 self.client = null;
+self.logger = null;
+
+const channelNamePath = './plugins/quiz/channel.txt';
 
 var prefix = null;
-var quizChannelName = 'test-room';
+var quizChannelName = '';
 var currentQuiz = null;
 var correctAnswer = null;
 var participantsAnsweredQuestion = 0;
@@ -14,22 +18,46 @@ exports.commands = [
     "quiz"
 ]
 
-exports.init = function (client, config) {
+exports.init = function (client, config, _, logger) {
     self.client = client;
+    self.logger = logger;
     prefix = config.prefix;
+
+    if (fs.existsSync(channelNamePath)) {
+        fs.readFile(channelNamePath, 'utf8', (err, data) => {
+            if (err) {
+                self.logger.logError(err);
+                return;
+            }
+
+            // Remove line breaks
+            quizChannelName = data.replace(/(\r\n|\n|\r)/gm," ");
+            if (quizChannelName == '') {
+                self.logger.logStr('quiz channel not set. See README');
+                return;
+            }
+
+            self.logger.logStr('quiz channel set to: ' + quizChannelName);
+        });
+    } else {
+        self.logger.logStr('quiz channel not set. See README');
+    }
 }
 
 // Commands
 exports['quiz'] = {
     usage: 'Start a quiz with `quiz start [number of players]`',
     process: function (message, args) {
+        console.log(quizChannelName);
         if (message.channel.name != quizChannelName) {
             message.reply('please use **#' + quizChannelName + '**')
                 .then(m => m.delete(5000))
                 .catch(console.error);
             return;
+        } else {
+            self.logger.logStr('couldn\'t find channel: ' + quizChannelName);
         }
-
+        
         //If no argument was provided, send help and return.
         if (args[0] == null) {
             console.log('send help');
