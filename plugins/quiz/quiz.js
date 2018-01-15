@@ -220,9 +220,23 @@ exports['quiz'] = {
     }
 };
 
-//TODO: Send help to message author's DMs.
 function sendHelp(message) {
-    
+    var result = "";
+
+    result += "`quiz start [players]` - Starts a quiz\n";
+    result += "`quiz join` - Joins a quiz\n";
+    result += "`quiz answer [A/B/C/D]` - Answers a question\n";
+    result += "`quiz help` - Get quiz commands\n";
+
+    var embed = new Discord.RichEmbed()
+        .setColor(0x7a7a7a)
+        .setTitle('Quiz Commands')
+        .setDescription(result)
+        .setThumbnail(self.client.user.avatarURL)
+        .setFooter('For additional help, contact TheV0rtex#4553')
+        .setTimestamp();
+
+    message.author.send({embed})
 }
 
 function beginQuiz(message) {
