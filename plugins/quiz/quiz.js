@@ -268,6 +268,13 @@ function askQuestion(message) {
     var answers = [question.correct_answer, question.incorrect_answers[0], question.incorrect_answers[1], question.incorrect_answers[2]];
     shuffle(answers);
 
+    for (var i = 0; i++; i < answers.length) {
+        var a = answers[i];
+        a = a.replace(/&quot;/g, '"');
+        a = a.replace(/&#039;/g, "'");
+        answers[i] = a;
+    }
+
     //Add answers to 'text'
     text += "**A** " + answers[0] + "\n";
     text += "**B** " + answers[1] + "\n";
