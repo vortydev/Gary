@@ -14,7 +14,14 @@ var client = new Discord.Client();
 var commands = {};
 plugins.init(commands, client, config, package, Logger);
 
-client.on('error', console.error);
+client.on('error', err => {
+    if (err.code && err.code == 'ECONNRESET') {
+        Logger.logError('Connection reset');
+        return;
+    }
+
+    Logger.logError(err);
+});
 
 client.on('ready', () => {
     var serversCount = client.guilds.size;
