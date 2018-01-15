@@ -323,25 +323,11 @@ function revealAnswer(message) {
 
     //Populate leaderboard.
     for (var i = 0; i < sorted.length; i++) {
-        //Get user from participant id.
         var user = self.client.users.get(currentQuiz.participants[i].id);
-
-        //Add the username and their last answer.
-        text += "#" + (i + 1) + " - " + user.username + " | **" + currentQuiz.participants[i].lastAnswer + "** | ";
-
-        //Add positive sign.
-        if (currentQuiz.participants[i].lastScoreModifier > 0)
-            text += "+";
-
-        //Add last score modifier.
-        text += currentQuiz.participants[i].lastScoreModifier + " (Total ";
-
-        //Add positive sign.
+        text += "#" + (i + 1) + " - " + user.username + " answered " + currentQuiz.participants[i].lastAnswer + " and has a total score of ";
         if (currentQuiz.participants[i].score > 0)
             text += "+";
-
-        //Add the total points.
-        text += currentQuiz.participants[i].score + " Points)\n";
+        text += currentQuiz.participants[i].score + " points\n";
     }
 
     //Add the leaderboard field to the embed.
