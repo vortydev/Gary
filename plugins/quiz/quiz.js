@@ -48,14 +48,11 @@ exports.init = function (client, config, _, logger) {
 exports['quiz'] = {
     usage: 'Start a quiz with `quiz start [number of players]`',
     process: function (message, args) {
-        console.log(quizChannelName);
-        if (message.channel.name != quizChannelName) {
+        if (message.channel.name != quizChannelName && quizChannelName != '') {
             message.reply('please use **#' + quizChannelName + '**')
                 .then(m => m.delete(5000))
                 .catch(console.error);
             return;
-        } else {
-            self.logger.logStr('couldn\'t find channel: ' + quizChannelName);
         }
         
         //If no argument was provided, send help and return.
