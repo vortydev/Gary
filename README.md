@@ -18,6 +18,10 @@ Rename `permissiongroups.json.example` to `permissiongroups.json`. By default a 
 
 Rename `links.json.example` to `links.json`. Available links can be listed be calling the `links` command without parameters.
 
+# Quiz
+
+To lock the quiz to a single channel (say, `bot-spam`) created a `channel.txt` file containing the name of the channel under `plugins/quiz/`.
+
 # Available commands:
 
 Available commands can be listed with the `help` command. 
