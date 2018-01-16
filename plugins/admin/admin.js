@@ -1,10 +1,14 @@
 var self = this;
 
+var adminConfig = require('./adminconfig.json');
+
 var ownerId;
 var prefix;
 var version;
 
 self.client = null;
+self.logger = null;
+self.muteRole = '';
 
 exports.commands = [
     'say',
@@ -13,14 +17,22 @@ exports.commands = [
     'setnickname',
     'reset',
     'purge',
-    'ping'
+    'ping',
+    'tempmute'
 ]
 
-exports.init = function (client, config, package) {
+exports.init = function (client, config, package, logger) {
     self.client = client;
+    self.logger = logger;
+
     ownerId = config.ownerID;
     prefix = config.prefix;
-    version = package.version
+    version = package.version;
+
+    if (adminConfig.muteRoleName) {
+        self.muteRole = adminConfig.muteRoleName;
+        self.logger.logStr('set muted role to: ' + self.muteRole);
+    } 
 }
 
 exports['say'] = {
@@ -74,6 +86,48 @@ exports['ping'] = {
         message.channel.send('Latency of **' + Math.round(self.client.ping) + '** ms')
             .then(() => { })
             .catch(() => { });
+    }
+}
+
+exports['tempmute'] = {
+    usage: 'mute <mention> <time> | Mute a user for <time> seconds',
+    process: function (message, args) {
+        if (args.length != 2) 
+            return;
+
+        var target = message.mentions.members
+            .map((member, _) => member)[0];
+
+        if (!target)
+            return;
+
+        var seconds = args[1];
+        
+        var muteRole = message.guild.roles.find('name', self.muteRole);
+        if (!muteRole) {
+            self.logger.logStr('Unable to mute: couldn\'t find role' + self.muteRole);
+            return;
+        }
+
+        target.addRole(muteRole)
+            .then(() => {
+                self.logger.logStr('Muting ' + target.user.username + ' for ' + seconds + ' seconds');
+                target.send('You have been muted by ' + message.member.displayName + ' for ' + seconds + ' seconds.')
+                    .catch(self.logger.logError);
+
+                // ?!?!
+                ((s) => new Promise((r, _) => setTimeout(r, s * 1000)))(seconds)
+                    .then(() => {
+                        target.removeRole(muteRole)
+                            .then(() => {
+                                self.logger.logStr('Unmuting ' + target.user.username);
+                                target.send('You have been unmuted.')
+                                    .catch(self.logger.logError);
+                            })
+                            .catch(self.logger.logError);
+                    });
+            })
+            .catch(self.logger.logError);
     }
 }
 

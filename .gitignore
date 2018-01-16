@@ -6,6 +6,7 @@ permissiongroups.json
 pluginorder.json
 links.json
 messagefilter.json
+adminconfig.json
 channel.txt
 
 *.old
