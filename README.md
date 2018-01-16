@@ -20,7 +20,7 @@ Rename `links.json.example` to `links.json`. Available links can be listed be ca
 
 # Quiz
 
-To lock the quiz to a single channel (for example, `bot-spam`) create `channel.txt` in `plugins/quiz/` containing the name of the channel.
+To lock the quiz to a single channel (for example, `bot-spam`) edit the `channel` value of `quizconfig.json` which is in `/plugins/quiz`.
 
 # Message Filter
 
