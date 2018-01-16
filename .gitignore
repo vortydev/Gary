@@ -5,7 +5,7 @@ roles.json
 permissiongroups.json
 pluginorder.json
 links.json
-
+messagefilter.json
 channel.txt
 
 *.old
