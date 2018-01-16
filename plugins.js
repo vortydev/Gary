@@ -1,5 +1,4 @@
 var self = this;
-var botClient;
 
 var Discord = require('discord.js'),
     fs = require('fs'),
@@ -10,6 +9,7 @@ var Discord = require('discord.js'),
 var pluginDirectory = './plugins/';
 var pluginFolders = null;
 
+self.client = null;
 self.commands = null;
 self.config = null;
 self.plugins = [];
@@ -48,10 +48,10 @@ function getDirectories(srcPath) {
 }
 
 exports.init = function (commands, client, config, package, logger) {
+    self.client = client;
     self.commands = commands;
     self.config = config;
     self.logger = logger;
-    botClient = client;
 
     if (!fs.existsSync(pluginDirectory)) {
         self.logger.logError('No plugins directory available');
@@ -138,9 +138,9 @@ function help(message) {
 
     var embed = new Discord.RichEmbed()
         .setColor(0x7a7a7a)
-        .setTitle(botClient.user.username + ' Commands')
+        .setTitle(self.client.user.username + ' Commands')
         .setDescription(result)
-        .setThumbnail(botClient.user.avatarURL)
+        .setThumbnail(self.client.user.avatarURL)
         .setFooter('For additional help, contact TheV0rtex#4553')
         .setTimestamp();
 
