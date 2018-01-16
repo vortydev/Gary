@@ -36,7 +36,6 @@ exports['quiz'] = {
         
         //If no argument was provided, send help and return.
         if (args[0] == null) {
-            console.log('send help');
             sendHelp(message);
             return;
         }
