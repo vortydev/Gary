@@ -71,7 +71,7 @@ exports['quiz'] = {
                 }
 
                 //Generates quiz and sends feedback to user.
-                generateQuiz(args[1], 10); 
+                generateQuiz(args[1], 10, message);
                 message.channel.send("**A " + args[1] + " player quiz with 10 questions has been created**\nUse `" + prefix + "quiz join` to join it.");
                 break;
             }
@@ -202,6 +202,19 @@ exports['quiz'] = {
         }
     }
 };
+
+function cancelQuiz(message) {
+    
+    if (currentQuiz == null || currentQuiz.started)
+        return;
+
+    message.channel.send("The quiz has expired. Start a new one with `" + prefix + "quiz start`.");
+
+    //reset all the quiz variables.
+    currentQuiz = null;
+    correctAnswer = null;
+    participantsAnsweredQuestion = 0;
+}
 
 function sendHelp(message) {
     var result = "";
@@ -343,7 +356,7 @@ function revealAnswer(message) {
     participantsAnsweredQuestion = 0;
 }
 
-function generateQuiz(participantsToStart, numOfQuestions) {
+function generateQuiz(participantsToStart, numOfQuestions, message) {
 
     var url = "https://opentdb.com/api.php?amount=" + numOfQuestions + "&category=15&difficulty=hard&type=multiple";
     var questions = null;
@@ -366,6 +379,8 @@ function generateQuiz(participantsToStart, numOfQuestions) {
         };
 
         currentQuiz = quiz;
+        console.log("Set!");
+        setTimeout(cancelQuiz, parseInt(quizconfig.timeToJoin), message);
         }
     );
 }
