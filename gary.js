@@ -3,8 +3,7 @@
     plugins = require('./plugins.js'),
     package = require('./package.json'),
     permissions = require('./permissions.js'),
-    Logger = require('./logger.js'),
-    filter = require('./messagefilter.js');
+    Logger = require('./logger.js');
 
 if (config.token == '' || config.prefix == '') {
     console.log('Please fill in config.json');
@@ -42,12 +41,6 @@ client.on('message', message => {
     }
     
     if(message.author.bot)
-        return;
-    
-    filter.filter(message);
-
-    //Message was deleted.
-    if (message == null)
         return;
 
     if (!message.content.startsWith(config.prefix))
