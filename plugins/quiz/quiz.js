@@ -1,12 +1,11 @@
 var Discord = require("discord.js"),
     request = require("request"),
-    fs = require('fs');
+    fs = require('fs'),
+    quizconfig = require('./quizconfig.json')
 
 var self = this;
 self.client = null;
 self.logger = null;
-
-const channelNamePath = './plugins/quiz/channel.txt';
 
 var prefix = null;
 var quizChannelName = '';
@@ -22,35 +21,14 @@ exports.init = function (client, config, _, logger) {
     self.client = client;
     self.logger = logger;
     prefix = config.prefix;
-
-    if (fs.existsSync(channelNamePath)) {
-        fs.readFile(channelNamePath, 'utf8', (err, data) => {
-            if (err) {
-                self.logger.logError(err);
-                return;
-            }
-
-            // Remove line breaks
-            quizChannelName = data.replace(/(\r\n|\n|\r)/gm,"");
-
-            if (quizChannelName == '') {
-                self.logger.logStr('quiz channel not set. See README');
-                return;
-            }
-
-            self.logger.logStr('quiz channel set to: ' + quizChannelName);
-        });
-    } else {
-        self.logger.logStr('quiz channel not set. See README');
-    }
 }
 
 // Commands
 exports['quiz'] = {
     usage: 'Start a quiz with `quiz start [number of players]`',
     process: function (message, args) {
-        if (message.channel.name != quizChannelName && quizChannelName != '') {
-            message.reply('please use **#' + quizChannelName + '**')
+        if (message.channel.name != quizconfig.channel && quizconfig.channel != '') {
+            message.reply('please use **#' + quizconfig.channel + '**')
                 .then(m => m.delete(5000))
                 .catch(console.error);
             return;
@@ -80,6 +58,13 @@ exports['quiz'] = {
                 if (args[1] == null) {
                     console.log('incorrect syntax');
                     message.reply("the correct syntax is `" + prefix + "quiz start [numOfParticipants].`")
+                        .then((msg) => { msg.delete(2000) })
+                        .catch((error) => { console.log(error) });
+                    return;
+                }
+
+                if (parseInt(args[1]) > parseInt(quizconfig.maxPlayers)) {
+                    message.reply("the maximum amount of players is " + quizconfig.maxPlayers)
                         .then((msg) => { msg.delete(2000) })
                         .catch((error) => { console.log(error) });
                     return;
