@@ -6,7 +6,7 @@
     Logger = require('./logger.js'),
     filter = require('./messagefilter.js');
 
-if (config.token == '' || config.prefix == '' || config.ownerID == '') {
+if (config.token == '' || config.prefix == '') {
     console.log('Please fill in config.json');
     process.exit(1);
 }
