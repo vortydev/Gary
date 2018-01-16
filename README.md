@@ -22,6 +22,10 @@ Rename `links.json.example` to `links.json`. Available links can be listed be ca
 
 To lock the quiz to a single channel (for example, `bot-spam`) create `channel.txt` in `plugins/quiz/` containing the name of the channel.
 
+# Message Filter
+
+To filter messages, rename `messagefilter.json.example` to `messagefilter.json`. The one with `*` as the channel name is all channels that are not specified. It must be the first item. If another item does not have, for example, `blacklist`, the blacklist will be the `*` channel's.
+
 # Available commands:
 
 Available commands can be listed with the `help` command. 

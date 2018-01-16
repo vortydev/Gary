@@ -3,7 +3,8 @@
     plugins = require('./plugins.js'),
     package = require('./package.json'),
     permissions = require('./permissions.js'),
-    Logger = require('./logger.js');
+    Logger = require('./logger.js'),
+    filter = require('./messagefilter.js');
 
 if (config.token == '' || config.prefix == '' || config.ownerID == '') {
     console.log('Please fill in config.json');
@@ -39,15 +40,14 @@ client.on('message', message => {
         message.author.send("**ACCESS DENIED**\nTry again on the server in the appropriate channel.");
         return;
     }
-
-    if (message.content.includes("discord.gg")) {
-        var role = message.guild.roles.find("name", "Mod");
-        var member = message.member;
-        if (!message.member.roles.has(role.id))
-            message.delete();
-    }
     
     if(message.author.bot)
+        return;
+    
+    filter.filter(message);
+
+    //Message was deleted.
+    if (message == null)
         return;
 
     if (!message.content.startsWith(config.prefix))
