@@ -26,6 +26,8 @@ To lock the quiz to a single channel (for example, `bot-spam`) create `channel.t
 
 To filter messages, rename `messagefilter.json.example` to `messagefilter.json`. The one with `*` as the channel name is all channels that are not specified. It must be the first item. If another item does not have, for example, `blacklist`, the blacklist will be the `*` channel's.
 
+If using the RegEx option, make sure to include the flags.
+
 # Available commands:
 
 Available commands can be listed with the `help` command. 

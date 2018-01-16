@@ -1,3 +1,1 @@
-[
-{"channel": "*", "whitelist": [], "blacklist": []}
-]
+{"useRegEx":false, "channels":[{"channel": "*", "whitelist": [], "blacklist": []}]}
