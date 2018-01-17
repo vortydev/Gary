@@ -60,6 +60,13 @@ exports['quiz'] = {
                     return;
                 }
 
+                if (isNaN(parseInt(args[1]))) {
+                    message.reply("that is not a valid integer")
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
+                    return;
+                }
+
                 if (parseInt(args[1]) > parseInt(quizconfig.maxPlayers)) {
                     message.reply("the maximum amount of players is " + quizconfig.maxPlayers)
                         .then((msg) => { msg.delete(5000) })
