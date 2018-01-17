@@ -1,6 +1,11 @@
+var self = this;
+
 var config = require('./messagefilter.json');
 
+self.logger = null;
+
 exports.init = function (client, config, package, logger) {
+    self.logger = logger;
     client.on('message', filter);
 }
 
@@ -29,7 +34,14 @@ function filter(message) {
         }
 
         if (message.content.search(search) != -1) {
-            message.delete();
+            message.delete()
+                .then(() => {
+                    var name = message.member.displayName;
+                    var content = message.content;
+                    
+                    self.logger.log(`Deleted blacklisted message: ${name}: ${content}`, 'msgfilter');
+                })
+                .catch(self.logger.error);
             return;
         }
     }
