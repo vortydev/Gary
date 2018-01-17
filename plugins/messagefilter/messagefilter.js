@@ -57,7 +57,7 @@ function filter(message) {
             search = stringToRegex(whitelist[i]);
         }
 
-        if (message.content.search(search) == -1) {
+        if (message.content.search(search) == -1 && !message.author.bot) {
             message.delete();
             return;
         }
