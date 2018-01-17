@@ -111,7 +111,7 @@ exports['joined'] = {
 }
 
 function memberAdd(member) {
-    log(member, 'joined the server', 0x18bb68);
+    log(member, 'joined the server', 0x18bb68, true);
 
     var embed = new Discord.RichEmbed()
         .setColor(0x7a7a7a)
@@ -125,10 +125,10 @@ function memberAdd(member) {
 }
 
 function memberRemove(member) {
-    log(member, 'left the server', 0xff8c00);
+    log(member, 'left the server', 0xff8c00, false);
 }
 
-function log(member, message, colour) {
+function log(member, message, colour, joined) {
     var channel = member.guild.channels.find('name', logChannelName);
     self.logger.log(member.user.username + ' ' + message, 'members');
 
@@ -142,6 +142,10 @@ function log(member, message, colour) {
         .setAuthor(self.client.user.username, self.client.user.avatarURL)
         .setDescription('<@' + member.user.id + '> ' + message)
         .setTimestamp();
+
+    if (!joined)
+        embed.setDescription(member.user.username + "#" + member.user.discriminator + " " + message);
+    
 
     channel.send({ embed: embed });
     
