@@ -116,7 +116,7 @@ function addRole(message, serverRole) {
 
     member.addRole(serverRole)
         .then(() => {
-            self.logger.logStr('Added role ' + serverRole.name + ' to ' + member.user.username);
+            self.logger.log('Added role ' + serverRole.name + ' to ' + member.user.username);
         })
         .catch(self.logger.error);
 
@@ -141,7 +141,7 @@ function removeRole(message, serverRole) {
 
     member.removeRole(serverRole)
         .then(() => {
-            self.logger.logStr('Removed role ' + serverRole.name + ' from ' + member.user.username);
+            self.logger.log('Removed role ' + serverRole.name + ' from ' + member.user.username);
         })
         .catch(self.logger.error);
     
