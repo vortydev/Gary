@@ -4,7 +4,7 @@ self.config = null;
 self.logger = null;
 
 exports.init = function (client, config, package, logger) {
-    self.config = config;
+    self.config = config.messageFilter;
     self.logger = logger;
     client.on('message', filter);
 }

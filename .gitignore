@@ -1,12 +1,8 @@
 # Configuration Files
 
 config.json
-roles.json
-permissiongroups.json
 pluginorder.json
 links.json
-messagefilter.json
-adminconfig.json
 quizconfig.json
 channel.txt
 

@@ -11,7 +11,7 @@ exports.commands = [
 self.logger = null;
 
 exports.init = function (client, config, _, logger) {
-    self.config = config;
+    self.config = config.roles;
     self.logger = logger;
     
     client.on('guildMemberAdd', member => {

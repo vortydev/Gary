@@ -1,0 +1,11 @@
+{
+  "useRegEx":false, 
+  "channels":[
+    {
+      "channel": "*", 
+      "whitelist": [], 
+      "blacklist": ["discord.gg"]
+    }
+  ]
+}
+
