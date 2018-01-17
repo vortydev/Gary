@@ -30,7 +30,7 @@ exports['quiz'] = {
         if (message.channel.name != quizconfig.channel && quizconfig.channel != '') {
             message.reply('please use **#' + quizconfig.channel + '**')
                 .then(m => m.delete(5000))
-                .catch(console.error);
+                .catch(self.logger.error);
             return;
         }
         
@@ -46,26 +46,24 @@ exports['quiz'] = {
                 //You cannot start a quiz if one is already open.
                 
                 if (currentQuiz != null) {
-                    console.log('quiz already in progress');
                     message.reply("the quiz is already in progress.")
-                        .then((msg) => { msg.delete(2000) })
-                        .catch((error) => { console.log(error) });
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
                     return;
                 }
 
                 //You just provide the 'numOfParticipants' argument.
                 if (args[1] == null) {
-                    console.log('incorrect syntax');
                     message.reply("the correct syntax is `" + prefix + "quiz start [numOfParticipants].`")
-                        .then((msg) => { msg.delete(2000) })
-                        .catch((error) => { console.log(error) });
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
                     return;
                 }
 
                 if (parseInt(args[1]) > parseInt(quizconfig.maxPlayers)) {
                     message.reply("the maximum amount of players is " + quizconfig.maxPlayers)
-                        .then((msg) => { msg.delete(2000) })
-                        .catch((error) => { console.log(error) });
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
                     return;
                 }
 
@@ -78,16 +76,16 @@ exports['quiz'] = {
                 //You cannot join if a quiz has not been created yet.
                 if (currentQuiz == null) {
                     message.reply("the quiz has not been created yet.")
-                        .then((msg) => { msg.delete(2000) })
-                        .catch((error) => { console.log(error) });
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
                     return;
                 }
 
                 //You cannot join if the quiz has already started.
                 if (currentQuiz.started) {
                     message.reply("the quiz has already started.")
-                        .then((msg) => { msg.delete(2000) })
-                        .catch((error) => { console.log(error) });
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
                     return;
                 }
 
@@ -99,8 +97,8 @@ exports['quiz'] = {
                 }
                 if (x != null) {
                     message.reply("you have already joined this quiz.")
-                        .then((msg) => { msg.delete(2000) })
-                        .catch((error) => { console.log(error) });
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
                 }
 
                 //Create participant.
@@ -115,8 +113,8 @@ exports['quiz'] = {
                 //Add participant created to the database and send feedback.
                 currentQuiz.participants.push(participant);
                 message.reply("quiz successfully joined. Waiting for " + (currentQuiz.participantsToStart - currentQuiz.participants.length) + " more players to start the quiz.")
-                    .then((msg) => { msg.delete(2000) })
-                    .catch((error) => { console.log(error) });
+                    .then((msg) => { msg.delete(5000) })
+                    .catch(self.logger.error);
 
                 //Check if we have enough players to start the quiz.
                 if (currentQuiz.participantsToStart == currentQuiz.participants.length)
@@ -127,16 +125,16 @@ exports['quiz'] = {
                 //You cannot answer if a question has not been asked
                 if (correctAnswer == null || currentQuiz == null) {
                     message.reply("a question has not been asked yet.")
-                        .then((msg) => { msg.delete(2000) })
-                        .catch((error) => { console.log(error) });
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
                     return;
                 }
                 
                 //You must provide a choice
                 if (args[1] == null) {
                     message.reply("correct usage is `" + prefix + "quiz answer [letter]`")
-                        .then((msg) => { msg.delete(2000) })
-                        .catch((error) => { console.log(error) });
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
                     return;
                 }
 
@@ -153,24 +151,24 @@ exports['quiz'] = {
                 //You cannot answer if you have not entered.
                 if (participant == null) {
                     message.reply("you have not yet entered this quiz.")
-                        .then((msg) => { msg.delete(2000) })
-                        .catch((error) => { console.log(error) });
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
                     return;
                 }
 
                 //You cannot answer if you have already answered.
                 if (participant.answeredCurrentQuestion) {
                     message.reply("you have already answered this question.")
-                        .then((msg) => { msg.delete(2000) })
-                        .catch((error) => { console.log(error) });
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
                     return;
                 }
 
                 //You cannot answer with a choice other than 'A', 'B', 'C' or 'D'
                 if (choice != 'a' && choice != 'b' && choice != 'c' && choice != 'd') {
                     message.reply("please use `" + prefix + "quiz answer a`, `" + prefix + "quiz answer b`, `" + prefix + "quiz answer c` or `" + prefix + "quiz answer b`")
-                        .then((msg) => { msg.delete(2000) })
-                        .catch((error) => { console.log(error) });
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
                     return;
                 }
 
@@ -378,7 +376,6 @@ function generateQuiz(participantsToStart, numOfQuestions, message) {
         };
 
         currentQuiz = quiz;
-        console.log("Set!");
         setTimeout(cancelQuiz, parseInt(quizconfig.timeToJoin), message);
         }
     );

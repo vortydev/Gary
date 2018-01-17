@@ -6,7 +6,7 @@
     Logger = require('./logger.js');
 
 if (config.token == '' || config.prefix == '') {
-    console.log('Please fill in config.json');
+    Logger.error('Please fill in config.json');
     process.exit(1);
 }
 
@@ -16,18 +16,18 @@ plugins.init(commands, client, config, package, Logger);
 
 client.on('error', err => {
     if (err.code && err.code == 'ECONNRESET') {
-        Logger.logError('Connection reset');
+        Logger.error('Connection reset');
         return;
     }
 
-    Logger.logError(err);
+    Logger.error(err);
 });
 
 client.on('ready', () => {
     var serversCount = client.guilds.size;
     
-    Logger.logStr('Gary v' + package.version + ' ready');
-    Logger.logStr('Serving ' + serversCount + ' servers.');
+    Logger.log('Gary v' + package.version + ' ready');
+    Logger.log('Serving ' + serversCount + ' servers.');
     
     client.user.setStatus('online'); //online, idle, dnd, invisible
     client.user.setPresence({ game: { name: config.prefix + 'help | v' + package.version, type:0 } });
@@ -65,7 +65,7 @@ client.on('message', message => {
                 }
             }
         })
-        .catch(console.error);
+        .catch(Logger.error);
 });
 
 client.login(config.token);

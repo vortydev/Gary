@@ -1,12 +1,16 @@
+var self = this;
+
 var Discord = require("discord.js");
 var links = require('./links.json');
+
+self.logger = null;
 
 exports.commands = [
     'link'
 ];
 
-exports.init = function (client, config) {
-    
+exports.init = function (client, config, _, logger) {
+    self.logger = logger;
 }
 
 exports['link'] = {
@@ -35,8 +39,8 @@ exports['link'] = {
 
         if (x == null) {
             message.reply("the link `" + args[0].toLowerCase() + "` does not exist.")
-                .then((msg) => { msg.delete(2000) })
-                .catch((error) => { console.log(error) });
+                .then((msg) => { msg.delete(5000) })
+                .catch(self.logger.error);
             return;
         }
         

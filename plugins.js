@@ -54,40 +54,41 @@ exports.init = function (commands, client, config, package, logger) {
     self.logger = logger;
 
     if (!fs.existsSync(pluginDirectory)) {
-        self.logger.logError('No plugins directory available');
+        self.logger.error('No plugins directory available');
     } else {
         pluginFolders = getDirectories(pluginDirectory);
     }
    
     for (var i = 0; i < pluginFolders.length; i++) {
+        self.logger.log('loading plugin: ' + pluginFolders[i], 'plugins');
+
         var plugin;
         try {
             plugin = require(pluginDirectory + pluginFolders[i]);
         } catch (err) {
-            self.logger.logError(pluginFolders[i] + ' failed to load: ' + err);
+            self.logger.error(pluginFolders[i] + ' failed to load: ' + err);
         }
 
         if (plugin) {
             self.plugins.push({ name: pluginFolders[i], plugin: plugin});
 
             plugin.init(client, config, package, logger);
-            self.logger.logStr('loading plugin: ' + pluginFolders[i]);
             if ('commands' in plugin) {
                 for (var j = 0; j < plugin.commands.length; j++) {
                     if (plugin.commands[j] in plugin) {
                         commands[plugin.commands[j]] = plugin[plugin.commands[j]];
-                        self.logger.logStr(':: loaded command: ' + plugin.commands[j]);
+                        self.logger.log(':: loaded command: ' + plugin.commands[j], pluginFolders[i]);
                     }
                 }
             }
         }
     }
    
-    self.logger.logStr('loading default commands');
+    self.logger.log('loading default commands', 'plugins');
     for (var i = 0; i < specialCommands.length; i++) {
         var commandData = specialCommands[i];
         commands[commandData.name] = commandData.command;
-        self.logger.logStr(':: loaded command: ' + commandData.name);
+        self.logger.log(':: loaded command: ' + commandData.name, 'plugins');
     }
 }
 
@@ -157,7 +158,7 @@ function version(message) {
     message.author.send("Currrently version **" + package.version + "**.");
 }
 
-function stop() {
-    self.logger.logStr('Stopping...');
+function stop(message) {
+    self.logger.log('Stopping...', message.member.displayName);
     process.exit(0);
 }

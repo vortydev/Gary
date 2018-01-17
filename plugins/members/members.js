@@ -19,17 +19,17 @@ exports.commands = [
 ];
 
 exports.init = function (client, config, package, logger) {
+    self.client = client;
+    self.logger = logger;
+
     fs.readFile(welcomeTextPath, 'utf8', (err, data) => {
         if (err) {
-            console.error(err);
+            self.logger.error(err);
             return;
         }
 
         welcomeText = data;
     });
-
-    self.client = client;
-    self.logger = logger;
 
     client.on('guildMemberAdd', memberAdd);
     client.on('guildMemberRemove', memberRemove);
@@ -54,8 +54,7 @@ exports['avatar'] = {
 
         message.reply('your avatar:');
         message.channel.send({ embed: embed })
-            .then(() => { })
-            .catch(console.error);
+            .catch(self.logger.error);
     }
 }
 
@@ -64,7 +63,7 @@ exports['rules'] = {
     process: function (message, args, client) {
         fs.readFile(rulesTextPath, 'utf8', (err, data) => {
             if (err) {
-                console.error(err);
+                self.logger.error(err);
                 return;
             }
 
@@ -76,11 +75,10 @@ exports['rules'] = {
 
             message.reply('rules have been sent.')
                 .then(m => m.delete(5000))
-                .catch(console.error);
+                .catch(self.logger.error);
 
             message.author.send({ embed: embed })
-                .then(() => { })
-                .catch(console.error);
+                .catch(self.logger.error);
         });
     }
 }
@@ -107,8 +105,7 @@ exports['joined'] = {
 
                 //NameHere joined on 30/12/2017 at 16:56
                 message.reply("you joined on " + end)
-                    .then(() => { })
-                    .catch(() => { });
+                    .catch(self.logger.error);
             });
    }
 }
@@ -124,8 +121,7 @@ function memberAdd(member) {
         .setTimestamp();
 
     member.send({ embed: embed })
-        .then(() => { })
-        .catch(() => { });
+        .catch(self.logger.error);
 }
 
 function memberRemove(member) {
@@ -134,7 +130,7 @@ function memberRemove(member) {
 
 function log(member, message, colour) {
     var channel = member.guild.channels.find('name', logChannelName);
-    self.logger.logStr(member.user.username + ' ' + message);
+    self.logger.log(member.user.username + ' ' + message, 'members');
 
     if (!channel) {
         self.logger.logStr('no #' + logChannelName + ' on this server');

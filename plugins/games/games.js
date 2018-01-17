@@ -1,4 +1,10 @@
-exports.init = function (client, config) {}
+var self = this;
+
+self.logger = null;
+
+exports.init = function (client, config, _, logger) {
+    self.logger = logger;    
+}
 
 exports.commands = [
     'coinflip',
@@ -11,7 +17,7 @@ exports['coinflip'] = {
         var flip = Math.floor(Math.random() * 2 + 1 == 1) ? 'Tails' : 'Heads';
         message.reply('you flipped **' + flip + '**')
             .then(m => m.delete(5000))
-            .catch(console.error);
+            .catch(self.logger.error);
     }
 }
 
@@ -30,6 +36,6 @@ exports['roll'] = {
         var total = Math.floor(dice * (Math.random() * sides + 1));
         message.reply('you rolled **' + dice + '** ' + sides + '-sided dice and got **' + total + '**')
             .then(m => m.delete(5000))
-            .catch(console.error);
+            .catch(self.logger.error);
     }
 }

@@ -11,20 +11,20 @@ exports.commands = [
 self.logger = null;
 
 exports.init = function (client, config, _, logger) {
+    self.logger = logger;
+    
     client.on('guildMemberAdd', member => {
         var defaultRole = member.guild.roles
             .find('name', rolesList.find(r => r.defaultRole).name);
 
         if (!defaultRole) {
-            console.log('no default role available'); 
+            self.logger.log('no default role available'); 
             return;
         }
 
         member.addRole(defaultRole)
-            .catch(console.error);
+            .catch(self.logger.error);
     });
-
-    self.logger = logger;
 }
 
 exports['role'] = {
@@ -56,7 +56,7 @@ exports['role'] = {
 
         var serverRole = message.guild.roles.find("name", role.name);
         if (serverRole == null) {
-            console.log('Found no role on server matching: ' + role.name);
+            self.logger.log('Found no role on server matching: ' + role.name);
             return;
         }
 
@@ -81,7 +81,7 @@ exports['rolelist'] = {
         }
 
         message.reply('available roles are: ' + availableRoles.join(', '))
-            .catch(console.error);
+            .catch(self.logger.error);
     }
 }
 
@@ -99,14 +99,14 @@ exports['memberlist'] = {
         for (var i = 0; i < orderedRoles.length; i++) {
             var role = message.guild.roles.find('name', orderedRoles[i].name);
             if (!role) {
-                console.log('could not find role on server: ' + orderedRoles[i].name);
+                self.logger.log('could not find role on server: ' + orderedRoles[i].name);
                 continue;
             }
             reply += '**' + role.name + '**: ' + role.members.keyArray().length + '\n';
         }
 
         message.channel.send(reply)
-            .catch(console.error);
+            .catch(self.logger.error);
     }
 }
 
@@ -117,7 +117,7 @@ function addRole(message, serverRole) {
         .then(() => {
             self.logger.logStr('Added role ' + serverRole.name + ' to ' + member.user.username);
         })
-        .catch(console.error);
+        .catch(self.logger.error);
 
     message.reply('the role **' + serverRole.name + '** has been **added**')
         .then(m => m.delete(5000));
@@ -126,7 +126,7 @@ function addRole(message, serverRole) {
         .find("name", rolesList.find(r => r.defaultRole).name);
 
     if (!defaultRole) {
-        console.log('Server has no default role');
+        self.logger.log('Server has no default role');
         return;
     }
 
@@ -142,7 +142,7 @@ function removeRole(message, serverRole) {
         .then(() => {
             self.logger.logStr('Removed role ' + serverRole.name + ' from ' + member.user.username);
         })
-        .catch(console.error);
+        .catch(self.logger.error);
     
     message.reply('the role **' + serverRole.name + '** has been **removed**')
         .then(m => m.delete(5000));

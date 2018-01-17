@@ -1,36 +1,55 @@
+const sourceLength = 12;
+
 exports.logCommand = function (message) {
     var name = message.member.user.username;
 
-    log(name + ' ran command: ' + message.content);
+    logMessage(name + ' ran command: ' + message.content);
 }
 
-exports.logStr = function (str) {
-    log(str);
+exports.log = function (str, source) {
+    logMessage(str, source);
 }
 
-exports.logError = function (err) {
-    log('ERROR: ' + err);
+exports.error = function (err) {
+    logMessage('ERROR: ' + err);
 }
 
-function log(message) {
+function logMessage(message, source) {
     var now = new Date();
+    var padNum = (str, size) => padStart(str, '0', size);
     
-    var pad = function(str, size) {
-        str = String(str);
-        while (str.length < (size)) {
-            str = '0' + str;
-        }
+    if (!source) {
+        source = '';
+    }
 
-        return str;
-    };
-
+    while (source.length <= sourceLength) {
+        source += ' ';
+    }
     var dateStr = '[';
     dateStr += now.getFullYear() + '/';
-    dateStr += pad((now.getMonth() + 1), 2) + '/';
-    dateStr += pad(now.getDate(), 2) + ' ';
-    dateStr += pad(now.getHours(), 2) + ':';
-    dateStr += pad(now.getMinutes(), 2) + ':';
-    dateStr += pad(now.getSeconds(), 2) + ']\t';
+    dateStr += padNum((now.getMonth() + 1), 2) + '/';
+    dateStr += padNum(now.getDate(), 2) + ' ';
+    dateStr += padNum(now.getHours(), 2) + ':';
+    dateStr += padNum(now.getMinutes(), 2) + ':';
+    dateStr += padNum(now.getSeconds(), 2) + ']\t';
 
-    console.log(dateStr + message);
+    console.log(dateStr + source + message);
+}
+
+function padStart(str, padChar, targetLength) {
+    str = String(str);
+    while (str.length < targetLength) {
+        str = padChar + str;
+    }
+
+    return str;
+}
+
+function padEnd(str, padChar, targetLength) {
+    str = String(str);
+    while (str.length < targetLength) {
+        str += padChar;
+    }
+
+    return str;
 }
