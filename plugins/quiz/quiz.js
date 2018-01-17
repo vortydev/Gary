@@ -276,7 +276,7 @@ function askQuestion(message) {
     text += "**B** " + answers[1] + "\n";
     text += "**C** " + answers[2] + "\n";
     text += "**D** " + answers[3] + "\n";
-    text += "\nAnswer with `" + prefix + "quiz answer [letter]`";
+    text += "\nAnswer with `" + prefix + "quiz answer [letter]`. You have " + (quizconfig.timeToAnswer / 1000) + " seconds to answer";
 
     //Find out which letter is the correct answer (we forgot in the shuffling)
     var correct_Answer = "";
@@ -303,6 +303,26 @@ function askQuestion(message) {
     //Set the correct answer and increment the current question counter
     correctAnswer = correct_Answer;
     currentQuiz.currentQuestion++;
+
+    var timerSeconds = quizconfig.timeToAnswer / 1000;
+
+    ((s) => new Promise((r, _) => setTimeout(r, s * 1000)))(timerSeconds)
+        .then(() => {
+            for (var i = 0; i < currentQuiz.participants.length; i++) {
+                if (currentQuiz.participants[i].answeredCurrentQuestion == false) {
+                    //Generate scoremodiier between 'max' and 'min'.
+                    var max = -1;
+                    var min = -1000;
+                    var scoreModifier = Math.floor(Math.random() * (max - min + 1)) + min;
+
+                    //Set participant variables
+                    currentQuiz.participants[i].score += scoreModifier;
+                    currentQuiz.participants[i].lastScoreModifier = scoreModifier;
+                    currentQuiz.participants[i].answeredCurrentQuestion = false;
+                }
+            }
+            revealAnswer(message);
+        }).catch(() => {});
 }
 
 function revealAnswer(message) {
@@ -324,10 +344,18 @@ function revealAnswer(message) {
     //Populate leaderboard.
     for (var i = 0; i < sorted.length; i++) {
         var user = self.client.users.get(currentQuiz.participants[i].id);
-        text += "#" + (i + 1) + " - " + user.username + " answered " + currentQuiz.participants[i].lastAnswer + " and has a total score of ";
-        if (currentQuiz.participants[i].score > 0)
-            text += "+";
-        text += currentQuiz.participants[i].score + " points\n";
+        if (sorted[i].answeredCurrentQuestion) {
+            text += "#" + (i + 1) + " - " + user.username + " answered " + sorted[i].lastAnswer + " and has a total score of ";
+            if (sorted[i].score > 0)
+                text += "+";
+            text += sorted[i].score + " points\n";
+        }
+        else {
+            text += "#" + (i + 1) + " - " + user.username + " did not answer and has a total score of ";
+            if (sorted[i].score > 0)
+                text += "+";
+            text += sorted[i].score + " points\n";
+        }
     }
 
     //Add the leaderboard field to the embed.

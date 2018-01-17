@@ -1,5 +1,6 @@
 {
     "channel":"",
     "maxPlayers":"5",
-    "timeToJoin":"10000"
+    "timeToJoin":"10000",
+    "timeToAnswer":"5000"
 }
