@@ -7,6 +7,7 @@ pluginorder.json
 links.json
 messagefilter.json
 adminconfig.json
+quizconfig.json
 channel.txt
 
 *.old

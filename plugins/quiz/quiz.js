@@ -1,7 +1,7 @@
 var Discord = require("discord.js"),
     request = require("request"),
     fs = require('fs'),
-    quizconfig = require('./quizconfig.json')
+    quizConfig = require('./quizconfig.json')
 
 var self = this;
 self.client = null;
@@ -27,8 +27,8 @@ exports.init = function (client, config, _, logger) {
 exports['quiz'] = {
     usage: 'Start a quiz with `quiz start [number of players]`',
     process: function (message, args) {
-        if (message.channel.name != quizconfig.channel && quizconfig.channel != '') {
-            message.reply('please use **#' + quizconfig.channel + '**')
+        if (message.channel.name != quizConfig.channel && quizConfig.channel != '') {
+            message.reply('please use **#' + quizConfig.channel + '**')
                 .then(m => m.delete(5000))
                 .catch(self.logger.error);
             return;
@@ -67,8 +67,8 @@ exports['quiz'] = {
                     return;
                 }
 
-                if (parseInt(args[1]) > parseInt(quizconfig.maxPlayers)) {
-                    message.reply("the maximum amount of players is " + quizconfig.maxPlayers)
+                if (parseInt(args[1]) > parseInt(quizConfig.maxPlayers)) {
+                    message.reply("the maximum amount of players is " + quizConfig.maxPlayers)
                         .then((msg) => { msg.delete(5000) })
                         .catch(self.logger.error);
                     return;
@@ -140,7 +140,7 @@ exports['quiz'] = {
                 //You must provide a choice
                 if (args[1] == null) {
                     message.reply("correct usage is `" + prefix + "quiz answer [letter]`")
-                        .then((msg) => { msg.delete(5000) })
+       C                .then((msg) => { msg.delete(5000) })
                         .catch(self.logger.error);
                     return;
                 }
@@ -283,7 +283,8 @@ function askQuestion(message) {
     text += "**B** " + answers[1] + "\n";
     text += "**C** " + answers[2] + "\n";
     text += "**D** " + answers[3] + "\n";
-    text += "\nAnswer with `" + prefix + "quiz answer [letter]`. You have " + (quizconfig.timeToAnswer / 1000) + " seconds to answer";
+    text += "\nAnswer with `" + prefix + "quiz answer [letter]`. You have " + (quizConfig.timeToAnswer) + " seconds to answer";
+
 
     //Find out which letter is the correct answer (we forgot in the shuffling)
     var correct_Answer = "";
@@ -311,9 +312,8 @@ function askQuestion(message) {
     correctAnswer = correct_Answer;
     currentQuiz.currentQuestion++;
 
-    var timerSeconds = quizconfig.timeToAnswer / 1000;
-
-    ((s) => new Promise((r, _) => setTimeout(r, s * 1000)))(timerSeconds)
+    // setTimeout takes a value in milliseconds
+    ((s) => new Promise((r, _) => setTimeout(r, s * 1000)))(quizConfig.timeToAnswer)
         .then(() => {
             for (var i = 0; i < currentQuiz.participants.length; i++) {
                 if (currentQuiz.participants[i].answeredCurrentQuestion == false) {
@@ -329,7 +329,7 @@ function askQuestion(message) {
                 }
             }
             revealAnswer(message);
-        }).catch(() => {});
+        }).catch(self.logger.error);
 }
 
 function revealAnswer(message) {
@@ -397,7 +397,8 @@ function generateQuiz(participantsToStart, numOfQuestions, message) {
     request({
         url: url,
         json: false
-    }, function (error, response, body) {
+    }, 
+    function (error, response, body) {
 
         questions = JSON.parse(body).results;
 
@@ -411,9 +412,9 @@ function generateQuiz(participantsToStart, numOfQuestions, message) {
         };
 
         currentQuiz = quiz;
-        setTimeout(cancelQuiz, parseInt(quizconfig.timeToJoin), message);
-        }
-    );
+        // setTimeout takes a value in milliseconds
+        setTimeout(cancelQuiz, parseInt(quizConfig.timeToJoin) * 1000, message);
+    });
 }
 
 function shuffle(array) {
