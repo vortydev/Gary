@@ -109,7 +109,7 @@ exports['tempmute'] = {
 
         target.addRole(muteRole)
             .then(() => {
-                self.logger.logStr('Muting ' + target.user.username + ' for ' + seconds + ' seconds', 'admin');
+                self.logger.log('Muting ' + target.user.username + ' for ' + seconds + ' seconds', 'admin');
                 target.send('You have been muted by ' + message.member.displayName + ' for ' + seconds + ' seconds.')
                     .catch(self.logger.error);
 
@@ -118,7 +118,7 @@ exports['tempmute'] = {
                     .then(() => {
                         target.removeRole(muteRole)
                             .then(() => {
-                                self.logger.logStr('Unmuting ' + target.user.username, 'admin');
+                                self.logger.log('Unmuting ' + target.user.username, 'admin');
                                 target.send('You have been unmuted.')
                                     .catch(self.logger.logError);
                             })
