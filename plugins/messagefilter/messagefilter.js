@@ -1,35 +1,35 @@
 var self = this;
 
-var config = require('./messagefilter.json');
-
+self.config = null;
 self.logger = null;
 
 exports.init = function (client, config, package, logger) {
+    self.config = config;
     self.logger = logger;
     client.on('message', filter);
 }
 
 function filter(message) {
     var channelinfo = null;
-
-    for (var i = 0; i < config.length; i++) {
-        if (config.channels[i].channel == message.channel.name) {
-            channelinfo = config[i];
+    
+    for (var i = 0; i < self.config.channels.length; i++) {
+        if (self.config.channels[i].channel == message.channel.name) {
+            channelinfo = self.config.channels[i];
         }
     }
 
     if (channelinfo == null) {
-        channelinfo = config.channels[0];
+        channelinfo = self.config.channels[0];
     }
     
     var blacklist = channelinfo.blacklist;
     if (blacklist == null) {
-        blacklist = config.channels[0].blacklist;
+        blacklist = self.config.channels[0].blacklist;
     }
 
     for (var i = 0; i < blacklist.length; i++) {
         var search = blacklist[i];
-        if (config.useRegEx) {
+        if (self.config.useRegEx) {
             search = stringToRegex(blacklist[i]);
         }
 
@@ -48,12 +48,12 @@ function filter(message) {
 
     var whitelist = channelinfo.whitelist;
     if (whitelist == null) {
-        whitelist = config.channels[0].whitelist;
+        whitelist = self.config.channels[0].whitelist;
     }
 
     for (var i = 0; i < whitelist.length; i++) {
         var search = whitelist[i];
-        if (config.useRegEx) {
+        if (self.config.useRegEx) {
             search = stringToRegex(whitelist[i]);
         }
 

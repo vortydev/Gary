@@ -1,6 +1,6 @@
 var self = this;
 
-var rolesList = require('./roles.json');
+self.config = null;
 
 exports.commands = [
     'role',
@@ -11,11 +11,12 @@ exports.commands = [
 self.logger = null;
 
 exports.init = function (client, config, _, logger) {
+    self.config = config;
     self.logger = logger;
     
     client.on('guildMemberAdd', member => {
         var defaultRole = member.guild.roles
-            .find('name', rolesList.find(r => r.defaultRole).name);
+            .find('name', self.config.roles.find(r => r.defaultRole).name);
 
         if (!defaultRole) {
             self.logger.log('no default role available'); 
@@ -36,8 +37,8 @@ exports['role'] = {
             .join(' ');
 
         var role = null;
-        for (var i = 0, len = rolesList.length; i < len; i++) {
-            var r = rolesList[i];
+        for (var i = 0, len = self.config.roles.length; i < len; i++) {
+            var r = self.config.roles[i];
             if (r.name.toLowerCase() == roleName.toLowerCase()) {
                 role = r;
                 break;
@@ -73,8 +74,8 @@ exports['rolelist'] = {
     process: function (message) {
         var availableRoles = [];
 
-        for (var i = 0; i < rolesList.length; i++) {
-            var role = rolesList[i];
+        for (var i = 0; i < self.config.roles.length; i++) {
+            var role = self.config.roles[i];
             if (role.isAssignable && message.guild.roles.find('name', role.name)) {
                 availableRoles.push(role.name);
             }
@@ -90,7 +91,7 @@ exports['memberlist'] = {
     process: function (message) {
         var reply = '';
 
-        var orderedRoles = rolesList.sort((a, b) => a.sortOrder - b.sortOrder);
+        var orderedRoles = self.config.roles.sort((a, b) => a.sortOrder - b.sortOrder);
         reply += 'There are currently **' + message.guild.memberCount + '** member on this server\n';
 
         var serverRoles = message.guild.roles
@@ -123,7 +124,7 @@ function addRole(message, serverRole) {
         .then(m => m.delete(5000));
 
     var defaultRole = message.guild.roles
-        .find("name", rolesList.find(r => r.defaultRole).name);
+        .find("name", self.config.roles.find(r => r.defaultRole).name);
 
     if (!defaultRole) {
         self.logger.log('Server has no default role');

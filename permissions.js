@@ -1,10 +1,10 @@
-var permissionGroups = require('./permissiongroups.json');
+var config = require('./config.json');
 
 exports.hasPermission = function (member, commandName) {
     var result = true;
 
-    for (var i = 0; i < permissionGroups.length; i++) {
-        var group = permissionGroups[i];
+    for (var i = 0; i < config.permissiongroups.length; i++) {
+        var group = config.permissiongroups[i];
 
         if (!group.commands.includes(commandName))
             continue;

@@ -1,12 +1,11 @@
 var self = this;
 
-var adminConfig = require('./adminconfig.json');
-
 var ownerId;
 var prefix;
 var version;
 
 self.client = null;
+self.config = null;
 self.logger = null;
 self.muteRole = '';
 
@@ -23,14 +22,15 @@ exports.commands = [
 
 exports.init = function (client, config, package, logger) {
     self.client = client;
+    self.config = config;
     self.logger = logger;
 
     ownerId = config.ownerID;
     prefix = config.prefix;
     version = package.version;
 
-    if (adminConfig.muteRoleName) {
-        self.muteRole = adminConfig.muteRoleName;
+    if (self.config.muteRoleName) {
+        self.muteRole = self.config.muteRoleName;
         self.logger.log('set muted role to: ' + self.muteRole, 'admin');
     } 
 }
@@ -107,7 +107,7 @@ exports['tempmute'] = {
             return;
         }
 
-        if (target.roles.find("name", adminConfig.muteRoleName)) {
+        if (target.roles.find("name", self.config.muteRoleName)) {
             self.logger.log("Member already muted.", "admin");
             message.reply("that user is already muted!")
                 .then((msg) => { msg.delete(5000) })
