@@ -8,11 +8,11 @@ I'm proud to offer you guys my now open-sourced Discord bot, Gary! :D - TheV0rte
 
 # Roles:
 
-Rename `roles.json.example` to `roles.json`. Add roles (case-sensitively!) to the file. Set `isAssignable` to `true` if you want your users to be able to assign themselves the role using the `role` command. Use `sortOrder` to specify the order in which `memberlist` displays roles, starting from 0.
+Add roles (case-sensitively!) to the `roles.roles` section of `config.json`. Set `isAssignable` to `true` if you want your users to be able to assign themselves the role using the `role` command. Use `sortOrder` to specify the order in which `memberlist` displays roles, starting from 0.
 
 # Permissions:
 
-Rename `permissiongroups.json.example` to `permissiongroups.json`. By default a command is available to everyone. To limit the availability of a command, create a new group. Only the roles listed in the `roles` section of the group will be able to use a command listed in `commands`.
+By default a command is available to everyone. To limit the availability of a command, create a new group in `config.json` under `permissions.permissiongroups`. Only the roles listed in the `roles` section of the group will be able to use a command listed in `commands`.
 
 # Links:
 
