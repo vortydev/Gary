@@ -20,7 +20,7 @@ Rename `links.json.example` to `links.json`. Available links can be listed be ca
 
 # Quiz
 
-To lock the quiz to a single channel (for example, `bot-spam`) edit the `channel` value of `quizconfig.json` which is in `/plugins/quiz`.
+Rename `quizconfig.json.example` to `quizconfig.json`. Add `timeToAnswer` and `timeToJoin` to the file (in milliseconds). Optionally, add a channel (for example, `bot-spam`) to `channel` to lock the quiz to one channel.
 
 # Message Filter
 
