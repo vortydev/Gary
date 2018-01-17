@@ -107,6 +107,14 @@ exports['tempmute'] = {
             return;
         }
 
+        if (target.roles.find("name", adminConfig.muteRoleName)) {
+            self.logger.log("Member already muted.", "admin");
+            message.reply("that user is already muted!")
+                .then((msg) => { msg.delete(5000) })
+                .catch(self.logger.error);
+            return;
+        }
+
         target.addRole(muteRole)
             .then(() => {
                 self.logger.log('Muting ' + target.user.username + ' for ' + seconds + ' seconds', 'admin');
