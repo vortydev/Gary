@@ -31,6 +31,13 @@ var specialCommands = [
         }
     },
     {
+        name: 'uptime',
+        command: {
+            usage: 'Get uptime',
+            process: uptime
+        }
+    },
+    {
         name: 'stop',
         command: {
             usage: 'Kill bot process',
@@ -161,4 +168,14 @@ function version(message) {
 function stop(message) {
     self.logger.log('Stopping...', message.member.displayName);
     process.exit(0);
+}
+
+function uptime(message) {
+
+    var readyAt = self.client.readyAt;
+    var now = new Date();
+
+    var date = new Date(now - readyAt)
+
+    message.channel.send("I have been online for " + date.getMinutes() + " minutes.");
 }
