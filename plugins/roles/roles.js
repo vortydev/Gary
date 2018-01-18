@@ -97,6 +97,10 @@ exports['memberlist'] = {
     process: function (message) {
         var reply = '';
 
+        message.channel.send("Generating memberlist...")
+            .then(m => m.delete(2000))
+            .catch(self.logger.error);
+        
         var orderedRoles = self.config.roles.sort((a, b) => a.sortOrder - b.sortOrder);
         reply += 'There are currently **' + message.guild.memberCount + '** member on this server\n';
 

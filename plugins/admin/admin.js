@@ -74,6 +74,10 @@ exports['purge'] = {
         if (!number || number <= 1)
             return;
 
+        message.channel.send("Deleting the last " + number + " messages...")
+            .then(m => m.delete(2000))
+            .catch(self.logger.error);
+
         message.channel.bulkDelete(number, false)
             .catch(self.logger.error);
     }
