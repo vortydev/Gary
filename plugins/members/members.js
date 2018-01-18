@@ -113,6 +113,9 @@ exports['joined'] = {
 function memberAdd(member) {
     log(member, 'joined the server', 0x18bb68, true);
 
+    if (member.user.bot)
+        return;
+
     var embed = new Discord.RichEmbed()
         .setColor(0x7a7a7a)
         .setTitle('Welcome!')
