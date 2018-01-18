@@ -2,15 +2,23 @@
     "token":"",
     "prefix":"",
     "muteRoleName":"",
-    "useRegEx":false,
-    "channels":[
-        {"channel": "*", "whitelist": [], "blacklist": []}
-    ],
-    "permissiongroups":[
-        {"roles":[""], "commands":[""]}
-    ],
-    "roles":[
-        {"name":"", "isAssignable":false, "defaultRole":false, "sortOrder":0}
-    ]
+    "messageFilter": {
+        "useRegEx":false,
+        "channels":[
+            {"channel": "*", "whitelist": [], "blacklist": []}
+        ]
+    },
+    "permissions": {
+    "permissiongroups": [
+            {"roles":[""], "commands":[""]}
+        ]
+    },
+    "roles": {
+        "assignableRoles": [],
+        "defaultRoles": [],
+        "roles":[
+            {"id":0,"name":"","sortOrder":0}
+        ]
+    }
 }
 

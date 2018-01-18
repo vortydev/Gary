@@ -15,16 +15,23 @@ exports.init = function (client, config, _, logger) {
     self.logger = logger;
     
     client.on('guildMemberAdd', member => {
-        var defaultRole = member.guild.roles
-            .find('name', self.config.roles.find(r => r.defaultRole).name);
+        for (var i = 0; i < self.config.defaultRoles.length; i++) {
+            var roleId = self.config.defaultRoles[i];
+            var role = self.config.roles.find(r => r.id == roleId);
+            if (!role) {
+                self.logger.log(`No role with ID: ${roleId}`, 'roles');
+                continue;
+            }
 
-        if (!defaultRole) {
-            self.logger.log('no default role available'); 
-            return;
+            var serverRole = member.guild.roles.find('name', role.name);
+            if (!serverRole) {
+                self.logger.log(`No role on server with name: ${role.name}`, 'roles');
+                continue;
+            }
+
+            member.addRole(serverRole)
+                .catch(self.logger.error);
         }
-
-        member.addRole(defaultRole)
-            .catch(self.logger.error);
     });
 }
 
@@ -49,12 +56,14 @@ exports['role'] = {
             message.reply('**' + roleName + '** is not a valid role')
                 .then(m => m.delete(5000));
             return;
-        } else if (!role.isAssignable) {
+        }  
+        
+        if (!self.config.assignableRoles.includes(role.id)) {
             message.reply('this role is off limits!')
                 .then(m => m.delete(5000));
             return;
         }
-
+        
         var serverRole = message.guild.roles.find("name", role.name);
         if (serverRole == null) {
             self.logger.log('Found no role on server matching: ' + role.name);
@@ -123,16 +132,24 @@ function addRole(message, serverRole) {
     message.reply('the role **' + serverRole.name + '** has been **added**')
         .then(m => m.delete(5000));
 
-    var defaultRole = message.guild.roles
-        .find("name", self.config.roles.find(r => r.defaultRole).name);
-
-    if (!defaultRole) {
-        self.logger.log('Server has no default role');
+    if (!self.config.defaultRoles.length) 
         return;
-    }
 
-    if (message.member.roles.has(defaultRole.id)) {
-        removeRole(message, defaultRole);
+    var defaultRoles = self.config.roles.filter(r => {
+        return self.config.defaultRoles.includes(r.id);
+    });
+
+    for (i = 0; i < defaultRoles.length; i++) {
+        var role = defaultRoles[i];
+        var defaultServerRole = message.guild.roles.find('name', role.name);
+        if (!defaultServerRole) {
+            self.logger.log(`No role on server: ${role.name}`, 'roles');
+            continue;
+        }
+
+        if (message.member.roles.has(defaultServerRole.id)) {
+            removeRole(message, defeultServerRole);
+        }
     }
 }
 
