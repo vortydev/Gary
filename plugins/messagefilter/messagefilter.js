@@ -9,10 +9,11 @@ var allChannelsNotSpecified = null;
 exports.init = function (client, config, package, logger) {
     self.config = config.messageFilter;
     self.logger = logger;
-
+    
     for (var i = 0; i < self.config.channels.length; i++) {
-        if (self.config.channels[i].name == "*")
+        if (self.config.channels[i].channel == "*") {
             allChannelsNotSpecified = i;
+        }
     }
 
     client.on('message', filter);
