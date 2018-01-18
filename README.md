@@ -8,7 +8,7 @@ I'm proud to offer you guys my now open-sourced Discord bot, Gary! :D - TheV0rte
 
 # Roles:
 
-Add roles (case-sensitively!) to the `roles.roles` section of `config.json`. Set `isAssignable` to `true` if you want your users to be able to assign themselves the role using the `role` command. Use `sortOrder` to specify the order in which `memberlist` displays roles, starting from 0.
+Add roles (case-sensitively!) to the `roles.roles` section of `config.json`. A role requires a unique ID and a name matching a configured role on the server. `assignableRoles` is a list of the IDs that can be assigned using the `role` command. `defaultRoles` are the IDs of the roles a user is automatically assigned on joining the server. Use `sortOrder` to specify the order in which `memberlist` displays roles, starting from 0.
 
 # Permissions:
 
