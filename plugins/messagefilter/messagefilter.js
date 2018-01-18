@@ -3,6 +3,8 @@ var self = this;
 self.config = null;
 self.logger = null;
 
+var mid = null;
+
 exports.init = function (client, config, package, logger) {
     self.config = config.messageFilter;
     self.logger = logger;
@@ -10,6 +12,15 @@ exports.init = function (client, config, package, logger) {
 }
 
 function filter(message) {
+
+    if (message.author.bot)
+        return;
+
+    if (mid == message.id)
+        return;
+
+    mid = message.id;
+
     var channelinfo = null;
     
     for (var i = 0; i < self.config.channels.length; i++) {
@@ -62,10 +73,4 @@ function filter(message) {
             return;
         }
     }
-}
-
-function stringToRegex(str) {
-    var l = str.lastIndexOf("/");
-    var regex = new RegExp(str.slice(1, l), str.slice(l + 1));
-    return regex;
 }
