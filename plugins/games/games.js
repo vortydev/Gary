@@ -1,9 +1,11 @@
 var self = this;
 
 self.logger = null;
+self.prefix = '';
 
 exports.init = function (client, config, _, logger) {
-    self.logger = logger;    
+    self.logger = logger;   
+    self.prefix = config.prefix;
 }
 
 exports.commands = [
@@ -24,6 +26,9 @@ exports['coinflip'] = {
 exports['roll'] = {
     usage: 'roll <n> <f> | Roll n f-sided dice, sum the result',
     process: function (message, args) {
+        if (args.length != 2)
+            return;
+
         var dice = parseInt(args[0]);
         var sides = parseInt(args[1]);
 
