@@ -4,10 +4,17 @@ self.config = null;
 self.logger = null;
 
 var mid = null;
+var allChannelsNotSpecified = null;
 
 exports.init = function (client, config, package, logger) {
     self.config = config.messageFilter;
     self.logger = logger;
+
+    for (var i = 0; i < self.config.channels.length; i++) {
+        if (self.config.channels[i].name == "*")
+            allChannelsNotSpecified = i;
+    }
+
     client.on('message', filter);
 }
 
@@ -16,8 +23,16 @@ function filter(message) {
     if (message.author.bot)
         return;
 
+    if (self.config.channels.length < 1)
+        return;
+
     if (mid == message.id)
         return;
+
+    if (allChannelsNotSpecified == null) {
+        self.logger.log("Please include a channel with the name of '*' to be all channels not specified.")
+        return;
+    }
 
     mid = message.id;
 
@@ -30,14 +45,17 @@ function filter(message) {
     }
 
     if (channelinfo == null) {
-        channelinfo = self.config.channels[0];
+        if (allChannelsNotSpecified == null)
+            return;
+
+        channelinfo = self.config.channels[allChannelsNotSpecified];
     }
     
     var blacklist = channelinfo.blacklist;
     if (blacklist == null) {
-        blacklist = self.config.channels[0].blacklist;
+        blacklist = self.config.channels[allChannelsNotSpecified].blacklist;
     }
-
+    
     for (var i = 0; i < blacklist.length; i++) {
         var search = blacklist[i].toString();
         search = search.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -59,7 +77,7 @@ function filter(message) {
 
     var whitelist = channelinfo.whitelist;
     if (whitelist == null) {
-        whitelist = self.config.channels[0].whitelist;
+        whitelist = self.config.channels[allChannelsNotSpecified].whitelist;
     }
 
     for (var i = 0; i < whitelist.length; i++) {
