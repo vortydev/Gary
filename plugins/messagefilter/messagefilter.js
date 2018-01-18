@@ -28,7 +28,8 @@ function filter(message) {
     }
 
     for (var i = 0; i < blacklist.length; i++) {
-        var search = blacklist[i].toString().search.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+        var search = blacklist[i].toString();
+        search = search.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
         if (self.config.useRegEx)
             search = new RegExp(blacklist[i]);
 
@@ -51,7 +52,8 @@ function filter(message) {
     }
 
     for (var i = 0; i < whitelist.length; i++) {
-        var search = whitelist[i].toString().search.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+        var search = whitelist[i].toString();
+        search = search.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
         if (self.config.useRegEx) 
             search = new RegExp(whitelist[i]);
 
