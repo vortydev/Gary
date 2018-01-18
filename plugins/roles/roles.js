@@ -37,23 +37,20 @@ exports.init = function (client, config, _, logger) {
 
 exports['role'] = {
     usage: 'role <role name> | Toggle the specified role',
-    process: function (message) {
-        var roleName = message.content
-            .split(' ')
-            .splice(1)
-            .join(' ');
-
+    process: function (message, args) {
         var role = null;
         for (var i = 0, len = self.config.roles.length; i < len; i++) {
             var r = self.config.roles[i];
-            if (r.name.toLowerCase() == roleName.toLowerCase()) {
+            if (r.name.toLowerCase().replace(' ', '') == args.join('').toLowerCase()) {
                 role = r;
                 break;
             }
         }
 
+        
+
         if (role == null) {
-            message.reply('**' + roleName + '** is not a valid role')
+            message.reply('**' + args.join(' ') + '** is not a valid role')
                 .then(m => m.delete(5000));
             return;
         }  
