@@ -1,12 +1,13 @@
 var config = require('./config.json');
 
-config = config.permissions;
+var roles = config.roles.roles;
+var permissionGroups = config.permissions.permissionGroups;
 
 exports.hasPermission = function (member, commandName) {
     var result = true;
 
-    for (var i = 0; i < config.permissionGroups.length; i++) {
-        var group = config.permissionGroups[i];
+    for (var i = 0; i < permissionGroups.length; i++) {
+        var group = permissionGroups[i];
 
         if (!group.commands.includes(commandName))
             continue;
@@ -17,7 +18,8 @@ exports.hasPermission = function (member, commandName) {
 
         for (var m = 0; m < memberRoles.length; m++) {
             for (var g = 0; g < group.roles.length; g++) {
-                if (group.roles[g] === memberRoles[m])
+                var role = roles.find(m => m.id == group.roles[i]);
+                if (role && role.name === memberRoles[m])
                     return true;
             }
         }
