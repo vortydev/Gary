@@ -58,10 +58,7 @@ function filter(message) {
     }
     
     for (var i = 0; i < blacklist.length; i++) {
-        var search = blacklist[i].toString();
-        search = search.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-        if (self.config.useRegEx)
-            search = new RegExp(blacklist[i]);
+        var search = new RegExp(blacklist[i]);
 
         if (message.content.search(search) != -1) {
             message.delete()
@@ -82,10 +79,7 @@ function filter(message) {
     }
 
     for (var i = 0; i < whitelist.length; i++) {
-        var search = whitelist[i].toString();
-        search = search.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-        if (self.config.useRegEx) 
-            search = new RegExp(whitelist[i]);
+        var search = new RegExp(whitelist[i]);
 
         if (message.content.search(search) == -1 && !message.author.bot) {
             message.delete();

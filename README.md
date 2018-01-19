@@ -26,6 +26,8 @@ Rename `quizconfig.json.example` to `quizconfig.json`. Add `timeToAnswer` and `t
 
 To filter messages, use the `messagefilter` section of `config.json`. The one with `*` as the channel name is all channels that are not specified. If another item does not have, for example, `blacklist`, the blacklist will be the `*` channel's.
 
+The filter uses `Regular Expressions`.
+
 # Available commands:
 
 Available commands can be listed with the `help` command. 
