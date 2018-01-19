@@ -85,7 +85,8 @@ exports.init = function (commands, client, config, package, logger) {
 
             self.plugins.push({ name: pluginFolders[i], plugin: plugin});
         } catch (err) {
-            self.logger.error(pluginFolders[i] + ' failed to load: ' + err);
+            console.log(err);
+            self.logger.error(pluginFolders[i] + ' failed to load: ' + err, "plugins");
         }
     } 
 
