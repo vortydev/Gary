@@ -18,7 +18,7 @@ exports.hasPermission = function (member, commandName) {
 
         for (var m = 0; m < memberRoles.length; m++) {
             for (var g = 0; g < group.roles.length; g++) {
-                var role = roles.find(m => m.id == group.roles[i]);
+                var role = roles.find(m => m.id == group.roles[g]);
                 if (role && role.name === memberRoles[m])
                     return true;
             }
