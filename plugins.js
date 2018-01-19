@@ -112,11 +112,12 @@ function help(message) {
 
     result += '\n';
 
-    var pluginOrder = require('./pluginorder.json')
-        .sort((a, b) => a.sortOrder - b.sortOrder);
+    var pluginOrder = require('./pluginorder.json');
     
     for (var p = 0; p < pluginOrder.length; p++) {
-        var pluginData = self.plugins.find(pd => pd.name == pluginOrder[p].name);
+        var pluginData = self.plugins.find(pd => pd.name == pluginOrder[p]);
+        if (!pluginData) 
+            continue;
 
         var pluginName = pluginData.name;
         var plugin = pluginData.plugin;
