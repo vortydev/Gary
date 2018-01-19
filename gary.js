@@ -65,7 +65,13 @@ client.on('message', message => {
                 }
             }
         })
-        .catch(Logger.error);
+        .catch(e => {
+            // Message was already deleted
+            if (e.message == 'Unknown Message') 
+                return; 
+            
+            Logger.error(e);
+        });
 });
 
 client.login(config.token);
