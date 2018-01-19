@@ -101,16 +101,15 @@ exports['memberlist'] = {
             .then(m => m.delete(2000))
             .catch(self.logger.error);
         
-        var orderedRoles = self.config.roles.sort((a, b) => a.sortOrder - b.sortOrder);
         reply += 'There are currently **' + message.guild.memberCount + '** member on this server\n';
 
         var serverRoles = message.guild.roles
             .filter(r => r != '@everyone');
 
-        for (var i = 0; i < orderedRoles.length; i++) {
-            var role = message.guild.roles.find('name', orderedRoles[i].name);
+        for (var i = 0; i < self.config.roles.length; i++) {
+            var role = message.guild.roles.find('name', self.config.roles[i].name);
             if (!role) {
-                self.logger.log('could not find role on server: ' + orderedRoles[i].name);
+                self.logger.log('could not find role on server: ' + self.config.roles.name);
                 continue;
             }
             reply += '**' + role.name + '**: ' + role.members.keyArray().length + '\n';
