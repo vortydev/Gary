@@ -69,28 +69,26 @@ exports.init = function (commands, client, config, package, logger) {
     for (var i = 0; i < pluginFolders.length; i++) {
         self.logger.log('loading plugin: ' + pluginFolders[i], 'plugins');
 
-        var plugin;
         try {
-            plugin = require(pluginDirectory + pluginFolders[i]);
+            var plugin = require(pluginDirectory + pluginFolders[i]);
+            plugin.init(client, config, package, logger);
+
+            if (!('commands' in plugin))
+                continue;           
+            
+            for (var j = 0; j < plugin.commands.length; j++) {
+                if (plugin.commands[j] in plugin) {
+                    commands[plugin.commands[j]] = plugin[plugin.commands[j]];
+                    self.logger.log(':: loaded command: ' + plugin.commands[j], pluginFolders[i]);
+                }
+            }
+
+            self.plugins.push({ name: pluginFolders[i], plugin: plugin});
         } catch (err) {
             self.logger.error(pluginFolders[i] + ' failed to load: ' + err);
         }
+    } 
 
-        if (plugin) {
-            self.plugins.push({ name: pluginFolders[i], plugin: plugin});
-
-            plugin.init(client, config, package, logger);
-            if ('commands' in plugin) {
-                for (var j = 0; j < plugin.commands.length; j++) {
-                    if (plugin.commands[j] in plugin) {
-                        commands[plugin.commands[j]] = plugin[plugin.commands[j]];
-                        self.logger.log(':: loaded command: ' + plugin.commands[j], pluginFolders[i]);
-                    }
-                }
-            }
-        }
-    }
-   
     self.logger.log('loading default commands', 'plugins');
     for (var i = 0; i < specialCommands.length; i++) {
         var commandData = specialCommands[i];
