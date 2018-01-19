@@ -8,11 +8,11 @@ I'm proud to offer you guys my now open-sourced Discord bot, Gary! :D - TheV0rte
 
 # Roles:
 
-Add roles (case-sensitively!) to the `roles.roles` section of `config.json`. A role requires a unique ID and a name matching a configured role on the server. `assignableRoles` is a list of the IDs that can be assigned using the `role` command. `defaultRoles` are the IDs of the roles a user is automatically assigned on joining the server. Use `sortOrder` to specify the order in which `memberlist` displays roles, starting from 0.
+Add roles (case-sensitively!) to the `roles.roles` section of `config.json`. A role requires a unique ID and a name matching a configured role on the server. `assignableRoles` is a list of the IDs that can be assigned using the `role` command. `defaultRoles` are the IDs of the roles a user is automatically assigned on joining the server.
 
 # Permissions:
 
-By default a command is available to everyone. To limit the availability of a command, create a new group in `config.json` under `permissions.permissiongroups`. Only the roles listed in the `roles` section of the group will be able to use a command listed in `commands`.
+By default a command is available to everyone. To limit the availability of a command, create a new group in `config.json` under `permissions.permissiongroups`. Only the role IDs listed in the `roles` section of the group will be able to use a command listed in `commands`.
 
 # Links:
 
@@ -20,13 +20,13 @@ Rename `links.json.example` to `links.json`. Available links can be listed be ca
 
 # Quiz
 
-Rename `quizconfig.json.example` to `quizconfig.json`. Add `timeToAnswer` and `timeToJoin` to the file (in milliseconds). Optionally, add a channel (for example, `bot-spam`) to `channel` to lock the quiz to one channel.
+Rename `quizconfig.json.example` to `quizconfig.json`. Add `timeToAnswer` and `timeToJoin` to the file (in seconds). Optionally, add a channel (for example, `bot-spam`) to `channel` to lock the quiz to one channel.
 
 # Message Filter
 
 To filter messages, use the `messagefilter` section of `config.json`. The one with `*` as the channel name is all channels that are not specified. If another item does not have, for example, `blacklist`, the blacklist will be the `*` channel's.
 
-The filter uses `Regular Expressions`.
+The filter uses [Regular Expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
 
 # Available commands:
 
