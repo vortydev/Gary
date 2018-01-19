@@ -16,11 +16,11 @@ plugins.init(commands, client, config, package, Logger);
 
 client.on('error', err => {
     if (err.code && err.code == 'ECONNRESET') {
-        Logger.error('Connection reset', err);
+        Logger.error('Connection reset', "gary");
         return;
     }
 
-    Logger.error(err, err);
+    Logger.error(err, "gary");
 });
 
 client.on('ready', () => {
