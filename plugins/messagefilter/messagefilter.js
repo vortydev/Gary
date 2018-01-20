@@ -20,7 +20,7 @@ exports.init = function (client, config, package, logger) {
 
 function filter(message) {
 
-    if (message.author.bot || self.config.channels.length < 1)
+    if (message.author.bot || self.config.channels.length < 1 || message.channel.type == 'dm')
         return;
 
     if (allChannelsNotSpecified == null) {
