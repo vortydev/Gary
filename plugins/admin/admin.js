@@ -74,6 +74,13 @@ exports['purge'] = {
         if (!number)
             return;
 
+        if (number > 99 || number < 0) {
+            message.reply("there is a maxiumum value of 99 messages and a minimum value of 0.")
+                .then((msg) => { msg.delete(5000) })
+                .catch(self.logger.error);
+            return;
+        }
+
         message.channel.send("Deleting the last " + number + " message(s)...")
             .then(m => {
                 var delay = 2000;
