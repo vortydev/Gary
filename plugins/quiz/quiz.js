@@ -315,7 +315,7 @@ function askQuestion(message) {
     // setTimeout takes a value in milliseconds
     ((s) => new Promise((r, _) => setTimeout(r, s * 1000)))(quizConfig.timeToAnswer)
         .then(() => {
-            if (currentQuiz.participants == null)
+            if (currentQuiz == null)
                 return;
 
             for (var i = 0; i < currentQuiz.participants.length; i++) {
