@@ -75,10 +75,19 @@ exports['purge'] = {
             return;
 
         message.channel.send("Deleting the last " + number + " messages...")
-            .then(m => m.delete(2000))
-            .catch(self.logger.error);
+            .then(m => {
+                var delay = 2000;
+                ((t) => {
+                    var start = new Date().getTime();
+                    for (var i = 0; i < 1e7; i++) {
+                        if ((new Date().getTime() - start) > t)
+                            break;
+                    }
+                })(delay);
 
-        message.channel.bulkDelete(number, false)
+                message.channel.bulkDelete(number + 1, false)
+                    .catch(self.logger.error);
+            })
             .catch(self.logger.error);
     }
 }
