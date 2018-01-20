@@ -1,12 +1,14 @@
 var self = this;
 
 self.config = null;
+self.prefix = null;
 self.logger = null;
 
 var allChannelsNotSpecified = null;
 
 exports.init = function (client, config, package, logger) {
     self.config = config.messageFilter;
+    self.prefix = config.prefix;
     self.logger = logger;
     
     for (var i = 0; i < self.config.channels.length; i++) {
@@ -20,7 +22,7 @@ exports.init = function (client, config, package, logger) {
 
 function filter(message) {
 
-    if (message.author.bot || self.config.channels.length < 1 || message.channel.type == 'dm')
+    if (message.author.bot || self.config.channels.length < 1 || message.channel.type == 'dm' || message.content.startsWith(self.prefix))
         return;
 
     if (allChannelsNotSpecified == null) {
