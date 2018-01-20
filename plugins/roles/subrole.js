@@ -13,6 +13,7 @@ self.config;
 self.subRolesData = null;
 self.commands = [
     { name: 'new', process: subRoleNew },
+    { name: 'delete', process: subRoleDelete },
     { name: 'list', process: subRoleList },
     { name: 'add', process: subRoleAdd },
     { name: 'remove', process: subRoleRemove }
@@ -56,7 +57,12 @@ function subRoleNew(message, argStr) {
     modifyData(d => {
         var id = 0;
 
-        if (d.subRoles.find(sr => sr.name == argStr)) {
+        if (d.groups.find(g => g.name.toLowerCase() == argStr.toLowerCase())) {
+            self.logger.error('unable to create subrole: group name collision', 'sr new');    
+            return;
+        }
+
+        if (d.subRoles.find(sr => sr.name.toLowerCase() == argStr.toLowerCase())) {
             self.logger.error('unable to create subrole: already exists', 'sr new');    
             return;
         }
@@ -75,6 +81,20 @@ function subRoleNew(message, argStr) {
         self.logger.log('created new subrole: ' + subRole.name, 'sr new');
         console.log(d.subRoles);
     });
+}
+
+function subRoleDelete(message, argStr) {
+    modifyData(d => {
+        var subRole = d.subRoles.find(sr => sr.name.toLowerCase() == argStr.toLowerCase());
+        if (!subRole) {
+            self.logger.log('no role matching: ' + argStr);
+            return;
+        }
+
+        d.subRoles.pop(subRole);
+    });
+
+    self.logger.log('subrole delete');
 }
 
 function subRoleList(message, argStr) {
