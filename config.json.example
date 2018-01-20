@@ -8,7 +8,7 @@
         ]
     },
     "permissions": {
-    "permissiongroups": [
+    "permissionGroups": [
             {"roles":[""], "commands":[""]}
         ]
     },
