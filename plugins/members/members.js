@@ -11,10 +11,12 @@ var welcomeText;
 self.client = null;
 self.config = null;
 self.logger = null;
+self.config = null;
 
 exports.commands = [
     'rules',
     'members',
+    'memberlist',
     'avatar',
     'joined'
 ];
@@ -23,6 +25,7 @@ exports.init = function (client, config, package, logger) {
     self.client = client;
     self.config = config;
     self.logger = logger;
+    self.config = config;
 
     fs.readFile(welcomeTextPath, 'utf8', (err, data) => {
         if (err) {
@@ -42,6 +45,35 @@ exports['members'] = {
     usage: 'Gets how many people are on the server',
     process: function (message) {
         message.channel.send("There are currently **" + message.guild.memberCount + "** members on this server.");
+    }
+}
+
+exports['memberlist'] = {
+    usage: 'List of server members by role',
+    process: function (message) {
+        var rolesConfig = self.config.roles;
+
+        message.channel.send('Generating memberlist...')
+            .then(m => {
+                reply = `There are currently **${message.guild.memberCount}** members on this server\n`;
+
+                var serverRoles = message.guild.roles
+                    .filter(r => r != '@everyone');
+
+                for (var i = 0; i < rolesConfig.roles.length; i++) {
+                    var role = message.guild.roles.find('name', rolesConfig.roles[i].name);
+                    if(!role) {
+                        self.logger.log('could not find role on server: ' + rolesConfig.roles[i].name, 'memberlist');
+                        continue;
+                    }
+                    reply += `**${role.name}**: ${role.members.keyArray().length}\n`;
+                }
+
+                message.channel.send(reply)
+                    .then(_ => m.delete())
+                    .catch(e => self.logger.error(e, 'memberlist'));
+            })
+            .catch(e => self.logger.error(e, 'memberlist'));
     }
 }
 

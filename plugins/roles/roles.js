@@ -1,6 +1,7 @@
 var self = this;
 
-var Discord = require("discord.js");
+var Discord = require('discord.js'),
+    subrole = require('./subrole.js');
 
 self.config = null;
 self.fullconfig = null;
@@ -8,7 +9,7 @@ self.fullconfig = null;
 exports.commands = [
     'role',
     'rolelist',
-    'memberlist'
+    'subrole'
 ];
 
 self.logger = null;
@@ -17,26 +18,10 @@ exports.init = function (client, config, _, logger) {
     self.config = config.roles;
     self.fullconfig = config;
     self.logger = logger;
-    
-    client.on('guildMemberAdd', member => {
-        for (var i = 0; i < self.config.defaultRoles.length; i++) {
-            var roleId = self.config.defaultRoles[i];
-            var role = self.config.roles.find(r => r.id == roleId);
-            if (!role) {
-                self.logger.log(`No role with ID: ${roleId}`, 'roles');
-                continue;
-            }
 
-            var serverRole = member.guild.roles.find('name', role.name);
-            if (!serverRole) {
-                self.logger.log(`No role on server with name: ${role.name}`, 'roles');
-                continue;
-            }
+    client.on('guildMemberAdd', addDefaultRoles);
 
-            member.addRole(serverRole)
-                .catch(self.logger.error);
-        }
-    });
+    subrole.init(config, logger);
 }
 
 exports['role'] = {
@@ -50,8 +35,6 @@ exports['role'] = {
                 break;
             }
         }
-
-        
 
         if (role == null) {
             message.reply('**' + args.join(' ') + '** is not a valid role')
@@ -110,30 +93,27 @@ exports['rolelist'] = {
     }
 }
 
-exports['memberlist'] = {
-    usage: 'List of server members by role',
-    process: function (message) {
-        var reply = '';
+exports['subrole'] = {
+    usage: subrole.usage,
+    process: subrole.process
+}
 
-        message.channel.send("Generating memberlist...")
-            .then(m => m.delete(2000))
-            .catch(self.logger.error);
-        
-        reply += 'There are currently **' + message.guild.memberCount + '** member on this server\n';
-
-        var serverRoles = message.guild.roles
-            .filter(r => r != '@everyone');
-
-        for (var i = 0; i < self.config.roles.length; i++) {
-            var role = message.guild.roles.find('name', self.config.roles[i].name);
-            if (!role) {
-                self.logger.log('could not find role on server: ' + self.config.roles.name);
-                continue;
-            }
-            reply += '**' + role.name + '**: ' + role.members.keyArray().length + '\n';
+function addDefaultRoles(member) {
+    for (var i = 0; i < self.config.defaultRoles.length; i++) {
+        var roleId = self.config.defaultRoles[i];
+        var role = self.config.roles.find(r => r.id == roleId);
+        if (!role) {
+            self.logger.log(`No role with ID: ${roleId}`, 'roles');
+            continue;
         }
 
-        message.channel.send(reply)
+        var serverRole = member.guild.roles.find('name', role.name);
+        if (!serverRole) {
+            self.logger.log(`No role on server with name: ${role.name}`, 'roles');
+            continue;
+        }
+
+        member.addRole(serverRole)
             .catch(self.logger.error);
     }
 }

@@ -9,6 +9,9 @@ channel.txt
 # Log Folder
 logs/
 
+# Generated Files
+_roles.json
+
 *.old
 *.bat
 *.swp
