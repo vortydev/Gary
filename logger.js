@@ -11,17 +11,7 @@ exports.log = function (str, source) {
 }
 
 exports.error = function (err, source) {
-    logMessage('ERROR: ' + err, source);
-}
-
-function getErrorSource(err) {
-    var regex = /\(.*\)/;
-    var a = err.stack.match(regex);
-    regex = /\.js:.*:.*\)/
-    var b = a[0].substring(__dirname.length + 2).replace(regex, '');
-    return b;
-
-    //For example, it might return 'logger'
+    logMessage(err + "      -          " + err.stack, source);
 }
 
 function logMessage(message, source) {

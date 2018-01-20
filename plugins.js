@@ -176,5 +176,5 @@ function uptime(message) {
 
     var date = new Date(now - readyAt)
 
-    message.channel.send("I have been online for " + date.getMinutes() + " minutes.");
+    message.channel.send("I have been online for " + Math.floor(date.getTime() / 60000) + " minutes.");
 }

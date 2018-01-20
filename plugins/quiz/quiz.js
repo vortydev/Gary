@@ -140,7 +140,7 @@ exports['quiz'] = {
                 //You must provide a choice
                 if (args[1] == null) {
                     message.reply("correct usage is `" + prefix + "quiz answer [letter]`")
-       C                .then((msg) => { msg.delete(5000) })
+                        .then((msg) => { msg.delete(5000) })
                         .catch(self.logger.error);
                     return;
                 }
