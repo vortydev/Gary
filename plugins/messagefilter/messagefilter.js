@@ -3,7 +3,6 @@ var self = this;
 self.config = null;
 self.logger = null;
 
-var mid = null;
 var allChannelsNotSpecified = null;
 
 exports.init = function (client, config, package, logger) {
@@ -21,13 +20,7 @@ exports.init = function (client, config, package, logger) {
 
 function filter(message) {
 
-    if (message.author.bot)
-        return;
-
-    if (self.config.channels.length < 1)
-        return;
-
-    if (mid == message.id)
+    if (message.author.bot || self.config.channels.length < 1)
         return;
 
     if (allChannelsNotSpecified == null) {
@@ -35,7 +28,15 @@ function filter(message) {
         return;
     }
 
-    mid = message.id;
+    if (self.config.channels[allChannelsNotSpecified].whitelist == null) {
+        self.logger.log("Please include a whitelist for all channels not specified (channel with the name of '*').")
+        return;
+    }
+
+    if (self.config.channels[allChannelsNotSpecified].blacklist == null) {
+        self.logger.log("Please include a blacklist for all channels not specified (channel with the name of '*').")
+        return;
+    }
 
     var channelinfo = null;
     
