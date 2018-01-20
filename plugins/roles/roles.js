@@ -148,7 +148,7 @@ function addRole(message, serverRole) {
         }
 
         if (message.member.roles.has(defaultServerRole.id)) {
-            removeRole(message, defeultServerRole);
+            removeRole(message, defaultServerRole);
         }
     }
 }
