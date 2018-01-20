@@ -4,7 +4,7 @@ I'm proud to offer you guys my now open-sourced Discord bot, Gary! :D - TheV0rte
 # Setting it up:
 
 1. Rename `config.json.example` to `config.json` and fill in the details.
-2. Run `$ node Gary.js`
+2. Run `$ node gary.js`
 
 # Roles:
 
