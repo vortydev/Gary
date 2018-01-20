@@ -11,7 +11,7 @@ exports.log = function (str, source) {
 }
 
 exports.error = function (err, source) {
-    logMessage(err + "      -          " + err.stack, source);
+    logMessage('ERROR: ' + err, source);
 }
 
 function logMessage(message, source) {
