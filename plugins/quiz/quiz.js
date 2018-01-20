@@ -350,7 +350,7 @@ function revealAnswer(message) {
 
     //Populate leaderboard.
     for (var i = 0; i < sorted.length; i++) {
-        var user = self.client.users.get(currentQuiz.participants[i].id);
+        var user = self.client.users.get(sorted[i].id);
         if (sorted[i].answeredCurrentQuestion) {
             text += "#" + (i + 1) + " - " + user.username + " answered " + sorted[i].lastAnswer + " and has a total score of ";
             if (sorted[i].score > 0)
