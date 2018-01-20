@@ -71,10 +71,10 @@ exports['purge'] = {
     usage: 'purge <number> | Bulk delete most recent messages in a channel',
     process: function (message, args) {
         var number = parseInt(args[0]);
-        if (!number || number <= 1)
+        if (!number)
             return;
 
-        message.channel.send("Deleting the last " + number + " messages...")
+        message.channel.send("Deleting the last " + number + " message(s)...")
             .then(m => {
                 var delay = 2000;
                 ((t) => {
