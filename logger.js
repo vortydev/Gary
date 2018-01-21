@@ -29,12 +29,12 @@ function createNewLog() {
     var now = new Date();
 
     var date = "";
-    date += now.getFullYear();
-    date += padNum((now.getMonth() + 1), 2);
-    date += padNum(now.getDate(), 2);
-    date += padNum(now.getHours(), 2);
-    date += padNum(now.getMinutes(), 2);
-    date += padNum(now.getSeconds(), 2);
+    date += now.getUTCFullYear();
+    date += padNum((now.getUTCMonth() + 1), 2);
+    date += padNum(now.getUTCDate(), 2);
+    date += padNum(now.getUTCHours(), 2);
+    date += padNum(now.getUTCMinutes(), 2);
+    date += padNum(now.getUTCSeconds(), 2);
 
     currentLog = fs.createWriteStream("logs/" + date + ".txt");
 }
@@ -64,12 +64,12 @@ function logMessage(message, source) {
         source += ' ';
     }
     var dateStr = '[';
-    dateStr += now.getFullYear() + '/';
-    dateStr += padNum((now.getMonth() + 1), 2) + '/';
-    dateStr += padNum(now.getDate(), 2) + ' ';
-    dateStr += padNum(now.getHours(), 2) + ':';
-    dateStr += padNum(now.getMinutes(), 2) + ':';
-    dateStr += padNum(now.getSeconds(), 2) + ']\t';
+    dateStr += now.getUTCFullYear() + '/';
+    dateStr += padNum((now.getUTCMonth() + 1), 2) + '/';
+    dateStr += padNum(now.getUTCDate(), 2) + ' ';
+    dateStr += padNum(now.getUTCHours(), 2) + ':';
+    dateStr += padNum(now.getUTCMinutes(), 2) + ':';
+    dateStr += padNum(now.getUTCSeconds(), 2) + ']\t';
 
     console.log(dateStr + source + message);
 
