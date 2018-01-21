@@ -23,7 +23,6 @@ exports.init = function (client, config, _, logger) {
     self.logger = logger;
     prefix = config.prefix;
     embedCol = parseInt(quizConfig.embedCol, 16);
-    console.log(embedCol);
 }
 
 // Commands
