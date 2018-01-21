@@ -12,6 +12,7 @@ var quizChannelName = '';
 var currentQuiz = null;
 var correctAnswer = null;
 var participantsAnsweredQuestion = 0;
+var embedCol = null;
 
 exports.commands = [
     "quiz"
@@ -21,6 +22,8 @@ exports.init = function (client, config, _, logger) {
     self.client = client;
     self.logger = logger;
     prefix = config.prefix;
+    embedCol = parseInt(quizConfig.embedCol, 16);
+    console.log(embedCol);
 }
 
 // Commands
@@ -265,7 +268,7 @@ function sendHelp(message) {
     result += "`quiz help` - Get quiz commands\n";
 
     var embed = new Discord.RichEmbed()
-        .setColor(0x7a7a7a)
+        .setColor(embedCol)
         .setTitle('Quiz Commands')
         .setDescription(result)
         .setThumbnail(self.client.user.avatarURL)
@@ -293,6 +296,7 @@ function askQuestion(message) {
 
     //Create the richembed and set the title
     var embed = new Discord.RichEmbed()
+        .setColor(embedCol)
         .setTitle("**Question #" + (currentQuiz.currentQuestion + 1) + "**");
 
     var q = question.question;
@@ -376,6 +380,7 @@ function revealAnswer(message) {
     //Create embed and set the title and description.
     var embed = new Discord.RichEmbed()
         .setTitle("**Question Over**")
+        .setColor(embedCol)
         .setDescription("The correct answer was `" + correctAnswer.toUpperCase() + "`");
 
     //Set the answer counter to 0.
