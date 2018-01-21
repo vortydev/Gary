@@ -106,6 +106,7 @@ exports['quiz'] = {
                     message.reply("you have already joined this quiz.")
                         .then((msg) => { msg.delete(5000) })
                         .catch(self.logger.error);
+                    return;
                 }
 
                 //Create participant.
@@ -203,6 +204,40 @@ exports['quiz'] = {
                 sendHelp(message);
                 break;
             }
+            case "leave": {
+                if (currentQuiz == null) {
+                    message.reply("the quiz has not been created yet.")
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
+                    return;
+                }
+                
+                if (currentQuiz.started) {
+                    message.reply("the quiz started so you cannot leave.")
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
+                    return;
+                }
+                
+                var num = null;
+                for (var i = 0; i < currentQuiz.participants.length; i++) {
+                    if (currentQuiz.participants[i].id == message.author.id)
+                        num = i;
+                }
+
+                if (num == null) {
+                    message.reply("you have not joined the quiz.")
+                        .then((msg) => { msg.delete(5000) })
+                        .catch(self.logger.error);
+                    return;
+                }
+
+                currentQuiz.participants = currentQuiz.participants.splice(num, 1);
+                message.reply("quiz successfully left.")
+                    .then((msg) => { msg.delete(5000) })
+                    .catch(self.logger.error);
+                break;
+            }
         }
     }
 };
@@ -226,6 +261,7 @@ function sendHelp(message) {
     result += "`quiz start [players]` - Starts a quiz\n";
     result += "`quiz join` - Joins a quiz\n";
     result += "`quiz answer [A/B/C/D]` - Answers a question\n";
+    result += "`quiz leave` - Leave the quiz\n";
     result += "`quiz help` - Get quiz commands\n";
 
     var embed = new Discord.RichEmbed()
