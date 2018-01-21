@@ -123,7 +123,7 @@ exports['tempmute'] = {
         
         var muteRole = message.guild.roles.find('name', self.muteRole);
         if (!muteRole) {
-            self.logger.log('Unable to mute: couldn\'t find role' + self.muteRole, 'admin');
+            self.logger.log('Unable to mute: couldn\'t find role ' + self.muteRole, 'admin');
             return;
         }
 
@@ -144,6 +144,9 @@ exports['tempmute'] = {
                 // ?!?!
                 ((s) => new Promise((r, _) => setTimeout(r, s * 1000)))(seconds)
                     .then(() => {
+                        if (target == null || !target.roles.find("name", self.config.muteRoleName))
+                            return;
+
                         target.removeRole(muteRole)
                             .then(() => {
                                 self.logger.log('Unmuting ' + target.user.username, 'admin');
