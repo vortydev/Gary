@@ -143,11 +143,11 @@ function log(member, message, colour, joined) {
     var embed = new Discord.RichEmbed()
         .setColor(colour)
         .setAuthor(self.client.user.username, self.client.user.avatarURL)
-        .setDescription('<@' + member.user.id + '> ' + message)
+        .setDescription(`<@${member.user.id}> ${message}`)
         .setTimestamp();
 
     if (!joined)
-        embed.setDescription(member.user.username + "#" + member.user.discriminator + " " + message);
+        embed.setDescription(`**${member.user.username}#${member.user.discriminator}** ${message}`);
     
 
     channel.send({ embed: embed });
