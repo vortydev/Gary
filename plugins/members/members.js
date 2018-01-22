@@ -9,6 +9,7 @@ var rulesTextPath = './plugins/members/rules.md';
 var welcomeText;
 
 self.client = null;
+self.config = null;
 self.logger = null;
 
 exports.commands = [
@@ -20,6 +21,7 @@ exports.commands = [
 
 exports.init = function (client, config, package, logger) {
     self.client = client;
+    self.config = config;
     self.logger = logger;
 
     fs.readFile(welcomeTextPath, 'utf8', (err, data) => {
@@ -47,7 +49,7 @@ exports['avatar'] = {
     usage: 'Sends author his avatar',
     process: function (message, args) {
         var embed = new Discord.RichEmbed()
-            .setColor(0x7a7a7a)
+            .setColor(parseInt(self.config.embedCol, 16))
             .setDescription('[Direct Link](' + message.author.avatarURL + ')')
             .setImage(message.author.avatarURL)
             .setFooter('Brought to you by TheV0rtex™');

@@ -1,5 +1,8 @@
 var self = this;
 
+var Discord = require("discord.js");
+
+self.config = null;
 self.logger = null;
 
 exports.commands = [
@@ -7,6 +10,7 @@ exports.commands = [
 ];
 
 exports.init = function (client, config, _, logger) {
+    self.config = client;
     self.logger = logger;
 }
 
@@ -24,9 +28,9 @@ exports['emojilist'] = {
         var emojiList = message.guild.emojis.map(i => i.toString()).join(" ");
 
         var embed = new Discord.RichEmbed()
-            .setColor(0x7a7a7a)
+            .setColor(parseInt(self.config.embedCol, 16))
             .setTitle("Custom Emoji:")
-            .setDescription(emojiList)
+            .setDescription(emojiList);
 
         message.channel.send({ embed })
             .catch(self.logger.error);

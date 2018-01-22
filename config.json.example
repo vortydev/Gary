@@ -1,6 +1,7 @@
 {
     "token":"",
     "prefix":"",
+    "embedCol":"0xffffff",
     "muteRoleName":"",
     "messageFilter": {
         "channels":[

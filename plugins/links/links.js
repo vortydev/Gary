@@ -18,6 +18,7 @@ exports['link'] = {
     process: function (message, args) {
         if (args[0] == null) {
             var embed = new Discord.RichEmbed()
+                .setColor(parseInt(self.config.embedCol, 16))
                 .setTitle("All Links");
             
             var text = "";
