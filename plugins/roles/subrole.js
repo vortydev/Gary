@@ -120,9 +120,10 @@ function subRoleList(message, argStr) {
         };
 
         if (!argStr) {
-            for (var i = 0; i < d.groups.length; i++) {
-                reply += outputGroup(d.groups[i]);
-            }    
+            reply = 'subroles:\n`' + d.subRoles
+                .map(sr => sr.name)
+                .join('`\n`') + '`\n';
+
         } else {
             var group = d.groups.find(g => {
                 return g.name.toLowerCase() == argStr.toLowerCase();
@@ -157,7 +158,25 @@ function subRoleAdd(message, argStr) {
             return;
         }
 
+        var role = d.subRoles.find(sr => {
+            return sr.name.toLowerCase() == args[1].toLowerCase();
+        });
 
+        if (!role) {
+            message.reply('no role matching ' + args[1])
+                .catch(e => self.logger.error(e, 'sr add'));
+
+            return;
+        }
+
+        if (group.subRoleIds.includes(role.id)) {
+            message.reply(`**${role.name}** is already a subrole of **${group.name}**`)
+                .catch(e => self.logger.error(e, 'sr add'));+ group.name
+
+            return;
+        }
+
+        group.subRoleIds.push(role.id);
     });
 }
 
@@ -201,7 +220,6 @@ function readData(read) {
 function modifyData(modify) {
     readData(o => {
         modify(o);
-        console.log(o);
 
         fs.writeFile(rolesPath, JSON.stringify(o), 'utf8', e => {
             if (e) {
