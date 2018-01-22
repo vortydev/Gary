@@ -15,7 +15,19 @@ exports.log = function (str, source) {
 }
 
 exports.error = function (err, source) {
-    logMessage('ERROR: ' + err, source);
+
+    if (err.stack == null) {
+        logMessage('ERROR: ' + err, source);
+        return;
+    }
+
+    logMessage('Error at ' + getErrorLocation(err) + ' - ' + err, source);
+}
+
+function getErrorLocation(err) {
+    var regex = /\(.*\)/;
+    var a = err.stack.match(regex);
+    return a[0];
 }
 
 function createNewLog() {
