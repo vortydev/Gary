@@ -1,7 +1,7 @@
 var Discord = require("discord.js"),
     request = require("request"),
     fs = require('fs'),
-    quizConfig = require('./quizconfig.json')
+    quizConfig = require('./quizconfig.json');
 
 var self = this;
 self.client = null;
@@ -22,7 +22,7 @@ exports.init = function (client, config, _, logger) {
     self.client = client;
     self.logger = logger;
     prefix = config.prefix;
-    embedCol = parseInt(quizConfig.embedCol, 16);
+    embedCol = parseInt(config.embedCol, 16);
 }
 
 // Commands
