@@ -92,6 +92,14 @@ function subRoleDelete(message, argStr) {
         }
 
         d.subRoles.pop(subRole);
+
+        var groups = d.groups.filter(g => {
+            return g.subRoleIds.includes(subRole.id);
+        });
+
+        for(var i = 0; i < groups.length; i++) {
+            groups[i].subRoleIds.pop(subRole.id);
+        }
     });
 }
 
@@ -109,10 +117,16 @@ function subRoleList(message, argStr) {
         var subRoles = group.subRoleIds.map(id => {
             return d.subRoles.find(sr => sr.id == id);
         });
-        
-        var reply = 'the subroles of **' + group.name + '** available are:\n';
-        for (var i = 0; i < d.subRoles.length; i++) {
-            reply += '`' + d.subRoles[i].name + '`\n';
+
+        var reply = '';
+        if (subRoles.length == 0) {
+            reply = `there are no subroles for **${group.name}**.`
+        } else {
+            console.log(subRoles);
+            reply += `the subroles of **${group.name}** available are:\n`;
+            for (var i = 0; i < d.subRoles.length; i++) {
+                reply += '`' + d.subRoles[i].name + '`\n';
+            }
         }
 
         message.reply(reply)
