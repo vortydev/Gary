@@ -32,7 +32,7 @@ exports.init = function(config, logger) {
 }
 
 exports.process = function(message, args) {
-    if (args.length < 2) {
+    if (args.length == 0) {
         subRoleHelp(message.member);
         return;
     }
@@ -79,7 +79,6 @@ function subRoleNew(message, argStr) {
 
         d.subRoles.push(subRole);
         self.logger.log('created new subrole: ' + subRole.name, 'sr new');
-        console.log(d.subRoles);
     });
 }
 
@@ -104,38 +103,62 @@ function subRoleDelete(message, argStr) {
 }
 
 function subRoleList(message, argStr) {
+    var reply = '\n';
+
     readData(d => {
-        var group = d.groups.find(g => {
-            return g.name.toLowerCase() == argStr.toLowerCase();
-        });
-        
-        if (!group) {
-            self.logger.log('no group matching ' + argStr, 'sr list');
-            return;
-        }
+        var outputGroup = g => {
+            var subRoles = g.subRoleIds.map(id => {
+                return d.subRoles.find(sr => sr.id == id);
+            });    
 
-        var subRoles = group.subRoleIds.map(id => {
-            return d.subRoles.find(sr => sr.id == id);
-        });
+            return subRoles.length ? 
+                `The subroles for **${g.name}** are:\n` +
+                '`' + subRoles
+                .map(sr => sr.name)
+                .join('`\n`') + '`\n' :
+                `No roles for group **${g.name}**\n`;
+        };
 
-        var reply = '';
-        if (subRoles.length == 0) {
-            reply = `there are no subroles for **${group.name}**.`
+        if (!argStr) {
+            for (var i = 0; i < d.groups.length; i++) {
+                reply += outputGroup(d.groups[i]);
+            }    
         } else {
-            console.log(subRoles);
-            reply += `the subroles of **${group.name}** available are:\n`;
-            for (var i = 0; i < d.subRoles.length; i++) {
-                reply += '`' + d.subRoles[i].name + '`\n';
-            }
-        }
+            var group = d.groups.find(g => {
+                return g.name.toLowerCase() == argStr.toLowerCase();
+            });
 
+            reply = group ?
+                outputGroup(group) :
+                `no group matching **${argStr}**`;
+        }
         message.reply(reply)
             .catch(e => self.logger.error(e, 'sr list'));
     });
 }
 
 function subRoleAdd(message, argStr) {
-    self.logger.log('subrole add');
+    var splitChar = ':';
+    if (!argStr.includes(splitChar)) {
+        subRoleHelp(message);
+        return;
+    }
+
+    var args = argStr.split(splitChar);
+    modifyData(d => {
+        var group = d.groups.find(g => {
+            return g.name.toLowerCase() == args[0].toLowerCase();        
+        });
+
+        if (!group) {
+            message.reply('no group matching ' + args[0])
+                .catch(e => self.logger.error(e, 'sr add'));
+
+            return;
+        }
+
+
+    });
 }
 
 function subRoleRemove(message, argStr) {
