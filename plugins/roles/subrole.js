@@ -86,19 +86,22 @@ function subRoleDelete(message, argStr) {
     modifyData(d => {
         var subRole = d.subRoles.find(sr => sr.name.toLowerCase() == argStr.toLowerCase());
         if (!subRole) {
-            self.logger.log('no role matching: ' + argStr);
+            self.logger.log('no role matching: ' + argStr, 'sr del');
             return;
         }
-
-        d.subRoles.pop(subRole);
+        
+        d.subRoles.splice(d.subRoles.indexOf(subRole), 1);
 
         var groups = d.groups.filter(g => {
             return g.subRoleIds.includes(subRole.id);
         });
 
         for(var i = 0; i < groups.length; i++) {
+            self.logger.log(`removing ${subRole.name} from ${groups[i].name}`, 'sr del');
             groups[i].subRoleIds.pop(subRole.id);
         }
+
+        self.logger.log('deleted subrole: ' + subRole.name, 'sr del');
     });
 }
 
@@ -120,9 +123,11 @@ function subRoleList(message, argStr) {
         };
 
         if (!argStr) {
-            reply = 'subroles:\n`' + d.subRoles
+            reply = d.subRoles.length ? 
+                'subroles:\n`' + d.subRoles
                 .map(sr => sr.name)
-                .join('`\n`') + '`\n';
+                .join('`\n`') + '`\n' : 
+                'no subroles available';
 
         } else {
             var group = d.groups.find(g => {
@@ -181,7 +186,38 @@ function subRoleAdd(message, argStr) {
 }
 
 function subRoleRemove(message, argStr) {
-    self.logger.log('subrole remove');
+    modifyData(d => {
+        var group = d.groups.find(g => {
+            return g.name.toLowerCase() == args[0].toLowerCase();        
+        });
+
+        if (!group) {
+            message.reply('no group matching ' + args[0])
+                .catch(e => self.logger.error(e, 'sr remove'));
+
+            return;
+        }
+
+        var role = d.subRoles.find(sr => {
+            return sr.name.toLowerCase() == args[1].toLowerCase();
+        });
+
+        if (!role) {
+            message.reply('no role matching ' + args[1])
+                .catch(e => self.logger.error(e, 'sr remove'));
+
+            return;
+        }
+
+        if (!group.subRoleIds.includes(role.id)) {
+            message.reply(`**${role.name}** is not a subrole of **${group.name}**`)
+                .catch(e => self.logger.error(e, 'sr remove'));+ group.name
+
+            return;
+        }
+
+        group.subRoleIds.pop(role.id);
+    });
 }
 
 function createRolesFile() {
