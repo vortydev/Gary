@@ -93,7 +93,16 @@ function subRoleDelete(message, argStr) {
             return;
         }
         
+        var serverRole = message.guild.roles.find('name', subRole.name);
+        if (!serverRole) {
+            self.loggler.log('no match on server: ' + subRole.name, 'sr del');
+            return;
+        }
+
         d.subRoles.splice(d.subRoles.indexOf(subRole), 1);
+
+        serverRole.delete()
+            .catch(e => self.logger.error(e, 'sr del'));
 
         var groups = d.groups.filter(g => {
             return g.subRoleIds.includes(subRole.id);
@@ -101,7 +110,7 @@ function subRoleDelete(message, argStr) {
 
         for(var i = 0; i < groups.length; i++) {
             self.logger.log(`removing ${subRole.name} from ${groups[i].name}`, 'sr del');
-            groups[i].subRoleIds.pop(subRole.id);
+            groups[i].subRoleIds.splice(groups[i].subRoleIds.indexOf(subRole.id), 1);
         }
 
         self.logger.log('deleted subrole: ' + subRole.name, 'sr del');
