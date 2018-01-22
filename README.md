@@ -30,6 +30,6 @@ The filter uses [Regular Expressions](https://developer.mozilla.org/en-US/docs/W
 
 # Available commands:
 
-Available commands can be listed with the `help` command. 
+Available commands can be listed with the `help` command.
 
 The order in which plugins and commands appear in the help command can be configured with `pluginorder.json.example`. Rename it to `pluginorder.json` and create an entry for each plugin, specifying the desired sort order. The order of commands under a plugin heading is configured by the order of the commands in the plugin's `.commands` member.
