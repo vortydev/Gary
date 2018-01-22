@@ -77,8 +77,11 @@ function subRoleNew(message, argStr) {
             name: argStr
         };
 
+        message.guild.createRole({ name: argStr })
+            .then(r => self.logger.log('created role ' + argStr + ' on server', 'sr new'))
+            .catch(e => self.logger.error(e, 'sr new'));
+
         d.subRoles.push(subRole);
-        self.logger.log('created new subrole: ' + subRole.name, 'sr new');
     });
 }
 
@@ -191,7 +194,7 @@ function subRoleRemove(message, argStr) {
         subRoleHelp(message.member);
     }
 
-    var args = argStr.split(':');
+    var args = argStr.split(splitChar);
     modifyData(d => {
         var group = d.groups.find(g => {
             return g.name.toLowerCase() == args[0].toLowerCase();        
