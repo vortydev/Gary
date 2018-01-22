@@ -93,12 +93,31 @@ function subRoleDelete(message, argStr) {
 
         d.subRoles.pop(subRole);
     });
-
-    self.logger.log('subrole delete');
 }
 
 function subRoleList(message, argStr) {
-    self.logger.log('subrole list');
+    readData(d => {
+        var group = d.groups.find(g => {
+            return g.name.toLowerCase() == argStr.toLowerCase();
+        });
+        
+        if (!group) {
+            self.logger.log('no group matching ' + argStr, 'sr list');
+            return;
+        }
+
+        var subRoles = group.subRoleIds.map(id => {
+            return d.subRoles.find(sr => sr.id == id);
+        });
+        
+        var reply = 'the subroles of **' + group.name + '** available are:\n';
+        for (var i = 0; i < d.subRoles.length; i++) {
+            reply += '`' + d.subRoles[i].name + '`\n';
+        }
+
+        message.reply(reply)
+            .catch(e => self.logger.error(e, 'sr list'));
+    });
 }
 
 function subRoleAdd(message, argStr) {
