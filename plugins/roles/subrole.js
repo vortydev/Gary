@@ -146,7 +146,7 @@ function subRoleList(message, argStr) {
 function subRoleAdd(message, argStr) {
     var splitChar = ':';
     if (!argStr.includes(splitChar)) {
-        subRoleHelp(message);
+        subRoleHelp(message.member);
         return;
     }
 
@@ -186,6 +186,12 @@ function subRoleAdd(message, argStr) {
 }
 
 function subRoleRemove(message, argStr) {
+    var splitChar = ':';
+    if (!argStr.includes(splitChar)) {
+        subRoleHelp(message.member);
+    }
+
+    var args = argStr.split(':');
     modifyData(d => {
         var group = d.groups.find(g => {
             return g.name.toLowerCase() == args[0].toLowerCase();        
@@ -216,7 +222,7 @@ function subRoleRemove(message, argStr) {
             return;
         }
 
-        group.subRoleIds.pop(role.id);
+        group.subRoleIds.splice(group.subRoleIds.indexOf(role.id), 1);
     });
 }
 
