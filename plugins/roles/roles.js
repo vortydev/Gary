@@ -50,8 +50,15 @@ exports['role'] = {
                     .then(m => m.delete(5000));
                 return;
             }
+
+            if (!subrole.canUse(message.member, role)) {
+                message.reply('you do not have the right group role for: **' + role.name + '**')
+                    .then(m => m.delete(5000))
+                    .catch(e => self.logger.error(e, 'role'));
+                return;
+            }
         }
-        console.log(role);
+        
         var serverRole = message.guild.roles.find("name", role.name);
         if (!serverRole) {
             self.logger.log('Found no role on server matching: ' + role.name);

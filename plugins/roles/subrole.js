@@ -69,7 +69,29 @@ exports.process = function(message, args) {
     command.process(message, args.slice(1).join(' '));
 }
 
+exports.canUse = function(member, subRole) {
+    var memberRoles = member.roles.map((r, _) => r);
+
+    var groups = getData().groups.filter(g => {
+        return memberRoles.map(r => r.name.toLowerCase())
+            .includes(g.name.toLowerCase());
+    });
+
+    for (var i = 0; i < groups.length; i++) {
+        if (groups[i].subRoleIds.includes(subRole.id)) {
+            self.logger.log('matched on group: ' + groups[i].name, 'sr canAssgn');
+            return true;
+        }
+    } 
+
+    return false;
+}
+
 exports.getSubRole = function(name) {
+    return getSubRole(name);
+}
+
+function getSubRole(name) {
     return getData().subRoles.find(sr => {
         return sr.name.toLowerCase() == name.toLowerCase();
     });
