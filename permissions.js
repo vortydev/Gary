@@ -3,11 +3,20 @@ var config = require('./config.json');
 var roles = config.roles.roles;
 var permissionGroups = config.permissions.permissionGroups;
 
-exports.hasPermission = function (member, commandName) {
+exports.hasPermission = function (member, commandName, args) {
     var result = true;
 
     for (var i = 0; i < permissionGroups.length; i++) {
         var group = permissionGroups[i];
+
+        for (var c = 0; c < group.commands.length; c++) {
+            if (group.commands[c].includes(commandName) && args && args.length) {
+                if (group.commands[c] == [commandName, args[0]].join(' ')) {
+                    commandName = group.commands[c];
+                    break;
+                }
+            }
+        }
 
         if (!group.commands.includes(commandName))
             continue;

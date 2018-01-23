@@ -58,7 +58,7 @@ client.on('message', message => {
             var commandName = args.shift().toLowerCase();
 
             if (commandName in commands) {
-                if (permissions.hasPermission(message.member, commandName)) {
+                if (permissions.hasPermission(message.member, commandName, args)) {
                     var command = commands[commandName];
                     Logger.logCommand(message);
                     command.process(message, args);
