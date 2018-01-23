@@ -96,8 +96,8 @@ exports.getSubRoles = function(groupName) {
     var group = data.groups.find(g => {
         return g.name.toLowerCase() == groupName.toLowerCase();
     });
+
     if (!group) {
-        self.logger.log('could not find group:' + groupName, 'get sr');
         return [];
     }
 
@@ -174,7 +174,12 @@ function subRoleNew(message, argStr) {
         };
 
         message.guild.createRole({ name: argStr })
-            .then(r => self.logger.log('created role ' + argStr + ' on server', 'sr new'))
+            .then(r => {
+                self.logger.log('created role ' + argStr + ' on server', 'sr new');
+                message.reply('created subrole: **' + argStr + '**')
+                    .then(m => m.delete(5000))
+                    .catch(e => self.logger.error(e, 'sr new'));
+            })
             .catch(e => self.logger.error(e, 'sr new'));
 
         d.subRoles.push(subRole);
@@ -208,7 +213,12 @@ function subRoleDelete(message, argStr) {
         }
 
         serverRole.delete()
-            .then(() => self.logger.log('deleted subrole on server: ' + subRole.name, 'sr del'))
+            .then(() => {
+                self.logger.log('deleted subrole on server: ' + subRole.name, 'sr del');
+                message.reply('deleted subrole: **' + subRole.name + '**')
+                    .then(m => m.delete(5000))
+                    .catch(e => self.logger.error(e, 'sr del'));
+            })
             .catch(e => self.logger.error(e, 'sr del'));
     });
 }
@@ -290,6 +300,11 @@ function subRoleAdd(message, argStr) {
         }
 
         group.subRoleIds.push(role.id);
+
+        self.logger.log('added subrole ' + role.name + ' to group ' + group.name, 'sr add');
+        message.reply('added subrole **' + role.name + '** to group **' + group.name + '**')
+            .then(m => m.delete(5000))
+            .catch(e => self.logger.error(e, 'sr add'));
     });
 }
 
@@ -331,6 +346,11 @@ function subRoleRemove(message, argStr) {
         }
 
         group.subRoleIds.splice(group.subRoleIds.indexOf(role.id), 1);
+
+        self.logger.log('removed subrole ' + role.name + ' from group ' + group.name, 'sr remove');
+        message.reply('removed subrole **' + role.name + '** from group **' + group.name + '**')
+            .then(m => m.delete(5000))
+            .catch(e => self.logger.error(e, 'sr remove'));
     });
 }
 
