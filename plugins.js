@@ -144,7 +144,7 @@ function help(message) {
     }
 
     var embed = new Discord.RichEmbed()
-        .setColor(parseInt(config.embedCol, 16))
+        .setColor(parseInt(self.config.embedCol, 16))
         .setTitle(self.client.user.username + ' Commands')
         .setDescription(result)
         .setThumbnail(self.client.user.avatarURL)
