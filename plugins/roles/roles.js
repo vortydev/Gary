@@ -95,7 +95,7 @@ exports['rolelist'] = {
 
         var embed = new Discord.RichEmbed()
             .setColor(parseInt(self.fullconfig.embedCol, 16))
-            .setTitle("Availible Roles")
+            .setTitle("Available Roles")
             .setDescription(availableRoles.join('\n'))
             .setFooter(new Date());
 
