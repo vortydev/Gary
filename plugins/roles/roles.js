@@ -1,6 +1,9 @@
 var self = this;
 
+var Discord = require("discord.js");
+
 self.config = null;
+self.fullconfig = null;
 
 exports.commands = [
     'role',
@@ -12,6 +15,7 @@ self.logger = null;
 
 exports.init = function (client, config, _, logger) {
     self.config = config.roles;
+    self.fullconfig = config;
     self.logger = logger;
     
     client.on('guildMemberAdd', member => {
@@ -80,14 +84,28 @@ exports['rolelist'] = {
     process: function (message) {
         var availableRoles = [];
 
-        for (var i = 0; i < self.config.roles.length; i++) {
-            var role = self.config.roles[i];
-            if (role.isAssignable && message.guild.roles.find('name', role.name)) {
-                availableRoles.push(role.name);
+        for (var i = 0; i < self.config.assignableRoles.length; i++) {
+            for (var x = 0; x < self.config.roles.length; x++) {
+                if (self.config.roles[x].id == self.config.assignableRoles[i]) {
+                    availableRoles.push(self.config.roles[x].name)
+                }
             }
         }
 
-        message.reply('available roles are: ' + availableRoles.join(', '))
+        if (availableRoles.length == 0) {
+            message.reply("there are no availible roles!")
+                .then(m => m.delete(5000))
+                .catch(self.logger.error);
+            return;
+        }
+
+        var embed = new Discord.RichEmbed()
+            .setColor(parseInt(self.fullconfig.embedCol, 16))
+            .setTitle("Availible Roles")
+            .setDescription(availableRoles.join('\n'))
+            .setFooter(new Date());
+
+        message.channel.send({ embed })
             .catch(self.logger.error);
     }
 }
