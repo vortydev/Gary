@@ -168,9 +168,25 @@ function removeRole(message, serverRole) {
     member.removeRole(serverRole)
         .then(() => {
             self.logger.log('Removed role ' + serverRole.name + ' from ' + member.user.username);
-        })
-        .catch(self.logger.error);
+            message.reply('the role **' + serverRole.name + '** has been **removed**')
+                .then(m => m.delete(5000))
+                .catch(e => self.logger.error(e, 'role rm'));
+       }).catch(e => self.logger.error(e, 'role rm'));
     
-    message.reply('the role **' + serverRole.name + '** has been **removed**')
-        .then(m => m.delete(5000));
+    var subRoles = subrole.getSubRoles(serverRole.name);
+    for (var i = 0; i < subRoles.length; i++) {
+        var subRole = member.roles.find('name', subRoles[i].name);
+        if (!subRole) {
+            self.logger.log('no role on server: ' + subRoles[i].name, 'role rm');
+            continue;
+        }
+
+        member.removeRole(subRole)
+            .then(() => {
+                self.logger.log('Removed subrole ' + subRole.name + ' from ' + member.displayName);
+                message.reply('the subrole **' + subRole.name + '** has been **removed**')
+                    .then(m => m.delete(5000))
+                    .catch(e => self.logger.error(e, 'role rm'));
+            }).catch(e => self.logger.error(e, 'role rm'));
+    }
 }

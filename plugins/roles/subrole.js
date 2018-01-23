@@ -91,6 +91,21 @@ exports.getSubRole = function(name) {
     return getSubRole(name);
 }
 
+exports.getSubRoles = function(groupName) {
+    var data = getData();
+    var group = data.groups.find(g => {
+        return g.name.toLowerCase() == groupName.toLowerCase();
+    });
+    if (!group) {
+        self.logger.log('could not find group:' + groupName, 'get sr');
+        return [];
+    }
+
+    return group.subRoleIds.map(id => {
+        return data.subRoles.find(sr => sr.id == id);
+    });
+}
+
 function getSubRole(name) {
     return getData().subRoles.find(sr => {
         return sr.name.toLowerCase() == name.toLowerCase();
