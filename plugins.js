@@ -170,11 +170,14 @@ function stop(message) {
 }
 
 function uptime(message) {
+    var date = new Date(new Date() - self.client.readyAt);
 
-    var readyAt = self.client.readyAt;
-    var now = new Date();
+    var embed = new Discord.RichEmbed()
+        .setColor(parseInt(self.config.embedCol, 16))
+        .setTitle("Uptime")
+        .setDescription(`I have been online for ${Math.floor(date.getTime() / 86400000)} days, ${date.getHours()} hours and ${date.getMinutes()} minutes.`)
+        .setFooter(new Date());
 
-    var date = new Date(now - readyAt)
-
-    message.channel.send("I have been online for " + Math.floor(date.getTime() / 60000) + " minutes.");
+    message.channel.send({ embed })
+        .catch(self.logger.error);
 }
