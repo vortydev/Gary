@@ -4,6 +4,7 @@
     "embedCol":"0xffffff",
     "muteRoleName":"",
     "messageFilter": {
+        "immuneRoleNames":[],
         "channels":[
             {"channel": "*", "whitelist": [], "blacklist": []}
         ]
