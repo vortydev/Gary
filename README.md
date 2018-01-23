@@ -8,7 +8,11 @@ I'm proud to offer you guys my now open-sourced Discord bot, Gary! :D - TheV0rte
 
 # Roles:
 
-Add roles (case-sensitively!) to the `roles.roles` section of `config.json`. A role requires a unique ID and a name matching a configured role on the server. `assignableRoles` is a list of the IDs that can be assigned using the `role` command. `defaultRoles` are the IDs of the roles a user is automatically assigned on joining the server.
+There are two flavours of roles, **groups** and **subroles**. 
+
+**Group roles** are configured in the `roles.roles` section of `config.json`. A group role requires a unique ID and a name matching a configured role on the server. `assignableRoles` is a list of the IDs that can be assigned using the `role` command. `defaultRoles` are the IDs of the group roles a user is automatically assigned on joining the server.
+
+**Subroles** are managed via the `subrole` command. Subroles can be created and deleted with `subrole new` and `subrole delete`. Once added, a `subrole` can be assigned to one or many parents with `subrole add`, or removed with `subrole remove`. Lastly, availably subroles can be shown with `subrole list` and `subrole list <group name>`.
 
 # Permissions:
 
