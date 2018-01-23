@@ -4,7 +4,8 @@ var fs = require('fs');
 
 const rolesPath = './plugins/roles/_roles.json';
 const subRoleUsage = '`subrole new <role>` | create a new subrole\n'
-    + '`subrole list <group>` | list subroles in a group\n'
+    + '`subrole delete <role>` | delete a subrole\n'
+    + '`subrole list`, `subrole list <group>` | list subroles (in a group)\n'
     + '`subrole add <group>:<role>` | add a subrole to a group\n'
     + '`subrole remove <group>:<role>` | remove a subrole from a group';
 
