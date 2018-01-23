@@ -6,6 +6,9 @@ links.json
 quizconfig.json
 channel.txt
 
+# Log Folder
+logs/
+
 *.old
 *.bat
 *.swp
