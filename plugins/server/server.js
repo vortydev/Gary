@@ -10,7 +10,7 @@ exports.commands = [
 ];
 
 exports.init = function (client, config, _, logger) {
-    self.config = client;
+    self.config = config;
     self.logger = logger;
 }
 
