@@ -9,7 +9,7 @@ const subRoleUsage = '`subrole new <role>` | create a new subrole\n'
     + '`subrole remove <group>:<role>` | remove a subrole from a group';
 
 self.logger = null;
-self.config;
+self.config = null;
 self.subRolesData = null;
 self.commands = [
     { name: 'new', process: subRoleNew },
@@ -29,6 +29,25 @@ exports.init = function(config, logger) {
         self.logger.log('found no subroles data, creating...', 'subrole');
         createRolesFile();
     }
+
+    readData(d => {
+        var warning = 'Mismatch between config.json roles and _roles.json groups';
+
+        if (d.groups.length != self.config.roles.length) {
+            self.logger.log(warning, 'sr init');
+            return;
+        }
+
+        for (var i = 0; i < d.groups.length; i++) {
+            var role = self.config.roles[i];
+            var group = d.groups[i];
+
+            if (role.name != group.name) {
+                self.logger.log(warning, 'sr init');
+                return;
+            }
+        }
+    });
 }
 
 exports.process = function(message, args) {
