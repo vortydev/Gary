@@ -110,6 +110,16 @@ exports['ping'] = {
 exports['tempmute'] = {
     usage: 'mute <mention> <time> | Mute a user for <time> seconds',
     process: function (message, args) {
+        for (var i = 0; i < self.config.immuneRoleNames.length; i++) {
+            var immuneRole = message.guild.roles.find(r => r.name == self.config.immuneRoleNames[i]);
+            if (message.member.roles.has(immuneRole.id)) {
+                message.reply("I cannot mute this member!")
+                    .then((msg) => { msg.delete(5000) })
+                    .catch(self.logger.error);
+                return;
+            }
+        }
+
         if (args.length != 2) 
             return;
 
