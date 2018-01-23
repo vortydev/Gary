@@ -69,6 +69,12 @@ exports.process = function(message, args) {
     command.process(message, args.slice(1).join(' '));
 }
 
+exports.getSubRole = function(name) {
+    return getData().subRoles.find(sr => {
+        return sr.name.toLowerCase() == name.toLowerCase();
+    });
+}
+
 function checkServerSync(message) {
     readData(d => {
         var syncOk = true;
@@ -311,6 +317,10 @@ function createRolesFile() {
 
         self.logger.log('created subrole data file', 'subrole');
     });
+}
+
+function getData() {
+    return JSON.parse(fs.readFileSync(rolesPath, 'utf8'));
 }
 
 function readData(read) {

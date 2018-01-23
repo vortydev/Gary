@@ -36,24 +36,28 @@ exports['role'] = {
             }
         }
 
-        if (role == null) {
-            message.reply('**' + args.join(' ') + '** is not a valid role')
-                .then(m => m.delete(5000));
-            return;
-        }  
-        
-        if (!self.config.assignableRoles.includes(role.id)) {
-            message.reply('this role is off limits!')
-                .then(m => m.delete(5000));
-            return;
+        if (role) {
+            if (!self.config.assignableRoles.includes(role.id)) {
+                message.reply('this role is off limits!')
+                    .then(m => m.delete(5000));
+                return;
+            }
+        } else {
+            // role wasn't in configured roles, it could be a subrole
+            role = subrole.getSubRole(args.join(' '));
+            if (!role) {
+                message.reply('**' + args.join(' ') + '** is not a valid role')
+                    .then(m => m.delete(5000));
+                return;
+            }
         }
-        
+        console.log(role);
         var serverRole = message.guild.roles.find("name", role.name);
-        if (serverRole == null) {
+        if (!serverRole) {
             self.logger.log('Found no role on server matching: ' + role.name);
             return;
         }
-
+        
         if (!message.member.roles.has(serverRole.id)) {
             addRole(message, serverRole);
         } else {
