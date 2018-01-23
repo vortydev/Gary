@@ -173,20 +173,34 @@ function removeRole(message, serverRole) {
                 .catch(e => self.logger.error(e, 'role rm'));
        }).catch(e => self.logger.error(e, 'role rm'));
     
-    var subRoles = subrole.getSubRoles(serverRole.name);
+    var subRoles = subrole.getSubRoles(serverRole.name).map(r => r.name);
+    var rolesToRemove = [];
     for (var i = 0; i < subRoles.length; i++) {
-        var subRole = member.roles.find('name', subRoles[i].name);
+        var subRoleName = subRoles[i];
+
+        var subRole = member.roles.find('name', subRoles[i]);
         if (!subRole) {
-            self.logger.log('no role on server: ' + subRoles[i].name, 'role rm');
+            self.logger.log('no role on server: ' + subRoles[i], 'role rm');
             continue;
         }
 
+        rolesToRemove.push(subRole);
+/*
         member.removeRole(subRole)
             .then(() => {
-                self.logger.log('Removed subrole ' + subRole.name + ' from ' + member.displayName);
-                message.reply('the subrole **' + subRole.name + '** has been **removed**')
+                console.log(subRoleName);
+                self.logger.log('Removed subrole ' + subRoleName + ' from ' + member.displayName);
+                message.reply('the subrole **' + subRoleName + '** has been **removed**')
                     .then(m => m.delete(5000))
                     .catch(e => self.logger.error(e, 'role rm'));
-            }).catch(e => self.logger.error(e, 'role rm'));
+            }).catch(e => self.logger.error(e, 'role rm'));*/
     }
+
+    member.removeRoles(rolesToRemove)
+        .then(() => {
+            self.logger.log('Removed subroles:' + rolesToRemove.map(r => r.name).join(', '), 'role rm');
+            message.reply('removed subroles:\n**' + rolesToRemove.map(r => r.name).join('**\n**') + '**')
+                .catch(e => self.logger.error(e, 'role rm'));
+
+        }).catch(e => self.logger.error(e, 'role rm'));
 }
