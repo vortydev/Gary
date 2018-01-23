@@ -21,6 +21,8 @@ exports.init = function (client, config, package, logger) {
 }
 
 function filter(message) {
+    if (message.channel.type == 'dm')
+        return;
 
     for (var i = 0; i < self.config.immuneRoleNames.length; i++) {
         var immuneRole = message.guild.roles.find(r => r.name == self.config.immuneRoleNames[i]);
@@ -28,7 +30,7 @@ function filter(message) {
             return;
     }
 
-    if (message.author.bot || self.config.channels.length < 1 || message.channel.type == 'dm' || message.content.startsWith(self.prefix))
+    if (message.author.bot || self.config.channels.length < 1 || message.content.startsWith(self.prefix))
         return;
 
     if (allChannelsNotSpecified == null) {
