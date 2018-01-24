@@ -7,7 +7,7 @@ self.logger = null;
 var allChannelsNotSpecified = null;
 
 exports.init = function (client, config, package, logger) {
-    self.config = config;
+    self.config = config.messageFilter;
     self.prefix = config.prefix;
     self.logger = logger;
     

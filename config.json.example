@@ -3,9 +3,9 @@
     "prefix":"",
     "embedCol":"0xffffff",
     "muteRoleName":"",
-    "immuneRoleNames":[],
     "messageFilter": {
         "channels":[
+        "immuneRoleNames":[],
             {"channel": "*", "whitelist": [], "blacklist": []}
         ]
     },
