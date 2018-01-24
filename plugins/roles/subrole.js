@@ -379,8 +379,8 @@ function createRolesFile() {
             self.logger.error(e, 'subrole');
             return;
         }    
-
-        self.logger.log('created subrole data file', 'subrole');
+        
+        self.logger.log('created subrole data file', 'subrole');      
     });
 }
 
@@ -402,7 +402,7 @@ function readData(read) {
             self.logger.error(e, 'sr read');
             self.logger.log('recreating subroles configuration...');
             createRolesFile();
-            self.logger.log('please restart bot to try again. Pray problem doesn\'t persist :/');
+            self.logger.log('please restart bot to try again.');
         }
 
         if (!obj)
