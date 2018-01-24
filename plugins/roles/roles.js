@@ -200,6 +200,7 @@ function removeRole(message, serverRole) {
         .then(() => {
             self.logger.log('Removed subroles:' + rolesToRemove.map(r => r.name).join(', '), 'role rm');
             message.reply('removed subroles:\n**' + rolesToRemove.map(r => r.name).join('**\n**') + '**')
+                .then(m => m.delete(5000))
                 .catch(e => self.logger.error(e, 'role rm'));
 
         }).catch(e => self.logger.error(e, 'role rm'));
