@@ -94,7 +94,7 @@ exports['avatar'] = {
 
 exports['rules'] = {
     usage: 'DM the user with rules',
-    process: function (message, args, client) {
+    process: function (message, args) {
         fs.readFile(rulesTextPath, 'utf8', (err, data) => {
             if (err) {
                 self.logger.error(err);
@@ -104,7 +104,7 @@ exports['rules'] = {
             var embed = new Discord.RichEmbed()
                 .setColor(0x7a7a7a)
                 .setTitle('Rules')
-                .setAuthor(client.user.username, client.user.avatarURL)
+                .setAuthor(self.client.user.username, self.client.user.avatarURL)
                 .setDescription(data);
 
             message.reply('rules have been sent.')
