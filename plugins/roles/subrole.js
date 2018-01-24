@@ -140,6 +140,7 @@ function checkServerSync(message) {
 
         if (!syncOk) {
             message.reply('there is a problem with the role configuration. See log.')
+                .then(m => m.delete(5000))
                 .catch(e => self.logger.error(e, 'sr sync'));
         }
     });
@@ -277,6 +278,7 @@ function subRoleAdd(message, argStr) {
 
         if (!group) {
             message.reply('no group matching ' + args[0])
+                .then(m => m.delete(5000))
                 .catch(e => self.logger.error(e, 'sr add'));
 
             return;
@@ -288,6 +290,7 @@ function subRoleAdd(message, argStr) {
 
         if (!role) {
             message.reply('no role matching ' + args[1])
+                .then(m => m.delete(5000))
                 .catch(e => self.logger.error(e, 'sr add'));
 
             return;
@@ -295,6 +298,7 @@ function subRoleAdd(message, argStr) {
 
         if (group.subRoleIds.includes(role.id)) {
             message.reply(`**${role.name}** is already a subrole of **${group.name}**`)
+                .then(m => m.delete(5000))
                 .catch(e => self.logger.error(e, 'sr add'));+ group.name
 
             return;
@@ -323,6 +327,7 @@ function subRoleRemove(message, argStr) {
 
         if (!group) {
             message.reply('no group matching ' + args[0])
+                .then(m => m.delete(5000))
                 .catch(e => self.logger.error(e, 'sr remove'));
 
             return;
@@ -334,6 +339,7 @@ function subRoleRemove(message, argStr) {
 
         if (!role) {
             message.reply('no role matching ' + args[1])
+                .then(m => m.delete(5000))
                 .catch(e => self.logger.error(e, 'sr remove'));
 
             return;
@@ -341,6 +347,7 @@ function subRoleRemove(message, argStr) {
 
         if (!group.subRoleIds.includes(role.id)) {
             message.reply(`**${role.name}** is not a subrole of **${group.name}**`)
+                .then(m => m.delete(5000))
                 .catch(e => self.logger.error(e, 'sr remove'));+ group.name
 
             return;
@@ -388,7 +395,20 @@ function readData(read) {
             return;
         }
 
-        read(JSON.parse(data));
+        var obj = null;
+        try {
+            obj = JSON.parse(data);
+        } catch (e) {
+            self.logger.error(e, 'sr read');
+            self.logger.log('recreating subroles configuration...');
+            createRolesFile();
+            self.logger.log('please restart bot to try again. Pray problem doesn\'t persist :/');
+        }
+
+        if (!obj)
+            return;
+
+        read(obj);
     });
 }
 
