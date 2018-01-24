@@ -185,16 +185,10 @@ function removeRole(message, serverRole) {
         }
 
         rolesToRemove.push(subRole);
-/*
-        member.removeRole(subRole)
-            .then(() => {
-                console.log(subRoleName);
-                self.logger.log('Removed subrole ' + subRoleName + ' from ' + member.displayName);
-                message.reply('the subrole **' + subRoleName + '** has been **removed**')
-                    .then(m => m.delete(5000))
-                    .catch(e => self.logger.error(e, 'role rm'));
-            }).catch(e => self.logger.error(e, 'role rm'));*/
     }
+
+    if (!rolesToRemove.length)
+        return;
 
     member.removeRoles(rolesToRemove)
         .then(() => {
