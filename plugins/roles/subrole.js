@@ -258,7 +258,7 @@ function subRoleList(message, argStr) {
                 outputGroup(group) :
                 `no group matching **${argStr}**`;
         }
-        message.reply(reply)
+        message.author.send(reply)
             .catch(e => self.logger.error(e, 'sr list'));
     });
 }
