@@ -1,7 +1,7 @@
 var self = this;
 
 self.config = null;
-sel.fullconfig = null;
+self.fullconfig = null;
 self.prefix = null;
 self.logger = null;
 
