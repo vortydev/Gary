@@ -4,12 +4,14 @@ var Discord = require("discord.js");
 var links = require('./links.json');
 
 self.logger = null;
+self.config = null;
 
 exports.commands = [
     'link'
 ];
 
 exports.init = function (client, config, _, logger) {
+    self.config = config;
     self.logger = logger;
 }
 
@@ -46,6 +48,7 @@ exports['link'] = {
         }
         
         var embed = new Discord.RichEmbed()
+            .setColor(parseInt(self.config.embedCol, 16))
             .setTitle(links[x].link)
             .setDescription(links[x].description);
 

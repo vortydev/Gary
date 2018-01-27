@@ -1,6 +1,7 @@
 var self = this;
 
 self.config = null;
+sel.fullconfig = null;
 self.prefix = null;
 self.logger = null;
 
@@ -8,6 +9,7 @@ var allChannelsNotSpecified = null;
 
 exports.init = function (client, config, package, logger) {
     self.config = config.messageFilter;
+    self.fullconfig = config;
     self.prefix = config.prefix;
     self.logger = logger;
     
@@ -23,12 +25,6 @@ exports.init = function (client, config, package, logger) {
 function filter(message) {
     if (message.channel.type == 'dm')
         return;
-
-    for (var i = 0; i < self.config.immuneRoleNames.length; i++) {
-        var immuneRole = message.guild.roles.find(r => r.name == self.config.immuneRoleNames[i]);
-        if (message.member.roles.has(immuneRole.id))
-            return;
-    }
 
     if (message.author.bot || self.config.channels.length < 1 || message.content.startsWith(self.prefix))
         return;
@@ -46,6 +42,12 @@ function filter(message) {
     if (self.config.channels[allChannelsNotSpecified].blacklist == null) {
         self.logger.log("Please include a blacklist for all channels not specified (channel with the name of '*').")
         return;
+    }
+
+    for (var i = 0; i < self.fullconfig.immuneRoleNames.length; i++) {
+        var immuneRole = message.guild.roles.find(r => r.name == self.config.immuneRoleNames[i]);
+        if (message.member.roles.has(immuneRole.id))
+            return;
     }
 
     var channelinfo = null;
