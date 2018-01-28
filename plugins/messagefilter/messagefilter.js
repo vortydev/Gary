@@ -12,7 +12,7 @@ exports.init = function (client, config, package, logger) {
     self.fullconfig = config;
     self.prefix = config.prefix;
     self.logger = logger;
-    
+
     for (var i = 0; i < self.config.channels.length; i++) {
         if (self.config.channels[i].channel == "*") {
             allChannelsNotSpecified = i;
@@ -46,12 +46,15 @@ function filter(message) {
 
     for (var i = 0; i < self.fullconfig.immuneRoleNames.length; i++) {
         var immuneRole = message.guild.roles.find(r => r.name == self.config.immuneRoleNames[i]);
+        if (immuneRole == null) {
+            self.logger.log(self.config.immuneRoleNames[i] + " does not exist!")
+        }
         if (message.member.roles.has(immuneRole.id))
             return;
     }
 
     var channelinfo = null;
-    
+
     for (var i = 0; i < self.config.channels.length; i++) {
         if (self.config.channels[i].channel == message.channel.name) {
             channelinfo = self.config.channels[i];
@@ -64,12 +67,12 @@ function filter(message) {
 
         channelinfo = self.config.channels[allChannelsNotSpecified];
     }
-    
+
     var blacklist = channelinfo.blacklist;
     if (blacklist == null) {
         blacklist = self.config.channels[allChannelsNotSpecified].blacklist;
     }
-    
+
     for (var i = 0; i < blacklist.length; i++) {
         var search = new RegExp(blacklist[i]);
 
@@ -78,7 +81,7 @@ function filter(message) {
                 .then(() => {
                     var name = message.member.displayName;
                     var content = message.content;
-                    
+
                     self.logger.log(`Deleted blacklisted message: ${name}: ${content}`, 'msgfilter');
                 })
                 .catch(self.logger.error);
