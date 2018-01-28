@@ -58,13 +58,13 @@ exports['role'] = {
                 return;
             }
         }
-        
+
         var serverRole = message.guild.roles.find("name", role.name);
         if (!serverRole) {
             self.logger.log('Found no role on server matching: ' + role.name);
             return;
         }
-        
+
         if (!message.member.roles.has(serverRole.id)) {
             addRole(message, serverRole);
         } else {
@@ -141,7 +141,7 @@ function addRole(message, serverRole) {
     message.reply('the role **' + serverRole.name + '** has been **added**')
         .then(m => m.delete(5000));
 
-    if (!self.config.defaultRoles.length) 
+    if (!self.config.defaultRoles.length)
         return;
 
     var defaultRoles = self.config.roles.filter(r => {
@@ -172,7 +172,7 @@ function removeRole(message, serverRole) {
                 .then(m => m.delete(5000))
                 .catch(e => self.logger.error(e, 'role rm'));
        }).catch(e => self.logger.error(e, 'role rm'));
-    
+
     var subRoles = subrole.getSubRoles(serverRole.name).map(r => r.name);
     var rolesToRemove = [];
     for (var i = 0; i < subRoles.length; i++) {
@@ -180,7 +180,7 @@ function removeRole(message, serverRole) {
 
         var subRole = member.roles.find('name', subRoles[i]);
         if (!subRole) {
-            self.logger.log('no role on server: ' + subRoles[i], 'role rm');
+            self.logger.log('no role on user: ' + subRoles[i], 'role rm');
             continue;
         }
 
