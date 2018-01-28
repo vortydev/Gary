@@ -11,7 +11,6 @@ var welcomeText;
 self.client = null;
 self.config = null;
 self.logger = null;
-self.config = null;
 
 exports.commands = [
     'rules',
@@ -131,7 +130,7 @@ exports['joined'] = {
                 var mins = date.getUTCMinutes();
 
                 var end = "**" + day.toString() + "/" + month.toString() + "/" + year.toString() + "** at " + hours.toString() + ":";
-        
+
                 if (mins.toString().length == 1)
                     end += "0";
 
@@ -173,7 +172,7 @@ function log(member, message, colour, joined) {
         self.logger.logStr('no #' + logChannelName + ' on this server');
         return;
     }
-    
+
     var embed = new Discord.RichEmbed()
         .setColor(colour)
         .setAuthor(self.client.user.username, self.client.user.avatarURL)
@@ -182,8 +181,8 @@ function log(member, message, colour, joined) {
 
     if (!joined)
         embed.setDescription(`**${member.user.username}#${member.user.discriminator}** ${message}`);
-    
+
 
     channel.send({ embed: embed });
-    
+
 }
