@@ -179,10 +179,8 @@ function removeRole(message, serverRole) {
         var subRoleName = subRoles[i];
 
         var subRole = member.roles.find('name', subRoles[i]);
-        if (!subRole) {
-            self.logger.log('no role on user: ' + subRoles[i], 'role rm');
+        if (!subRole)
             continue;
-        }
 
         rolesToRemove.push(subRole);
     }
