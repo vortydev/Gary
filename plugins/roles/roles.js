@@ -97,7 +97,8 @@ exports['rolelist'] = {
             .setColor(parseInt(self.fullconfig.embedCol, 16))
             .setTitle("Available Roles")
             .setDescription(availableRoles.join('\n'))
-            .setFooter(new Date());
+            .setFooter(new Date())
+            .setAuthor(message.author.tag, message.author.avatarURL);
 
         message.channel.send({ embed })
             .catch(self.logger.error);

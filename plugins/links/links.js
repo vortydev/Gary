@@ -21,8 +21,10 @@ exports['link'] = {
         if (args[0] == null) {
             var embed = new Discord.RichEmbed()
                 .setColor(parseInt(self.config.embedCol, 16))
-                .setTitle("All Links");
-            
+                .setTitle("All Links")
+                .setFooter(new Date())
+                .setAuthor(message.author.tag, message.author.avatarURL);
+
             var text = "";
             for (var i = 0; i < links.length; i++) {
                 text += "`" + links[i].name + "` - " + links[i].description + "\n";
@@ -46,11 +48,13 @@ exports['link'] = {
                 .catch(self.logger.error);
             return;
         }
-        
+
         var embed = new Discord.RichEmbed()
             .setColor(parseInt(self.config.embedCol, 16))
             .setTitle(links[x].link)
-            .setDescription(links[x].description);
+            .setDescription(links[x].description)
+            .setFooter(new Date())
+            .setAuthor(message.author.tag, message.author.avatarURL);
 
         message.channel.send({ embed });
     }
