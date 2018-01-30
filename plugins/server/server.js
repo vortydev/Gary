@@ -21,7 +21,9 @@ exports['emojilist'] = {
         var embed = new Discord.RichEmbed()
             .setColor(parseInt(self.config.embedCol, 16))
             .setTitle("Custom Emoji:")
-            .setDescription(getEmoji(guild));
+            .setDescription(getEmoji(guild))
+            .setFooter(new Date())
+            .setAuthor(message.author.tag, message.author.avatarURL);
 
         message.channel.send({ embed })
             .catch(self.logger.error);
@@ -44,7 +46,8 @@ exports['serverinfo'] = {
             .addField("Member Status:", getStatus(guild))
             .addField("Channels:", getChannels(guild))
             .addField("Custom Emojis:", getEmoji(guild))
-            .setFooter(new Date());
+            .setFooter(new Date())
+            .setAuthor(message.author.tag, message.author.avatarURL);
 
         message.channel.send({ embed })
             .catch(self.logger.error);

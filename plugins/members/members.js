@@ -83,7 +83,8 @@ exports['avatar'] = {
             .setColor(parseInt(self.config.embedCol, 16))
             .setDescription('[Direct Link](' + message.author.avatarURL + ')')
             .setImage(message.author.avatarURL)
-            .setFooter('Brought to you by TheV0rtex™');
+            .setFooter(new Date())
+            .setAuthor(message.author.tag, message.author.avatarURL);
 
         message.reply('your avatar:');
         message.channel.send({ embed: embed })
@@ -101,10 +102,11 @@ exports['rules'] = {
             }
 
             var embed = new Discord.RichEmbed()
-                .setColor(0x7a7a7a)
+                .setColor(parseInt(self.config.embedCol, 16))
                 .setTitle('Rules')
-                .setAuthor(self.client.user.username, self.client.user.avatarURL)
-                .setDescription(data);
+                .setDescription(data)
+                .setFooter(new Date())
+                .setAuthor(self.client.user.username, self.client.user.avatarURL);
 
             message.reply('rules have been sent.')
                 .then(m => m.delete(5000))
@@ -144,24 +146,24 @@ exports['joined'] = {
 }
 
 function memberAdd(member) {
-    log(member, 'joined the server', 0x18bb68, true);
+    log(member, 'joined the server', parseInt(self.config.embedCol, 16), true);
 
     if (member.user.bot)
         return;
 
     var embed = new Discord.RichEmbed()
-        .setColor(0x7a7a7a)
+        .setColor(parseInt(self.config.embedCol, 16))
         .setTitle('Welcome!')
-        .setAuthor(self.client.user.username, self.client.user.avatarURL)
         .setDescription(welcomeText)
-        .setTimestamp();
+        .setFooter(new Date())
+        .setAuthor(message.author.tag, message.author.avatarURL);
 
     member.send({ embed: embed })
         .catch(self.logger.error);
 }
 
 function memberRemove(member) {
-    log(member, 'left the server', 0xff8c00, false);
+    log(member, 'left the server', parseInt(self.config.embedCol, 16), false);
 }
 
 function log(member, message, colour, joined) {
@@ -175,9 +177,9 @@ function log(member, message, colour, joined) {
 
     var embed = new Discord.RichEmbed()
         .setColor(colour)
-        .setAuthor(self.client.user.username, self.client.user.avatarURL)
         .setDescription(`<@${member.user.id}> ${message}`)
-        .setTimestamp();
+        .setFooter(new Date())
+        .setAuthor(message.author.tag, message.author.avatarURL);
 
     if (!joined)
         embed.setDescription(`**${member.user.username}#${member.user.discriminator}** ${message}`);
