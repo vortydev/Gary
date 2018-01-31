@@ -5,6 +5,7 @@
     "muteRoleName":"",
     "immuneRoleNames":[],
     "messageFilter": {
+        "caseSensitive":true,
         "channels":[
             {"channel": "*", "whitelist": [], "blacklist": []}
         ]
@@ -22,4 +23,3 @@
         ]
     }
 }
-

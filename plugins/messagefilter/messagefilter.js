@@ -48,6 +48,7 @@ function filter(message) {
         var immuneRole = message.guild.roles.find(r => r.name == self.config.immuneRoleNames[i]);
         if (immuneRole == null) {
             self.logger.log(self.config.immuneRoleNames[i] + " does not exist!")
+            return;
         }
         if (message.member.roles.has(immuneRole.id))
             return;
@@ -76,6 +77,10 @@ function filter(message) {
     for (var i = 0; i < blacklist.length; i++) {
         var search = new RegExp(blacklist[i]);
 
+        if (!self.config.caseSensitive) {
+            search = new RegExp(blacklist[i], 'i');
+        }
+
         if (message.content.search(search) != -1) {
             message.delete()
                 .then(() => {
@@ -96,6 +101,10 @@ function filter(message) {
 
     for (var i = 0; i < whitelist.length; i++) {
         var search = new RegExp(whitelist[i]);
+
+        if (!self.config.caseSensitive) {
+            search = new RegExp(white[i], 'i');
+        }
 
         if (message.content.search(search) == -1 && !message.author.bot) {
             message.delete();
