@@ -103,7 +103,7 @@ function filter(message) {
         var search = new RegExp(whitelist[i]);
 
         if (!self.config.caseSensitive) {
-            search = new RegExp(white[i], 'i');
+            search = new RegExp(whitelist[i], 'i');
         }
 
         if (message.content.search(search) == -1 && !message.author.bot) {
