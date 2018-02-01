@@ -178,8 +178,7 @@ function log(member, message, colour, joined) {
     var embed = new Discord.RichEmbed()
         .setColor(colour)
         .setDescription(`<@${member.user.id}> ${message}`)
-        .setFooter(new Date())
-        .setAuthor(message.author.tag, message.author.avatarURL);
+        .setFooter(new Date());
 
     if (!joined)
         embed.setDescription(`**${member.user.username}#${member.user.discriminator}** ${message}`);
