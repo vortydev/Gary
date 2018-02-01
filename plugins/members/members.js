@@ -155,8 +155,7 @@ function memberAdd(member) {
         .setColor(parseInt(self.config.embedCol, 16))
         .setTitle('Welcome!')
         .setDescription(welcomeText)
-        .setFooter(new Date())
-        .setAuthor(message.author.tag, message.author.avatarURL);
+        .setFooter(new Date());
 
     member.send({ embed: embed })
         .catch(self.logger.error);
