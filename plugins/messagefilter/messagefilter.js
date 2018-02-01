@@ -45,7 +45,7 @@ function filter(message) {
     }
 
     for (var i = 0; i < self.fullconfig.immuneRoleNames.length; i++) {
-        var immuneRole = message.guild.roles.find(r => r.name == self.config.immuneRoleNames[i]);
+        var immuneRole = message.guild.roles.find(r => r.name == self.fullconfig.immuneRoleNames[i]);
         if (immuneRole == null) {
             self.logger.log(self.config.immuneRoleNames[i] + " does not exist!")
             return;
