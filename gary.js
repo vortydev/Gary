@@ -64,7 +64,7 @@ client.on('message', message => {
                     if (!isCorrectChannel(commandName, channel)) {
                         message.reply("this is not the correct channel for this command")
                             .then((msg) => { msg.delete(5000) })
-                            .catch(self.logger.error);
+                            .catch(Logger.error);
                         return;
                     }
                     var command = commands[commandName];
@@ -98,7 +98,7 @@ function isCorrectChannel(commandName, channel) {
             }
         }
     }
-    
+
     if (!inConfig)
         return true;
 
