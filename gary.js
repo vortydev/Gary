@@ -25,10 +25,10 @@ client.on('error', err => {
 
 client.on('ready', () => {
     var serversCount = client.guilds.size;
-    
+
     Logger.log('Gary v' + package.version + ' ready');
     Logger.log('Serving ' + serversCount + ' servers.');
-    
+
     client.user.setStatus('online'); //online, idle, dnd, invisible
     client.user.setPresence({ game: { name: config.prefix + 'help | v' + package.version, type:0 } });
 });
@@ -39,7 +39,7 @@ client.on('message', message => {
         message.author.send("**ACCESS DENIED**\nTry again on the server in the appropriate channel.");
         return;
     }
-    
+
     if(message.author.bot)
         return;
 
@@ -47,8 +47,10 @@ client.on('message', message => {
         return;
 
     // All commands should be immediately deleted
+    var channel = message.channel;
+
     message.delete()
-        .then(() => { 
+        .then(() => {
             // Handle commands
             var args = message.content
                 .slice(1)
@@ -59,6 +61,12 @@ client.on('message', message => {
 
             if (commandName in commands) {
                 if (permissions.hasPermission(message.member, commandName, args)) {
+                    if (!isCorrectChannel(commandName, channel)) {
+                        message.reply("this is not the correct channel for this command")
+                            .then((msg) => { msg.delete(5000) })
+                            .catch(self.logger.error);
+                        return;
+                    }
                     var command = commands[commandName];
                     Logger.logCommand(message);
                     command.process(message, args);
@@ -67,11 +75,34 @@ client.on('message', message => {
         })
         .catch(e => {
             // Message was already deleted
-            if (e.message == 'Unknown Message') 
-                return; 
-            
+            if (e.message == 'Unknown Message')
+                return;
+
             Logger.error(e);
         });
 });
+
+function isCorrectChannel(commandName, channel) {
+    var inConfig = false;
+
+    for (var i = 0; i < config.lockedCommands.length; i++) {
+        if (config.lockedCommands[i].name == commandName) {
+            inConfig = true;
+            if (config.lockedCommands[i].channels.length == 0) {
+                return true;
+            }
+            for (var x = 0; x < config.lockedCommands[i].channels.length; x++) {
+                if (config.lockedCommands[i].channels[x] == channel.name) {
+                    return true;
+                }
+            }
+        }
+    }
+    
+    if (!inConfig)
+        return true;
+
+    return false;
+}
 
 client.login(config.token);

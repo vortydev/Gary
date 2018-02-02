@@ -10,6 +10,9 @@
             {"channel": "*", "whitelist": [], "blacklist": []}
         ]
     },
+    "lockedCommands":[
+        {"name":"", "channels":[]}
+    ],
     "permissions": {
     "permissionGroups": [
             {"roles":[""], "commands":[""]}
