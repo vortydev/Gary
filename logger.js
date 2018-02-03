@@ -5,7 +5,7 @@ const sourceLength = 12;
 var currentLog = null;
 
 exports.logCommand = function (message) {
-    var name = message.member.username;
+    var name = message.author.username;
 
     logMessage(name + ' ran command: ' + message.content);
 }
