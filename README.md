@@ -8,7 +8,7 @@ I'm proud to offer you guys my now open-sourced Discord bot, Gary! :D - TheV0rte
 
 # Roles:
 
-There are two flavours of roles, **groups** and **subroles**. 
+There are two flavours of roles, **groups** and **subroles**.
 
 **Group roles** are configured in the `roles.roles` section of `config.json`. A group role requires a unique ID and a name matching a configured role on the server. `assignableRoles` is a list of the IDs that can be assigned using the `role` command. `defaultRoles` are the IDs of the group roles a user is automatically assigned on joining the server.
 
@@ -24,7 +24,7 @@ Rename `links.json.example` to `links.json`. Available links can be listed be ca
 
 # Quiz
 
-Rename `quizconfig.json.example` to `quizconfig.json`. Add `timeToAnswer` and `timeToJoin` to the file (in seconds). Optionally, add a channel (for example, `bot-spam`) to `channel` to lock the quiz to one channel.
+Rename `quizconfig.json.example` to `quizconfig.json`. Add `timeToAnswer` and `timeToJoin` to the file (in seconds).
 
 # Message Filter
 

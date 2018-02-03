@@ -29,13 +29,6 @@ exports.init = function (client, config, _, logger) {
 exports['quiz'] = {
     usage: 'Start a quiz with `quiz start [number of players]`',
     process: function (message, args) {
-        if (message.channel.name != quizConfig.channel && quizConfig.channel != '') {
-            message.reply('please use **#' + quizConfig.channel + '**')
-                .then(m => m.delete(5000))
-                .catch(self.logger.error);
-            return;
-        }
-        
         //If no argument was provided, send help and return.
         if (args[0] == null) {
             sendHelp(message);
@@ -46,7 +39,7 @@ exports['quiz'] = {
         switch (args[0].toLowerCase()) {
             case "start": {
                 //You cannot start a quiz if one is already open.
-                
+
                 if (currentQuiz != null) {
                     message.reply("the quiz is already in progress.")
                         .then((msg) => { msg.delete(5000) })
@@ -139,7 +132,7 @@ exports['quiz'] = {
                         .catch(self.logger.error);
                     return;
                 }
-                
+
                 //You must provide a choice
                 if (args[1] == null) {
                     message.reply("correct usage is `" + prefix + "quiz answer [letter]`")
@@ -213,14 +206,14 @@ exports['quiz'] = {
                         .catch(self.logger.error);
                     return;
                 }
-                
+
                 if (currentQuiz.started) {
                     message.reply("the quiz started so you cannot leave.")
                         .then((msg) => { msg.delete(5000) })
                         .catch(self.logger.error);
                     return;
                 }
-                
+
                 var num = null;
                 for (var i = 0; i < currentQuiz.participants.length; i++) {
                     if (currentQuiz.participants[i].id == message.author.id)
@@ -245,7 +238,7 @@ exports['quiz'] = {
 };
 
 function cancelQuiz(message) {
-    
+
     if (currentQuiz == null || currentQuiz.started)
         return;
 
@@ -440,7 +433,7 @@ function generateQuiz(participantsToStart, numOfQuestions, message) {
     request({
         url: url,
         json: false
-    }, 
+    },
     function (error, response, body) {
 
         questions = JSON.parse(body).results;
