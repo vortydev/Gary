@@ -5,7 +5,7 @@ const sourceLength = 12;
 var currentLog = null;
 
 exports.logCommand = function (message) {
-    var name = message.member.displayName;
+    var name = message.member.username;
 
     logMessage(name + ' ran command: ' + message.content);
 }
@@ -31,7 +31,7 @@ function getErrorLocation(err) {
 }
 
 function createNewLog() {
-    
+
     if (currentLog != null) {
         logMessage("Attempted to create new log when one already existed for the current session.");
         return;
@@ -61,13 +61,13 @@ function addToLog(addition) {
 }
 
 function logMessage(message, source) {
-    
+
     if (currentLog == null)
         createNewLog()
 
     var now = new Date();
     var padNum = (str, size) => padStart(str, '0', size);
-    
+
     if (!source) {
         source = '';
     }
