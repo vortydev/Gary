@@ -166,7 +166,6 @@ exports['tempmute'] = {
         if (args.length != 2)
             return;
 
-
         if (!target)
             return;
 
@@ -190,6 +189,8 @@ exports['tempmute'] = {
             .then(() => {
                 self.logger.log('Muting ' + target.user.username + ' for ' + seconds + ' seconds', 'admin');
                 target.send('You have been muted by ' + message.member.displayName + ' for ' + seconds + ' seconds.')
+                    .catch(self.logger.error);
+                message.channel.send(`${target.displayName} has been muted by ${message.member.displayName} for ${seconds} seconds`)
                     .catch(self.logger.error);
 
                 // ?!?!
