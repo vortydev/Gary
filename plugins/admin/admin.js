@@ -67,12 +67,16 @@ exports['reset'] = {
     }
 }
 
+const purgeUsage = '`purge <number> [@user]` | Delete the last x messages in a channel, optionally by [@user]';
 exports['purge'] = {
-    usage: 'purge <number> (@user) | Delete the last <number> messages in a channel (by @user)',
+    usage: purgeUsage,
     process: function (message, args) {
         var number = parseInt(args[0]);
-        if (!number)
+        if (!number) {
+            message.author.send(purgeUsage)
+                .catch(e => self.logger.error(e), 'purge');
             return;
+        }
 
         if (number > 99 || number < 0) {
             message.reply("there is a maxiumum value of 99 messages and a minimum value of 0.")
