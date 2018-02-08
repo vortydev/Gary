@@ -141,7 +141,8 @@ exports['joined'] = {
                 //NameHere joined on 30/12/2017 at 16:56
                 message.reply("you joined on " + end)
                     .catch(self.logger.error);
-            });
+            })
+            .catch(e => self.logger.error(e, 'joined'));
    }
 }
 
