@@ -65,7 +65,7 @@ exports.init = function (commands, client, config, package, logger) {
     } else {
         pluginFolders = getDirectories(pluginDirectory);
     }
-   
+
     for (var i = 0; i < pluginFolders.length; i++) {
         self.logger.log('loading plugin: ' + pluginFolders[i], 'plugins');
 
@@ -74,8 +74,8 @@ exports.init = function (commands, client, config, package, logger) {
             plugin.init(client, config, package, logger);
 
             if (!('commands' in plugin))
-                continue;           
-            
+                continue;
+
             for (var j = 0; j < plugin.commands.length; j++) {
                 if (plugin.commands[j] in plugin) {
                     commands[plugin.commands[j]] = plugin[plugin.commands[j]];
@@ -87,7 +87,7 @@ exports.init = function (commands, client, config, package, logger) {
         } catch (err) {
             self.logger.error(pluginFolders[i] + ' failed to load: ' + err, "plugins");
         }
-    } 
+    }
 
     self.logger.log('loading default commands', 'plugins');
     for (var i = 0; i < specialCommands.length; i++) {
@@ -98,9 +98,14 @@ exports.init = function (commands, client, config, package, logger) {
 }
 
 function help(message) {
+    if (!fs.existsSync('./pluginorder.json')) {
+        self.logger.log("The file 'pluginorder.json' does not exist. This file is required for the help command.", "plugins");
+        return;
+    }
+
     var result = '';
     var member = message.member;
-    
+
     for (var i = 0; i < specialCommands.length; i++) {
         var commandData = specialCommands[i];
         if(!permissions.hasPermission(member, commandData.name))
@@ -113,10 +118,10 @@ function help(message) {
     result += '\n';
 
     var pluginOrder = require('./pluginorder.json');
-    
+
     for (var p = 0; p < pluginOrder.length; p++) {
         var pluginData = self.plugins.find(pd => pd.name == pluginOrder[p]);
-        if (!pluginData) 
+        if (!pluginData)
             continue;
 
         var pluginName = pluginData.name;
@@ -127,7 +132,7 @@ function help(message) {
             var commandName = plugin.commands[c];
             if (!permissions.hasPermission(member, commandName))
                 continue;
-            
+
             var command = plugin[commandName];
             var commandText = '`' + self.config.prefix + commandName + '` - ';
 
@@ -140,7 +145,7 @@ function help(message) {
             result += '**' + pluginName + '**\n';
             result += commandLines.join('');
             result += '\n';
-        } 
+        }
     }
 
     var embed = new Discord.RichEmbed()
