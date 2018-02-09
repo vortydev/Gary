@@ -47,7 +47,7 @@ function filter(message) {
     for (var i = 0; i < self.fullconfig.immuneRoleNames.length; i++) {
         var immuneRole = message.guild.roles.find(r => r.name == self.fullconfig.immuneRoleNames[i]);
         if (immuneRole == null) {
-            self.logger.log(self.fullconfig.immuneRoleNames[i] + " does not exist!")
+            self.logger.log("You have specified a role named '" + self.fullconfig.immuneRoleNames[i] + "' in the config's immune roles, but this role does not exist!")
             return;
         }
         if (message.member.roles.has(immuneRole.id))

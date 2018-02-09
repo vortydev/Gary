@@ -170,7 +170,7 @@ function log(member, message, colour, joined) {
     self.logger.log(member.user.username + ' ' + message, 'members');
 
     if (!channel) {
-        self.logger.logStr('no #' + logChannelName + ' on this server');
+        self.logger.log('no #' + logChannelName + ' on this server');
         return;
     }
 

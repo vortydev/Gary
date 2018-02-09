@@ -1,7 +1,7 @@
 var self = this;
 
 var Discord = require("discord.js");
-var links = require('./links.json');
+var fs = require("fs");
 
 self.logger = null;
 self.config = null;
@@ -18,6 +18,13 @@ exports.init = function (client, config, _, logger) {
 exports['link'] = {
     usage: "link - Gets a list of all links | link link-name - Displays the link 'link name'",
     process: function (message, args) {
+        if (!fs.existsSync('./plugins/links/links.json')) {
+            self.logger.log("The file 'links.json' does not exist. This file is required for the link command.", "links");
+            return;
+        }
+
+        var links = require('./links.json');
+
         if (args[0] == null) {
             var embed = new Discord.RichEmbed()
                 .setColor(parseInt(self.config.embedCol, 16))
