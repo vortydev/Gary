@@ -7,3 +7,4 @@
 5. Keep text channels on-topic
 6. Do not send illegal links or files
 7. Do not annoy others in the voice channels
+8. Politics and social issues should really be avoided in any circumstance.
