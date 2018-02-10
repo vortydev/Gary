@@ -19,6 +19,7 @@
         ]
     },
     "roles": {
+        "mutuallyExclusiveRoles":false,
         "assignableRoles": [],
         "defaultRoles": [],
         "roles":[

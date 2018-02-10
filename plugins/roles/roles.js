@@ -66,6 +66,18 @@ exports['role'] = {
         }
 
         if (!message.member.roles.has(serverRole.id)) {
+            if (self.config.mutuallyExclusiveRoles) {
+                for (var i = 0; i < self.config.assignableRoles.length; i++) {
+                    for (var i = 0; i < self.config.roles.length; i++) {
+                        var serverR = message.guild.roles.find("name", self.config.roles[i].name);
+                        if (message.member.roles.has(serverR.id) && serverR != serverRole) {
+                            message.reply("you already have a role!")
+                                .then(m => m.delete(5000));
+                            return;
+                        }
+                    }
+                }
+            }
             addRole(message, serverRole);
         } else {
             removeRole(message, serverRole);
