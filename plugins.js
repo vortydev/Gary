@@ -98,11 +98,6 @@ exports.init = function (commands, client, config, package, logger) {
 }
 
 function help(message) {
-    if (!fs.existsSync('./pluginorder.json')) {
-        self.logger.log("The file 'pluginorder.json' does not exist. This file is required for the help command.", "plugins");
-        return;
-    }
-
     var result = '';
     var member = message.member;
 
@@ -117,9 +112,17 @@ function help(message) {
 
     result += '\n';
 
-    var pluginOrder = require('./pluginorder.json');
+    var pluginOrder = [];
+    var canOrder = fs.existsSync('./pluginorder.json');
+    if (canOrder) {
+        pluginOrder = require('./pluginorder.json');
+    } else {
+        self.logger.log("The file 'pluginorder.json' does not exist. This file is required for custom ordering of the help command.", "plugins");
 
-    for (var p = 0; p < pluginOrder.length; p++) {
+        pluginOrder = self.plugins.map(pd => pd.name);
+    }
+    
+    for (var p = 0; p < self.plugins.length; p++) {
         var pluginData = self.plugins.find(pd => pd.name == pluginOrder[p]);
         if (!pluginData)
             continue;
