@@ -147,7 +147,7 @@ exports['joined'] = {
 }
 
 function memberAdd(member) {
-    log(member, 'joined the server', parseInt(self.config.embedCol, 16), true);
+    log(member, 'joined the server', 0x18bb68, true);
 
     if (member.user.bot)
         return;
@@ -163,7 +163,7 @@ function memberAdd(member) {
 }
 
 function memberRemove(member) {
-    log(member, 'left the server', parseInt(self.config.embedCol, 16), false);
+    log(member, 'left the server', 0xff8c00, false);
 }
 
 function log(member, message, colour, joined) {
