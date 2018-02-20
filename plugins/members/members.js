@@ -26,14 +26,23 @@ exports.init = function (client, config, package, logger) {
     self.logger = logger;
     self.config = config;
 
-    fs.readFile(welcomeTextPath, 'utf8', (err, data) => {
-        if (err) {
-            self.logger.error(err);
-            return;
-        }
+    if (!fs.existsSync(welcomeTextPath)) {
+        self.logger.log("The file " + welcomeTextPath + " does not exist. This may cause command responses.")
+    }
+    else {
+        fs.readFile(welcomeTextPath, 'utf8', (err, data) => {
+            if (err) {
+                self.logger.error(err);
+                return;
+            }
+            welcomeText = data;
+        });
+    }
+    if (!fs.existsSync(rulesTextPath)) {
+        self.logger.log("The file " + rulesTextPath + " does not exist. This may cause command responses.")
+    }
 
-        welcomeText = data;
-    });
+
 
     client.on('guildMemberAdd', memberAdd);
     client.on('guildMemberRemove', memberRemove);
