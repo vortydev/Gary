@@ -253,21 +253,13 @@ function cancelQuiz(message) {
 function sendHelp(message) {
     var result = "";
 
-    result += "`quiz start [players]` - Starts a quiz\n";
-    result += "`quiz join` - Joins a quiz\n";
-    result += "`quiz answer [A/B/C/D]` - Answers a question\n";
-    result += "`quiz leave` - Leave the quiz\n";
-    result += "`quiz help` - Get quiz commands\n";
+    result += "`quiz start <players>` | starts a quiz\n";
+    result += "`quiz join` | joins a quiz\n";
+    result += "`quiz answer <A/B/C/D>` | answers a question\n";
+    result += "`quiz leave` | leave the quiz\n";
+    result += "`quiz help` | get quiz commands\n";
 
-    var embed = new Discord.RichEmbed()
-        .setColor(embedCol)
-        .setTitle('Quiz Commands')
-        .setDescription(result)
-        .setThumbnail(self.client.user.avatarURL)
-        .setFooter('For additional help, contact TheV0rtex#4553')
-        .setTimestamp();
-
-    message.author.send({embed})
+    message.author.send(result)
 }
 
 function beginQuiz(message) {
