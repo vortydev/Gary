@@ -16,7 +16,7 @@ exports.log = function (str, source) {
 
 exports.error = function (err, source) {
 
-    if (err.stack == null) {
+    if (err.stack == null || getErrorLocation(err) == null) {
         logMessage('ERROR: ' + err, source);
         return;
     }
@@ -27,6 +27,8 @@ exports.error = function (err, source) {
 function getErrorLocation(err) {
     var regex = /\(.*\)/;
     var a = err.stack.match(regex);
+    if (a == null)
+        return null;
     return a[0];
 }
 
