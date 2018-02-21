@@ -259,7 +259,7 @@ function subRoleList(message, argStr) {
                 `no group matching **${argStr}**`;
         }
         message.author.send(reply)
-            .catch(e => self.logger.error(e, 'sr list'));
+            .catch(_ => self.logger.log('Unable to direct message user', 'sr list'));
     });
 }
 
