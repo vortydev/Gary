@@ -17,7 +17,8 @@ exports.commands = [
     'reset',
     'purge',
     'ping',
-    'tempmute'
+    'tempmute',
+    'unmute'
 ]
 
 exports.init = function (client, config, package, logger) {
@@ -211,6 +212,52 @@ exports['tempmute'] = {
                             })
                             .catch(self.logger.logError);
                     });
+            })
+            .catch(self.logger.logError);
+    }
+}
+
+exports['unmute'] = {
+    usage: 'unmute <mention> | Unmute a user',
+    process: function (message, args) {
+        var target = message.mentions.members
+            .map((member, _) => member)[0];
+
+        for (var i = 0; i < self.config.immuneRoleNames.length; i++) {
+            var immuneRole = message.guild.roles.find(r => r.name == self.config.immuneRoleNames[i]);
+            if (target.roles.has(immuneRole.id)) {
+                message.reply("I cannot unmute this member!")
+                    .then((msg) => { msg.delete(5000) })
+                    .catch(self.logger.error);
+                return;
+            }
+        }
+
+        if (!target)
+            return;
+
+        var muteRole = message.guild.roles.find('name', self.muteRole);
+        if (!muteRole) {
+            self.logger.log('Unable to mute: couldn\'t find role ' + self.muteRole, 'admin');
+            return;
+        }
+
+
+        if (!target.roles.find("name", self.config.muteRoleName)) {
+            self.logger.log("Member is not muted.", "admin");
+            message.reply("that user is not muted!")
+                .then((msg) => { msg.delete(5000) })
+                .catch(self.logger.error);
+            return;
+        }
+
+        target.removeRole(muteRole)
+            .then(() => {
+                self.logger.log('Unmuting ' + target.user.username, 'admin');
+                target.send('You have been unmuted by ' + target.user.username)
+                    .catch(self.logger.error);
+                message.channel.send(`${target.displayName} has been unmuted by ${message.member.displayName}.`)
+                    .catch(self.logger.error);
             })
             .catch(self.logger.logError);
     }
