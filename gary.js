@@ -35,7 +35,7 @@ client.on('ready', () => {
 
 client.on('message', message => {
     var msgcontent = message.content
-    if (message.content.includes(config.prefix) || message.channel.type === 'dm') {
+    if (message.content.includes(config.prefix) && message.channel.type === 'dm') {
         message.author.send("**ACCESS DENIED**\nTry again on the server in the appropriate channel.");
         return;
     }

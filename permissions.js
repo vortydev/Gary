@@ -1,7 +1,19 @@
+var fs = require('fs');
 var config = require('./config.json');
 
 var roles = config.roles.roles;
 var permissionGroups = config.permissions.permissionGroups;
+
+exports.reloadPermissions = function () {
+    console.log("hi");
+    fs.readFile('./config.json', function read(err, data) {
+        if (err) {
+            logger.logError(err, 'permissions');
+        }
+        console.log(data);
+        //permissionGroups = data.permissions.permissionGroups;
+    });
+}
 
 exports.hasPermission = function (member, commandName, args) {
     var result = true;
