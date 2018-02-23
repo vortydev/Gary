@@ -5,13 +5,12 @@ var roles = config.roles.roles;
 var permissionGroups = config.permissions.permissionGroups;
 
 exports.reloadPermissions = function () {
-    console.log("hi");
     fs.readFile('./config.json', function read(err, data) {
         if (err) {
             logger.logError(err, 'permissions');
         }
-        console.log(data);
-        //permissionGroups = data.permissions.permissionGroups;
+        var readconfig = JSON.parse(data);
+        permissionGroups = readconfig.permissions.permissionGroups;
     });
 }
 

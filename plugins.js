@@ -71,7 +71,7 @@ exports.init = function (commands, client, config, package, logger) {
 
         try {
             var plugin = require(pluginDirectory + pluginFolders[i]);
-            plugin.init(client, config, package, logger);
+            plugin.init(client, config, package, logger, permissions);
 
             if (!('commands' in plugin))
                 continue;
@@ -121,7 +121,7 @@ function help(message) {
 
         pluginOrder = self.plugins.map(pd => pd.name);
     }
-    
+
     for (var p = 0; p < self.plugins.length; p++) {
         var pluginData = self.plugins.find(pd => pd.name == pluginOrder[p]);
         if (!pluginData)

@@ -7,6 +7,7 @@ var version;
 self.client = null;
 self.config = null;
 self.logger = null;
+self.permissions = null;
 self.muteRole = '';
 
 exports.commands = [
@@ -18,13 +19,15 @@ exports.commands = [
     'purge',
     'ping',
     'tempmute',
-    'unmute'
+    'unmute',
+    'reloadperms'
 ]
 
-exports.init = function (client, config, package, logger) {
+exports.init = function (client, config, package, logger, permissions) {
     self.client = client;
     self.config = config;
     self.logger = logger;
+    self.permissions = permissions;
 
     ownerId = config.ownerID;
     prefix = config.prefix;
@@ -260,6 +263,13 @@ exports['unmute'] = {
                     .catch(self.logger.error);
             })
             .catch(self.logger.logError);
+    }
+}
+
+exports['reloadperms'] = {
+    usage: 'reloadperms | Reload permissions file',
+    process: function (message, args) {
+        self.permissions.reloadPermissions();
     }
 }
 
