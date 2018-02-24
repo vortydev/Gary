@@ -55,6 +55,8 @@ function filter(message) {
     }
 
     var channelinfo = null;
+    var blacklist = null;
+    var whitelist = null;
 
     for (var i = 0; i < self.config.channels.length; i++) {
         if (self.config.channels[i].channel == message.channel.name) {
@@ -62,31 +64,48 @@ function filter(message) {
         }
     }
 
-    if (channelinfo == null) {
-        if (allChannelsNotSpecified == null)
-            return;
-
-        channelinfo = self.config.channels[allChannelsNotSpecified];
+    if (channelinfo != null) {
+        blacklist = channelinfo.blacklist;
+        for (var i = 0; i < blacklist.length; i++) {
+            var search = new RegExp(blacklist[i]);
+            if (!self.config.caseSensitive) {
+                search = new RegExp(blacklist[i], 'i');
+            }
+            if (message.content.search(search) != -1) {
+                message.delete()
+                    .then(() => {
+                        var name = message.member.displayName;
+                        var content = message.content;
+                        self.logger.log(`Deleted blacklisted message: ${name}: ${content}`, 'msgfilter');
+                    })
+                    .catch(self.logger.error);
+                return;
+            }
+        }
+        whitelist = channelinfo.whitelist;
+        for (var i = 0; i < whitelist.length; i++) {
+            var search = new RegExp(whitelist[i]);
+            if (!self.config.caseSensitive) {
+                search = new RegExp(whitelist[i], 'i');
+            }
+            if (message.content.search(search) == -1 && !message.author.bot) {
+                message.delete();
+                return;
+            }
+        }
     }
 
-    var blacklist = channelinfo.blacklist;
-    if (blacklist == null) {
-        blacklist = self.config.channels[allChannelsNotSpecified].blacklist;
-    }
-
+    blacklist = self.config.channels[allChannelsNotSpecified].blacklist;
     for (var i = 0; i < blacklist.length; i++) {
         var search = new RegExp(blacklist[i]);
-
         if (!self.config.caseSensitive) {
             search = new RegExp(blacklist[i], 'i');
         }
-
         if (message.content.search(search) != -1) {
             message.delete()
                 .then(() => {
                     var name = message.member.displayName;
                     var content = message.content;
-
                     self.logger.log(`Deleted blacklisted message: ${name}: ${content}`, 'msgfilter');
                 })
                 .catch(self.logger.error);
@@ -94,18 +113,12 @@ function filter(message) {
         }
     }
 
-    var whitelist = channelinfo.whitelist;
-    if (whitelist == null) {
-        whitelist = self.config.channels[allChannelsNotSpecified].whitelist;
-    }
-
+    whitelist = self.config.channels[allChannelsNotSpecified].whitelist;
     for (var i = 0; i < whitelist.length; i++) {
         var search = new RegExp(whitelist[i]);
-
         if (!self.config.caseSensitive) {
             search = new RegExp(whitelist[i], 'i');
         }
-
         if (message.content.search(search) == -1 && !message.author.bot) {
             message.delete();
             return;
