@@ -28,7 +28,7 @@ Rename `quizconfig.json.example` to `quizconfig.json`. Add `timeToAnswer` and `t
 
 # Message Filter
 
-To filter messages, use the `messagefilter` section of `config.json`. The one with `*` as the channel name is all channels that are not specified. If another item does not have, for example, `blacklist`, the blacklist will be the `*` channel's.
+To filter messages, use the `messagefilter` section of `config.json`. If you have a channel specified with the name of `*`, all channels will be filtered off it's blacklist and whitelist, as well as their own.
 
 The filter uses [Regular Expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
 
