@@ -6,15 +6,18 @@ var fs = require("fs");
 
 self.logger = null;
 self.config = null;
+self.package = null;
 
 exports.commands = [
     'link',
-    'define'
+    'define',
+    'patchnotes'
 ];
 
-exports.init = function (client, config, _, logger) {
+exports.init = function (client, config, package, logger) {
     self.config = config;
     self.logger = logger;
+    self.package = package;
 }
 
 exports['link'] = {
@@ -87,5 +90,16 @@ exports['define'] = {
             message.channel.send({embed})
                 .catch(self.logger.error);
         })
+    }
+}
+
+exports['patchnotes'] = {
+    usage: 'patchnotes <version> | Get a version\'s patch notes',
+    process: function (message, args) {
+        if (args[0] == null) {
+            message.channel.send(`https://github.com/TheV0rtex/Gary/releases/tag/v${self.package.version}`)
+            return;
+        }
+        message.channel.send(`https://github.com/TheV0rtex/Gary/releases/tag/v${args[0]}`)
     }
 }
