@@ -1,13 +1,15 @@
 var self = this;
 
 var Discord = require("discord.js");
+var ud = require("urban-dictionary");
 var fs = require("fs");
 
 self.logger = null;
 self.config = null;
 
 exports.commands = [
-    'link'
+    'link',
+    'define'
 ];
 
 exports.init = function (client, config, _, logger) {
@@ -64,5 +66,26 @@ exports['link'] = {
             .setAuthor(message.author.tag, message.author.avatarURL);
 
         message.channel.send({ embed });
+    }
+}
+
+exports['define'] = {
+    usage: 'define <word> | Get the definition of a word',
+    process: function (message, args) {
+        ud.term(args[0], function (error, entries, tags, sounds) {
+            if (error) {
+                message.reply('I could not find a definition for this word')
+                    .then(m => m.delete(5000))
+                    .catch(self.logger.error);
+                return;
+            }
+            var embed = new Discord.RichEmbed()
+                .setColor(parseInt(self.config.embedCol, 16))
+                .setTitle("'" + entries[0].word + "' definition")
+                .setDescription(entries[0].definition)
+                .addField("Example", entries[0].example);
+            message.channel.send({embed})
+                .catch(self.logger.error);
+        })
     }
 }
