@@ -27,7 +27,7 @@ exports.init = function (client, config, _, logger) {
 
 // Commands
 exports['quiz'] = {
-    usage: 'Start a quiz with `quiz start [number of players]`',
+    usage: 'Use `quiz help` for a list of subcommands',
     process: function (message, args) {
         //If no argument was provided, send help and return.
         if (args[0] == null) {
@@ -39,7 +39,6 @@ exports['quiz'] = {
         switch (args[0].toLowerCase()) {
             case "start": {
                 //You cannot start a quiz if one is already open.
-
                 if (currentQuiz != null) {
                     message.reply("the quiz is already in progress.")
                         .then((msg) => { msg.delete(5000) })
@@ -49,7 +48,7 @@ exports['quiz'] = {
 
                 //You just provide the 'numOfParticipants' argument.
                 if (args[1] == null) {
-                    message.reply("the correct syntax is `" + prefix + "quiz start [numOfParticipants].`")
+                    message.reply("the correct usage  is `" + prefix + "quiz start <players> [questions] [difficulty].`")
                         .then((msg) => { msg.delete(5000) })
                         .catch(self.logger.error);
                     return;
@@ -69,9 +68,31 @@ exports['quiz'] = {
                     return;
                 }
 
+                var players = args[1];
+                var questions = parseInt(args[2]);
+                var difficulty = args[3];
+
+                if (isNaN(questions)) {
+                    questions = 10;
+                }
+
+                if (questions < 1 || questions > 20) {
+                    message.reply('the minimum amount of questions is 1, and the maximum is 20');
+                    return;
+                }
+
+                if (difficulty == null) {
+                    difficulty = 'medium';
+                }
+
+                if (difficulty.toLowerCase() != 'easy' && difficulty.toLowerCase() != 'medium' && difficulty.toLowerCase() != 'hard') {
+                    message.reply('available difficulty types are `easy`, `medium` and `hard`');
+                    return;
+                }
+
                 //Generates quiz and sends feedback to user.
-                generateQuiz(args[1], 10, message);
-                message.channel.send("**A " + args[1] + " player quiz with 10 questions has been created**\nUse `" + prefix + "quiz join` to join it.");
+                generateQuiz(args[1], questions, difficulty, message);
+                message.channel.send(`**A ${args[1]} player quiz with ${questions} questions (${difficulty} difficulty) has been created**\nUse ${prefix}quiz join to join it.`);
                 break;
             }
             case "join": {
@@ -253,7 +274,7 @@ function cancelQuiz(message) {
 function sendHelp(message) {
     var result = "";
 
-    result += "`quiz start <players>` | starts a quiz\n";
+    result += "`quiz start <players> [questions] [difficulty]` | starts a quiz\n";
     result += "`quiz join` | joins a quiz\n";
     result += "`quiz answer <A/B/C/D>` | answers a question\n";
     result += "`quiz leave` | leave the quiz\n";
@@ -416,9 +437,9 @@ function revealAnswer(message) {
     participantsAnsweredQuestion = 0;
 }
 
-function generateQuiz(participantsToStart, numOfQuestions, message) {
+function generateQuiz(participantsToStart, numOfQuestions, difficulty, message) {
 
-    var url = "https://opentdb.com/api.php?amount=" + numOfQuestions + "&category=15&difficulty=hard&type=multiple";
+    var url = "https://opentdb.com/api.php?amount=" + numOfQuestions + "&category=15&difficulty=" + difficulty + "&type=multiple";
     var questions = null;
 
     //Get questions
