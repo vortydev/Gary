@@ -2,6 +2,7 @@
     "token":"",
     "prefix":"",
     "embedCol":"0xffffff",
+    "ignoreNonCommands":true,
     "muteRoleName":"",
     "immuneRoleNames":[],
     "messageFilter": {

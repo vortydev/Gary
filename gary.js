@@ -40,26 +40,20 @@ client.on('message', message => {
         return;
     }
 
-    if(message.author.bot)
+    if(message.author.bot || !message.content.startsWith(config.prefix))
         return;
 
-    if (!message.content.startsWith(config.prefix))
-        return;
+    var args = message.content
+        .slice(1)
+        .trim()
+        .split(/ +/g);
 
-    // All commands should be immediately deleted
     var channel = message.channel;
+    var commandName = args.shift().toLowerCase();
 
-    message.delete()
-        .then(() => {
-            // Handle commands
-            var args = message.content
-                .slice(1)
-                .trim()
-                .split(/ +/g);
-
-            var commandName = args.shift().toLowerCase();
-
-            if (commandName in commands) {
+    if (commandName in commands) {
+        message.delete()
+            .then(() => {
                 if (permissions.hasPermission(message.member, commandName, args)) {
                     if (!isCorrectChannel(commandName, channel)) {
                         message.reply("this is not the correct channel for this command")
@@ -71,15 +65,26 @@ client.on('message', message => {
                     Logger.logCommand(message);
                     command.process(message, args);
                 }
-            }
-        })
-        .catch(e => {
-            // Message was already deleted
-            if (e.message == 'Unknown Message')
-                return;
+            })
+            .catch(e => {
+                // Message was already deleted
+                if (e.message == 'Unknown Message')
+                    return;
 
-            Logger.error(e);
-        });
+                Logger.error(e);
+            });
+    }
+    else {
+        if (!config.ignoreNonCommands) {
+            message.delete()
+                .catch(e => {
+                    if (e.message == 'Unknown Message')
+                        return;
+
+                    Logger.error(e);
+                });
+        }
+    }
 });
 
 function isCorrectChannel(commandName, channel) {
