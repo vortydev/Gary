@@ -2,7 +2,18 @@ var self = this;
 
 var Discord = require("discord.js");
 var ud = require("urban-dictionary");
+var Dictionary = require("oxford-dictionary-api");
 var fs = require("fs");
+var linksConfig = require('./links.json');
+
+var app_id = linksConfig.definitions.app_id;
+var app_key = linksConfig.definitions.app_key;
+
+var dict = null;
+
+if (app_id != "" && app_key != "") {
+    dict = new Dictionary(app_id, app_key);
+}
 
 self.logger = null;
 self.config = null;
@@ -11,6 +22,7 @@ self.package = null;
 exports.commands = [
     'link',
     'define',
+    'urban',
     'patchnotes'
 ];
 
@@ -23,12 +35,7 @@ exports.init = function (client, config, package, logger) {
 exports['link'] = {
     usage: "link - Gets a list of all links | link link-name - Displays the link 'link name'",
     process: function (message, args) {
-        if (!fs.existsSync('./plugins/links/links.json')) {
-            self.logger.log("The file 'links.json' does not exist. This file is required for the link command.", "links");
-            return;
-        }
-
-        var links = require('./links.json');
+        var links = linksConfig.links;
 
         if (args[0] == null) {
             var embed = new Discord.RichEmbed()
@@ -73,7 +80,45 @@ exports['link'] = {
 }
 
 exports['define'] = {
-    usage: 'define <word> | Get the definition of a word',
+    usage: 'define <word> | Get the definition of a word via Oxford Dictionary',
+    process: function (message, args) {
+        if (dict == null) {
+            self.logger.log("The app_id and app_key needed to access the Oxford Dictionary api are either invalid or non-existent.");
+            return;
+        }
+        dict.find(args[0], function (error, data) {
+            if (error || !data.results) {
+                message.reply('I could not find a definition for this word')
+                    .then(m => m.delete(5000))
+                    .catch(self.logger.error);
+                return;
+            }
+            var definitions = "";
+            var examples = "";
+            for (var i = 0; i < data.results[0].lexicalEntries[0].entries[0].senses[0].definitions.length; i++) {
+                definitions += (i+1) + ") " + data.results[0].lexicalEntries[0].entries[0].senses[0].definitions[i] + "\n";
+            }
+            if (data.results[0].lexicalEntries[0].entries[0].senses[0].examples != undefined) {
+                for (var i = 0; i < data.results[0].lexicalEntries[0].entries[0].senses[0].examples.length; i++) {
+                    examples += (i+1) + ") " + data.results[0].lexicalEntries[0].entries[0].senses[0].examples[i].text + "\n";
+                }
+            }
+            else {
+                examples = "None.";
+            }
+            var embed = new Discord.RichEmbed()
+                .setColor(parseInt(self.config.embedCol, 16))
+                .setTitle("'" + args[0] + "' definition")
+                .setDescription(definitions)
+                .addField("Examples", examples);
+            message.channel.send({embed})
+                .catch(self.logger.error);
+        });
+    }
+}
+
+exports['urban'] = {
+    usage: 'urban <word> | Get the definition of a word via Urban Dictionary',
     process: function (message, args) {
         ud.term(args[0], function (error, entries, tags, sounds) {
             if (error) {
@@ -89,7 +134,7 @@ exports['define'] = {
                 .addField("Example", entries[0].example);
             message.channel.send({embed})
                 .catch(self.logger.error);
-        })
+        });
     }
 }
 

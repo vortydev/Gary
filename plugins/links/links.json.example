@@ -1,1 +1,4 @@
-[{"name":"","link":"","description":""}]
+{
+  "links":[{"name":"","link":"","description":""}],
+  "definitions":{"app_id":"","app_key":""}
+}
