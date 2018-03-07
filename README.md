@@ -22,6 +22,8 @@ By default a command is available to everyone. To limit the availability of a co
 
 Rename `links.json.example` to `links.json`. Available links can be listed be calling the `links` command without parameters.
 
+To use the `define` command, which uses the [Oxford Dictionary API](https://developer.oxforddictionaries.com/), fill in the `app_id` and `app_key`.
+
 # Quiz
 
 Rename `quizconfig.json.example` to `quizconfig.json`. Add `timeToAnswer` and `timeToJoin` to the file (in seconds).
