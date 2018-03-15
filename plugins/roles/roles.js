@@ -21,20 +21,12 @@ exports.init = function (client, config, _, logger) {
 
     client.on('guildMemberAdd', addDefaultRoles);
 
-    if (self.config.enforceDefaultRoles) {
-        client.on('message', message => {
-            if (!message.guild)
-                return;
+    client.on('message', message => {
+        if (!self.config.enforceDefaultRoles || !message.guild)
+            return;
 
-            var roles = message.member.roles
-                .array()
-                .filter(r => r.name != '@everyone');
-
-            if (roles.length == 0) {
-                addDefaultRoles(message.member);            
-            }
-        });
-    }
+        enforceDefaultRoles(message.member); 
+    });
 
     subrole.init(config, logger);
 }
@@ -197,6 +189,9 @@ function removeRole(message, serverRole) {
     member.removeRole(serverRole)
         .then(() => {
             self.logger.log('Removed role ' + serverRole.name + ' from ' + member.user.username);
+            if (self.config.enforceDefaultRoles) {
+                enforceDefaultRoles(member);
+            }
             message.reply('the role **' + serverRole.name + '** has been **removed**')
                 .then(m => m.delete(5000))
                 .catch(e => self.logger.error(e, 'role rm'));
@@ -219,10 +214,24 @@ function removeRole(message, serverRole) {
 
     member.removeRoles(rolesToRemove)
         .then(() => {
+            if (self.config.enforceDefaultRoles) {
+                enforceDefaultRoles(member);
+            }
+
             self.logger.log('Removed subroles:' + rolesToRemove.map(r => r.name).join(', '), 'role rm');
             message.reply('removed subroles:\n**' + rolesToRemove.map(r => r.name).join('**\n**') + '**')
                 .then(m => m.delete(5000))
                 .catch(e => self.logger.error(e, 'role rm'));
 
         }).catch(e => self.logger.error(e, 'role rm'));
+}
+
+function enforceDefaultRoles(member) {
+    var remainingRoles = member.roles
+        .array()
+        .filter(r => r.name != '@everyone');
+
+    if (remainingRoles.length == 0) {
+        addDefaultRoles(member);
+    }
 }
