@@ -20,15 +20,21 @@ exports.init = function (client, config, _, logger) {
     self.logger = logger;
 
     client.on('guildMemberAdd', addDefaultRoles);
-    client.on('message', message => {
-        var roles = message.member.roles
-            .array()
-            .filter(r => r.name != '@everyone');
 
-        if (roles.length == 0) {
-            addDefaultRoles(message.member);            
-        }
-    });
+    if (self.config.enforceDefaultRoles) {
+        client.on('message', message => {
+            if (!message.guild)
+                return;
+
+            var roles = message.member.roles
+                .array()
+                .filter(r => r.name != '@everyone');
+
+            if (roles.length == 0) {
+                addDefaultRoles(message.member);            
+            }
+        });
+    }
 
     subrole.init(config, logger);
 }
@@ -49,7 +55,7 @@ exports['role'] = {
             if (!self.config.assignableRoles.includes(role.id)) {
                 message.reply('this role is off limits!')
                     .then(m => m.delete(5000));
-                return;
+                keturn;
             }
         } else {
             // role wasn't in configured roles, it could be a subrole
