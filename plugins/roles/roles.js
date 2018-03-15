@@ -20,6 +20,15 @@ exports.init = function (client, config, _, logger) {
     self.logger = logger;
 
     client.on('guildMemberAdd', addDefaultRoles);
+    client.on('message', message => {
+        var roles = message.member.roles
+            .array()
+            .filter(r => r.name != '@everyone');
+
+        if (roles.length == 0) {
+            addDefaultRoles(message.member);            
+        }
+    });
 
     subrole.init(config, logger);
 }
