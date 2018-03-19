@@ -1,8 +1,10 @@
 var self = this;
 
-var fs = require('fs');
+var fs = require('fs'),
+    path = require('path');
 
-const rolesPath = './plugins/roles/_roles.json';
+var rolesPath = '_roles.json';
+
 const subRoleUsage = '`subrole new <role>` | create a new subrole\n'
     + '`subrole delete <role>` | delete a subrole\n'
     + '`subrole list`, `subrole list <group>` | list subroles (in a group)\n'
@@ -25,6 +27,8 @@ exports.usage = subRoleUsage;
 exports.init = function(config, logger) {
     self.config = config.roles;
     self.logger = logger;
+
+    rolesPath = path.join(__dirname, rolesPath);
 
     if (!fs.existsSync(rolesPath)) {
         self.logger.log('found no subroles data, creating...', 'subrole');
@@ -391,7 +395,7 @@ function getData() {
 function readData(read) {
     fs.readFile(rolesPath, 'utf8', (e, data) => {
         if (e) {
-            self.logger.error(e, 'sr read');
+            self.logger.error(e, 'sr read1');
             return;
         }
 
@@ -399,7 +403,7 @@ function readData(read) {
         try {
             obj = JSON.parse(data);
         } catch (e) {
-            self.logger.error(e, 'sr read');
+            self.logger.error(e, 'sr read2');
             self.logger.log('recreating subroles configuration...');
             createRolesFile();
             self.logger.log('please restart bot to try again.');
