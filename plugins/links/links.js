@@ -1,7 +1,7 @@
 var self = this;
 
 var Discord = require("discord.js");
-// var ud = require("urban-dictionary");
+var ud = require("urban-dictionary");
 var fs = require("fs");
 
 self.logger = null;
