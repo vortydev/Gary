@@ -1,19 +1,18 @@
 var self = this;
 
+var fs = require('fs'),
+    path = require('path');
+
 var Discord = require("discord.js");
 var ud = require("urban-dictionary");
 var Dictionary = require("oxford-dictionary-api");
-var fs = require("fs");
-var linksConfig = require('./links.json');
 
-var app_id = linksConfig.definitions.app_id;
-var app_key = linksConfig.definitions.app_key;
-
+var linksFile = 'links.json';
+// this gets set at runtime now
+var linksConfig = null;
+var app_id = '';
+var app_key = '';
 var dict = null;
-
-if (app_id != "" && app_key != "") {
-    dict = new Dictionary(app_id, app_key);
-}
 
 self.logger = null;
 self.config = null;
@@ -30,6 +29,27 @@ exports.init = function (client, config, package, logger) {
     self.config = config;
     self.logger = logger;
     self.package = package;
+
+    var linksPath = path.join(__dirname, linksFile);
+    if (fs.existsSync(linksPath)) {
+        fs.readFile(linksPath, 'utf8', (e, data) => {
+            try {
+                
+                linksConfig = JSON.parse(data);
+                
+                app_id = linksConfig.definitions.app_id;
+                app_key = linksConfig.definitions.app_key;
+                
+                if (app_id != "" && app_key != "") {
+                    dict = new Dictionary(app_id, app_key);
+                }                
+            } catch (e) {
+                self.logger.error('links', 'unable to parse links.json');
+            }
+        });
+    } else {
+        self.logger.error('links', 'links.json does not exist');
+    }
 }
 
 exports['link'] = {
