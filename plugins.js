@@ -6,7 +6,7 @@ var Discord = require('discord.js'),
     permissions = require('./permissions.js'),
     package = require('./package.json');
 
-var pluginDirectory = './plugins/';
+var pluginDirectory = 'plugins/';
 var pluginFolders = null;
 
 self.client = null;
@@ -60,17 +60,19 @@ exports.init = function (commands, client, config, package, logger) {
     self.config = config;
     self.logger = logger;
 
-    if (!fs.existsSync(pluginDirectory)) {
+    var pluginsPath = path.join(__dirname, pluginDirectory);
+    self.logger.log(pluginsPath);
+    if (!fs.existsSync(pluginsPath)) {
         self.logger.error('No plugins directory available');
     } else {
-        pluginFolders = getDirectories(pluginDirectory);
+        pluginFolders = getDirectories(pluginsPath);
     }
 
     for (var i = 0; i < pluginFolders.length; i++) {
         self.logger.log('loading plugin: ' + pluginFolders[i], 'plugins');
 
         try {
-            var plugin = require(pluginDirectory + pluginFolders[i]);
+            var plugin = require(path.join(pluginsPath, pluginFolders[i]));
             plugin.init(client, config, package, logger, permissions);
 
             if (!('commands' in plugin))

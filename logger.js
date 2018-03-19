@@ -1,4 +1,5 @@
-var fs = require('fs');
+var fs = require('fs'),
+    path = require('path');
 
 const sourceLength = 12;
 
@@ -49,8 +50,12 @@ function createNewLog() {
     date += padNum(now.getUTCHours(), 2);
     date += padNum(now.getUTCMinutes(), 2);
     date += padNum(now.getUTCSeconds(), 2);
-
-    currentLog = fs.createWriteStream("logs/" + date + ".txt");
+   
+    var logsPath = path.join(__dirname, 'logs');
+    if (!fs.existsSync(logsPath)) {
+        fs.mkdirSync(logsPath);
+    }
+    currentLog = fs.createWriteStream(path.join(logsPath, date + ".txt"));
 }
 
 function addToLog(addition) {
