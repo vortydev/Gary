@@ -25,6 +25,8 @@ exports.commands = [
     'patchnotes'
 ];
 
+const defineCooldown = new Set();
+
 exports.init = function (client, config, package, logger) {
     self.config = config;
     self.logger = logger;
@@ -34,15 +36,15 @@ exports.init = function (client, config, package, logger) {
     if (fs.existsSync(linksPath)) {
         fs.readFile(linksPath, 'utf8', (e, data) => {
             try {
-                
+
                 linksConfig = JSON.parse(data);
-                
+
                 app_id = linksConfig.definitions.app_id;
                 app_key = linksConfig.definitions.app_key;
-                
+
                 if (app_id != "" && app_key != "") {
                     dict = new Dictionary(app_id, app_key);
-                }                
+                }
             } catch (e) {
                 self.logger.error('links', 'unable to parse links.json');
             }
@@ -106,6 +108,17 @@ exports['define'] = {
             self.logger.log("The app_id and app_key needed to access the Oxford Dictionary api are either invalid or non-existent.");
             return;
         }
+        if (defineCooldown.has(message.author.id)) {
+          message.reply('you are on a cooldown!')
+            .then(m => m.delete(5000))
+            .catch(self.logger.error);
+          return;
+        }
+        defineCooldown.add(message.author.id);
+        setTimeout(() => {
+          // Removes the user from the set after a minute
+          defineCooldown.delete(message.author.id);
+        }, linksConfig.defineCooldown * 1000);
         dict.find(args[0], function (error, data) {
             if (error || !data.results) {
                 message.reply('I could not find a definition for this word')
@@ -147,6 +160,17 @@ exports['urban'] = {
                     .catch(self.logger.error);
                 return;
             }
+            if (defineCooldown.has(message.author.id)) {
+              message.reply('you are on a cooldown!')
+                .then(m => m.delete(5000))
+                .catch(self.logger.error);
+              return;
+            }
+            defineCooldown.add(message.author.id);
+            setTimeout(() => {
+              // Removes the user from the set after a minute
+              defineCooldown.delete(message.author.id);
+            }, linksConfig.defineCooldown * 1000);
             var embed = new Discord.RichEmbed()
                 .setColor(parseInt(self.config.embedCol, 16))
                 .setTitle("'" + entries[0].word + "' definition")

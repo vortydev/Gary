@@ -1,4 +1,5 @@
 {
   "links":[{"name":"","link":"","description":""}],
+  "defineCooldown":10,
   "definitions":{"app_id":"","app_key":""}
 }
