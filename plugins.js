@@ -71,8 +71,10 @@ exports.init = function (commands, client, config, package, logger) {
     for (var i = 0; i < pluginFolders.length; i++) {
         self.logger.log('loading plugin: ' + pluginFolders[i], 'plugins');
 
+        var success = true;
+        var plugin = null;
         try {
-            var plugin = require(path.join(pluginsPath, pluginFolders[i]));
+            plugin = require(path.join(pluginsPath, pluginFolders[i]));
             plugin.init(client, config, package, logger, permissions);
 
             if (!('commands' in plugin))
@@ -84,11 +86,16 @@ exports.init = function (commands, client, config, package, logger) {
                     self.logger.log(':: loaded command: ' + plugin.commands[j], pluginFolders[i]);
                 }
             }
-
-            self.plugins.push({ name: pluginFolders[i], plugin: plugin});
         } catch (err) {
             self.logger.error(pluginFolders[i] + ' failed to load: ' + err, "plugins");
+            success = false;
         }
+
+        self.plugins.push({
+            name: pluginFolders[i],
+            plugin: plugin,
+            loaded: success
+        });
     }
 
     self.logger.log('loading default commands', 'plugins');
@@ -126,7 +133,7 @@ function help(message) {
 
     for (var p = 0; p < self.plugins.length; p++) {
         var pluginData = self.plugins.find(pd => pd.name == pluginOrder[p]);
-        if (!pluginData)
+        if (!pluginData || !pluginData.loaded)
             continue;
 
         var pluginName = pluginData.name;
