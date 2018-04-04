@@ -14,6 +14,8 @@ var app_id = '';
 var app_key = '';
 var dict = null;
 
+const cooldownMessage = 'please wait a little while before using that command again!';
+
 self.logger = null;
 self.config = null;
 self.package = null;
@@ -109,7 +111,7 @@ exports['define'] = {
             return;
         }
         if (defineCooldown.has(message.author.id)) {
-          message.reply('you are on a cooldown!')
+          message.reply(cooldownMessage)
             .then(m => m.delete(5000))
             .catch(self.logger.error);
           return;
@@ -161,7 +163,7 @@ exports['urban'] = {
                 return;
             }
             if (defineCooldown.has(message.author.id)) {
-              message.reply('you are on a cooldown!')
+              message.reply(cooldownMessage)
                 .then(m => m.delete(5000))
                 .catch(self.logger.error);
               return;
