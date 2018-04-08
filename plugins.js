@@ -186,13 +186,28 @@ function stop(message) {
     process.exit(0);
 }
 
-function uptime(message) {
-    var date = new Date(new Date() - self.client.readyAt);
+function getUptime() {
+    let days = Math.floor(process.uptime() / 86400);
+    let hours = Math.floor((process.uptime() % 86400) / 3600);
+    let minutes = Math.floor(((process.uptime() % 86400) % 3600) / 60);
+    let seconds = Math.floor(((process.uptime() % 86400) % 3600) % 60);
 
-    var embed = new Discord.RichEmbed()
+    if (days === 0 && hours !== 0) {
+        return `${hours} hour(s), ${minutes} minute(s) and ${seconds} second(s)`;
+    } else if (days === 0 && hours === 0 && minutes !== 0) {
+        return `${minutes} minute(s) and ${seconds} second(s)`;
+    } else if (days === 0 && hours === 0 && minutes === 0) {
+        return `${seconds} second(s)`;
+    } else {
+        return `${days} day(s), ${hours} hour(s), ${minutes} minute(s) and ${seconds} second(s)`;
+    }
+}
+
+function uptime(message) {
+    let embed = new Discord.RichEmbed()
         .setColor(parseInt(self.config.embedCol, 16))
         .setTitle("Uptime")
-        .setDescription(`I have been online for ${Math.floor(date.getTime() / 86400000)} days, ${date.getHours()} hours and ${date.getMinutes()} minutes.`)
+        .setDescription('I have been online for ' + getUptime() + ".")
         .setFooter(new Date());
 
     message.channel.send({ embed })
