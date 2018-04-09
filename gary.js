@@ -3,7 +3,8 @@
     plugins = require('./plugins.js'),
     package = require('./package.json'),
     permissions = require('./permissions.js'),
-    Logger = require('./logger.js');
+    Logger = require('./logger.js'),
+    messager = require('./messager.js');
 
 if (config.token == '' || config.prefix == '') {
     Logger.error('Please fill in config.json');
@@ -36,7 +37,7 @@ client.on('ready', () => {
 client.on('message', message => {
     var msgcontent = message.content
     if (message.content.includes(config.prefix) && message.channel.type === 'dm') {
-        message.author.send("**ACCESS DENIED**\nTry again on the server in the appropriate channel.");
+        messager.send(message.author, '**ACCESS DENIED**\nI don\'t respond to DMs. Please talk to me on the server you found me on!');
         return;
     }
 
@@ -56,9 +57,7 @@ client.on('message', message => {
             .then(() => {
                 if (permissions.hasPermission(message.member, commandName, args)) {
                     if (!isCorrectChannel(commandName, channel)) {
-                        message.reply("this is not the correct channel for this command")
-                            .then((msg) => { msg.delete(5000) })
-                            .catch(Logger.error);
+                        messager.reply(message, 'this is not the correct channel for this command', true);
                         return;
                     }
                     var command = commands[commandName];

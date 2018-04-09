@@ -4,7 +4,8 @@ var Discord = require('discord.js'),
     fs = require('fs'),
     path = require('path'),
     permissions = require('./permissions.js'),
-    package = require('./package.json');
+    package = require('./package.json'),
+    messager = require('./messager.js');
 
 var pluginDirectory = 'plugins/';
 var pluginFolders = null;
@@ -168,17 +169,12 @@ function help(message) {
         .setFooter('For additional help, contact TheV0rtex#4553')
         .setTimestamp();
 
-    message.reply('help has been sent.')
-        .then(m => m.delete(5000))
-        .catch(console.error);
-
-    message.author.send({ embed: embed })
-        .then(() => { })
-        .catch(console.error);
+    messager.reply(message, 'help has been sent.', true);
+    messager.dm(message.author, { embed });
 }
 
 function version(message) {
-    message.author.send("Currrently version **" + package.version + "**.");
+    messager.dm(message.author, `Currently version **${package.version}**.`);
 }
 
 function stop(message) {
@@ -210,6 +206,5 @@ function uptime(message) {
         .setDescription('I have been online for ' + getUptime() + ".")
         .setFooter(new Date());
 
-    message.channel.send({ embed })
-        .catch(self.logger.error);
+    messager.send(message.channel, { embed });
 }
