@@ -8,12 +8,12 @@ self.client = null;
 self.config = null;
 self.logger = null;
 
-exports.init = function (client, config, package, logger, permissions) {
-    self.client = client;
-    self.config = config;
-    self.logger = logger;
+exports.init = function (context) {
+    self.client = context.client;
+    self.config = context.config;
+    self.logger = context.logger;
 
-    if (postToChannelID == '' || !postEvery) {
+    if (catsconfig.postToChannelID == '' || !postEvery) {
         self.logger.log('catsconfig.json needs to be filled in for the cats module to work.', 'cats');
         return;
     }
