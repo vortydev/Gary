@@ -14,10 +14,12 @@ exports.commands = [
 
 self.logger = null;
 
-exports.init = function (client, config, _, logger) {
-    self.config = config.roles;
-    self.fullconfig = config;
-    self.logger = logger;
+exports.init = function (context) {
+    self.config = context.config.roles;
+    self.fullconfig = context.config;
+    self.logger = context.logger;
+
+    var client = context.client;
 
     client.on('guildMemberAdd', addDefaultRoles);
 
@@ -28,7 +30,7 @@ exports.init = function (client, config, _, logger) {
         enforceDefaultRoles(message.member); 
     });
 
-    subrole.init(config, logger);
+    subrole.init(context);
 }
 
 exports['role'] = {

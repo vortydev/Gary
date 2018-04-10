@@ -7,11 +7,11 @@ self.logger = null;
 
 var allChannels = null;
 
-exports.init = function (client, config, package, logger) {
-    self.config = config.messageFilter;
-    self.fullconfig = config;
-    self.prefix = config.prefix;
-    self.logger = logger;
+exports.init = function (context) {
+    self.config = context.config.messageFilter;
+    self.fullconfig = context.config;
+    self.prefix = context.config.prefix;
+    self.logger = context.logger;
 
     for (var i = 0; i < self.config.channels.length; i++) {
         if (self.config.channels[i].channel == "*") {
@@ -19,7 +19,7 @@ exports.init = function (client, config, package, logger) {
         }
     }
 
-    client.on('message', filter);
+    context.client.on('message', filter);
 }
 
 function filter(message) {

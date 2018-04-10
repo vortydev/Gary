@@ -1,6 +1,5 @@
 var self = this;
 
-var ownerId;
 var prefix;
 var version;
 
@@ -23,15 +22,14 @@ exports.commands = [
     'reloadperms'
 ]
 
-exports.init = function (client, config, package, logger, permissions) {
-    self.client = client;
-    self.config = config;
-    self.logger = logger;
-    self.permissions = permissions;
+exports.init = function (context) {
+    self.client = context.client;
+    self.config = context.config;
+    self.logger = context.logger;
+    self.permissions = context.permissions;
 
-    ownerId = config.ownerID;
-    prefix = config.prefix;
-    version = package.version;
+    prefix = context.config.prefix;
+    version = context.package.version;
 
     if (self.config.muteRoleName) {
         self.muteRole = self.config.muteRoleName;

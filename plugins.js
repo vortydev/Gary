@@ -13,6 +13,8 @@ self.config = null;
 self.plugins = [];
 self.logger = null;
 self.permissions = null;
+self.messager = null;
+self.package = null;
 
 var specialCommands = [
     {
@@ -60,6 +62,8 @@ exports.init = function (context) {
     self.config = context.config;
     self.logger = context.logger;
     self.permissions = context.permissions;
+    self.messager = context.messager;
+    self.package = context.package;
 
     var pluginsPath = path.join(__dirname, pluginDirectory);
     self.logger.log(pluginsPath);
@@ -76,12 +80,7 @@ exports.init = function (context) {
         var plugin = null;
         try {
             plugin = require(path.join(pluginsPath, pluginFolders[i]));
-            plugin.init(
-                context.client, 
-                context.config, 
-                context.package, 
-                context.logger, 
-                context.permissions);
+            plugin.init(context);
 
             if (!('commands' in plugin))
                 continue;
@@ -118,7 +117,7 @@ function help(message) {
 
     for (var i = 0; i < specialCommands.length; i++) {
         var commandData = specialCommands[i];
-        if(!permissions.hasPermission(member, commandData.name))
+        if(!self.permissions.hasPermission(member, commandData.name))
             continue;
 
         result += '`' + self.config.prefix + commandData.name + '` - ';
@@ -148,7 +147,7 @@ function help(message) {
         var commandLines = [];
         for (var c = 0; c < plugin.commands.length; c++) {
             var commandName = plugin.commands[c];
-            if (!permissions.hasPermission(member, commandName))
+            if (!self.permissions.hasPermission(member, commandName))
                 continue;
 
             var command = plugin[commandName];
@@ -174,12 +173,12 @@ function help(message) {
         .setFooter('For additional help, contact TheV0rtex#4553')
         .setTimestamp();
 
-    messager.reply(message, 'help has been sent.', true);
-    messager.dm(message.author, { embed });
+    self.messager.reply(message, 'help has been sent.', true);
+    self.messager.dm(message.author, { embed });
 }
 
 function version(message) {
-    messager.dm(message.author, `Currently version **${package.version}**.`);
+    self.messager.dm(message.author, `Currently version **${self.package.version}**.`);
 }
 
 function stop(message) {
@@ -211,5 +210,5 @@ function uptime(message) {
         .setDescription('I have been online for ' + getUptime() + ".")
         .setFooter(new Date());
 
-    messager.send(message.channel, { embed });
+    self.messager.send(message.channel, { embed });
 }

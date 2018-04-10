@@ -20,11 +20,10 @@ exports.commands = [
     'joined'
 ];
 
-exports.init = function (client, config, package, logger) {
-    self.client = client;
-    self.config = config;
-    self.logger = logger;
-    self.config = config;
+exports.init = function (context) {
+    self.client = context.client;
+    self.config = context.config;
+    self.logger = context.logger;
 
     if (!fs.existsSync(welcomeTextPath)) {
         self.logger.log("The file " + welcomeTextPath + " does not exist. This may cause command responses.")
@@ -42,10 +41,8 @@ exports.init = function (client, config, package, logger) {
         self.logger.log("The file " + rulesTextPath + " does not exist. This may cause command responses.")
     }
 
-
-
-    client.on('guildMemberAdd', memberAdd);
-    client.on('guildMemberRemove', memberRemove);
+    self.client.on('guildMemberAdd', memberAdd);
+    self.client.on('guildMemberRemove', memberRemove);
 }
 
 // Commands

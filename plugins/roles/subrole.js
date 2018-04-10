@@ -24,9 +24,9 @@ self.commands = [
 
 exports.usage = subRoleUsage;
 
-exports.init = function(config, logger) {
-    self.config = config.roles;
-    self.logger = logger;
+exports.init = function(context) {
+    self.config = context.config.roles;
+    self.logger = context.logger;
 
     rolesPath = path.join(__dirname, rolesPath);
 

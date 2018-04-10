@@ -3,9 +3,9 @@ var self = this;
 self.logger = null;
 self.prefix = '';
 
-exports.init = function (client, config, _, logger) {
-    self.logger = logger;   
-    self.prefix = config.prefix;
+exports.init = function (context) {
+    self.logger = context.logger;   
+    self.prefix = context.config.prefix;
 }
 
 exports.commands = [

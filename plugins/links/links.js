@@ -29,10 +29,10 @@ exports.commands = [
 
 const defineCooldown = new Set();
 
-exports.init = function (client, config, package, logger) {
-    self.config = config;
-    self.logger = logger;
-    self.package = package;
+exports.init = function (context) {
+    self.config = context.config;
+    self.logger = context.logger;
+    self.package = context.package;
 
     var linksPath = path.join(__dirname, linksFile);
     if (fs.existsSync(linksPath)) {
