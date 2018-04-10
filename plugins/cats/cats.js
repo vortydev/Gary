@@ -13,7 +13,7 @@ exports.init = function (context) {
     self.config = context.config;
     self.logger = context.logger;
 
-    if (catsconfig.postToChannelID == '' || !postEvery) {
+    if (catsconfig.postToChannelID == '' || !catsconfig.postEvery) {
         self.logger.log('catsconfig.json needs to be filled in for the cats module to work.', 'cats');
         return;
     }
