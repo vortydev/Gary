@@ -2,10 +2,7 @@ var self = this;
 
 var Discord = require('discord.js'),
     fs = require('fs'),
-    path = require('path'),
-    permissions = require('./permissions.js'),
-    package = require('./package.json'),
-    messager = require('./messager.js');
+    path = require('path');
 
 var pluginDirectory = 'plugins/';
 var pluginFolders = null;
@@ -15,6 +12,7 @@ self.commands = null;
 self.config = null;
 self.plugins = [];
 self.logger = null;
+self.permissions = null;
 
 var specialCommands = [
     {
@@ -55,11 +53,13 @@ function getDirectories(srcPath) {
         });
 }
 
-exports.init = function (commands, client, config, package, logger) {
-    self.client = client;
-    self.commands = commands;
-    self.config = config;
-    self.logger = logger;
+exports.init = function (context) {
+
+    self.client = context.client;
+    self.commands = context.commands;
+    self.config = context.config;
+    self.logger = context.logger;
+    self.permissions = context.permissions;
 
     var pluginsPath = path.join(__dirname, pluginDirectory);
     self.logger.log(pluginsPath);
@@ -76,14 +76,19 @@ exports.init = function (commands, client, config, package, logger) {
         var plugin = null;
         try {
             plugin = require(path.join(pluginsPath, pluginFolders[i]));
-            plugin.init(client, config, package, logger, permissions);
+            plugin.init(
+                context.client, 
+                context.config, 
+                context.package, 
+                context.logger, 
+                context.permissions);
 
             if (!('commands' in plugin))
                 continue;
 
             for (var j = 0; j < plugin.commands.length; j++) {
                 if (plugin.commands[j] in plugin) {
-                    commands[plugin.commands[j]] = plugin[plugin.commands[j]];
+                    self.commands[plugin.commands[j]] = plugin[plugin.commands[j]];
                     self.logger.log(':: loaded command: ' + plugin.commands[j], pluginFolders[i]);
                 }
             }
@@ -102,7 +107,7 @@ exports.init = function (commands, client, config, package, logger) {
     self.logger.log('loading default commands', 'plugins');
     for (var i = 0; i < specialCommands.length; i++) {
         var commandData = specialCommands[i];
-        commands[commandData.name] = commandData.command;
+        self.commands[commandData.name] = commandData.command;
         self.logger.log(':: loaded command: ' + commandData.name, 'plugins');
     }
 }

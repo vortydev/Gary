@@ -13,7 +13,18 @@ if (config.token == '' || config.prefix == '') {
 
 var client = new Discord.Client();
 var commands = {};
-plugins.init(commands, client, config, package, Logger);
+
+var context = {
+    commands: commands,
+    client: client,
+    config: config,
+    package: package,
+    permissions: permissions,
+    logger: Logger,
+    messager: messager
+};
+
+plugins.init(context);
 
 client.on('error', err => {
     if (err.code && err.code == 'ECONNRESET') {
