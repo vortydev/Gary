@@ -8,6 +8,7 @@ self.config = null;
 self.logger = null;
 self.permissions = null;
 self.muteRole = '';
+self.messager = null;
 
 exports.commands = [
     'say',
@@ -27,6 +28,7 @@ exports.init = function (context) {
     self.config = context.config;
     self.logger = context.logger;
     self.permissions = context.permissions;
+    self.messager = context.messager;
 
     prefix = context.config.prefix;
     version = context.package.version;
@@ -40,8 +42,7 @@ exports.init = function (context) {
 exports['say'] = {
     usage: 'say <message> | Have the bot say a message',
     process: function (message, args) {
-        message.channel.send(args.join(' '))
-            .catch(self.logger.error);
+        self.messager.send(message.channel, args.join(' '));
     }
 }
 
@@ -75,81 +76,69 @@ exports['purge'] = {
     process: function (message, args) {
         var number = parseInt(args[0]);
         if (!number) {
-            message.author.send(purgeUsage)
-                .catch(e => self.logger.error(e), 'purge');
+            self.messager.dm(message.author, purgeUsage);
             return;
         }
 
-        if (number > 99 || number < 0) {
-            message.reply("there is a maxiumum value of 99 messages and a minimum value of 0.")
-                .then((msg) => { msg.delete(5000) })
-                .catch(self.logger.error);
+        if (number > 99 || number < 1) {
+            self.messager
+                .reply(message, "purge between 1 and 99 messages", true);
             return;
         }
 
         var target = message.mentions.members
             .map((member, _) => member)[0];
 
-        if (target != null) {
-            var sorted = [];
+        if (!target) {
+            
+            self.messager.send(
+                message.channel,
+                `Deleting the last ${number} message(s)...`,
+                false, 
+                // Don't delete the message after; 
+                // the callback will take care of that
+                () => {
+                    message.channel.bulkDelete(number + 1, false)
+                        .catch(self.logger.error);
+                });
 
+        } else {
+        
             message.channel.fetchMessages({ limit: 100 })
                 .then(messages => {
                     messages = messages.array();
 
+                    var messagesFromTarget = [];
                     for (var i = 0; i < messages.length; i++) {
-                        if (messages[i].member == target && sorted.length < number) {
-                            sorted.push(messages[i]);
+                        if (messages[i].member == target && messagesFromTarget.length < number) {
+                            messagesFromTarget.push(messages[i]);
                         }
                     }
 
-                    message.channel.send(`Deleting ${sorted.length} messages by ${target.user.tag} in this channel.`)
-                        .then(m => {
-                            var delay = 2000;
-                            ((t) => {
-                                var start = new Date().getTime();
-                                for (var i = 0; i < 1e7; i++) {
-                                    if ((new Date().getTime() - start) > t)
-                                        break;
-                                }
-                            })(delay);
-
-                            m.delete()
+                    var deleteMessages = function (messages) {
+                        for (var i = 0; i < messages.length; i++) {
+                            messages[i].delete()
                                 .catch(self.logger.error);
-                            for (var x = 0; x < sorted.length; x++) {
-                                sorted[x].delete()
-                                    .catch(self.logger.error);
-                            }
-                        })
-                        .catch(self.logger.error);
+                        }         
+                    };                   
+                        
+                    self.messager.send(
+                        message.channel, 
+                        `Deleting ${messagesFromTarget.length} messages by ${target.user.tag} in this channel.`,
+                        true,
+                        () => deleteMessages(messagesFromTarget));
                 })
                 .catch(self.logger.error);
-            return;
+            
         }
-
-        message.channel.send("Deleting the last " + number + " message(s)...")
-            .then(m => {
-                var delay = 2000;
-                ((t) => {
-                    var start = new Date().getTime();
-                    for (var i = 0; i < 1e7; i++) {
-                        if ((new Date().getTime() - start) > t)
-                            break;
-                    }
-                })(delay);
-
-                message.channel.bulkDelete(number + 1, false)
-                    .catch(self.logger.error);
-            })
-            .catch(self.logger.error);
-        }
+    }
 }
 
 exports['ping'] = {
     usage: 'Get bot response time',
     process: function (message, args) {
-        message.channel.send('Latency of **' + Math.round(self.client.ping) + '** ms')
-            .catch(self.logger.error);
+        var ping = Math.round(self.client.ping);
+        self.messager.send(`Latency of **${ping}** ms`);
     }
 }
 
@@ -162,9 +151,11 @@ exports['tempmute'] = {
         for (var i = 0; i < self.config.immuneRoleNames.length; i++) {
             var immuneRole = message.guild.roles.find(r => r.name == self.config.immuneRoleNames[i]);
             if (target.roles.has(immuneRole.id)) {
-                message.reply("I cannot mute this member!")
-                    .then((msg) => { msg.delete(5000) })
-                    .catch(self.logger.error);
+                self.messager.reply(
+                    message,
+                    'I cannot mute this member!',
+                    true);
+                
                 return;
             }
         }
@@ -185,19 +176,26 @@ exports['tempmute'] = {
 
         if (target.roles.find("name", self.config.muteRoleName)) {
             self.logger.log("Member already muted.", "admin");
-            message.reply("that user is already muted!")
-                .then((msg) => { msg.delete(5000) })
-                .catch(self.logger.error);
+            self.messager.reply(
+                message,
+                'that user is already muted!',
+                true);
+            
             return;
         }
 
         target.addRole(muteRole)
             .then(() => {
                 self.logger.log('Muting ' + target.user.username + ' for ' + seconds + ' seconds', 'admin');
-                target.send('You have been muted by ' + message.member.displayName + ' for ' + seconds + ' seconds.')
-                    .catch(self.logger.error);
-                message.channel.send(`${target.displayName} has been muted by ${message.member.displayName} for ${seconds} seconds`)
-                    .catch(self.logger.error);
+                
+                self.messager.dm(
+                    target,
+                    `You have been muted by ${message.member.displayName} for ${seconds} seconds.`); 
+                
+                self.messager.send(
+                    message.channel,
+                    `${target.displayName} has been muted by ${message.member.displayName} for ${seconds} seconds`,
+                    false);
 
                 // ?!?!
                 ((s) => new Promise((r, _) => setTimeout(r, s * 1000)))(seconds)
@@ -208,8 +206,9 @@ exports['tempmute'] = {
                         target.removeRole(muteRole)
                             .then(() => {
                                 self.logger.log('Unmuting ' + target.user.username, 'admin');
-                                target.send('You have been unmuted.')
-                                    .catch(self.logger.logError);
+                                self.messager.dm(
+                                    target,
+                                    'You have been unmuted');
                             })
                             .catch(self.logger.logError);
                     });
@@ -227,9 +226,11 @@ exports['unmute'] = {
         for (var i = 0; i < self.config.immuneRoleNames.length; i++) {
             var immuneRole = message.guild.roles.find(r => r.name == self.config.immuneRoleNames[i]);
             if (target.roles.has(immuneRole.id)) {
-                message.reply("I cannot unmute this member!")
-                    .then((msg) => { msg.delete(5000) })
-                    .catch(self.logger.error);
+                self.messager.reply(
+                    message,
+                    'I cannot unmute this member!',
+                    true);
+                
                 return;
             }
         }
@@ -246,19 +247,23 @@ exports['unmute'] = {
 
         if (!target.roles.find("name", self.config.muteRoleName)) {
             self.logger.log("Member is not muted.", "admin");
-            message.reply("that user is not muted!")
-                .then((msg) => { msg.delete(5000) })
-                .catch(self.logger.error);
+            self.messager.reply(
+                message,
+                'that user is not muted!',
+                true);
+            
             return;
         }
 
         target.removeRole(muteRole)
             .then(() => {
                 self.logger.log('Unmuting ' + target.user.username, 'admin');
-                target.send('You have been unmuted by ' + target.user.username)
-                    .catch(self.logger.error);
-                message.channel.send(`${target.displayName} has been unmuted by ${message.member.displayName}.`)
-                    .catch(self.logger.error);
+                self.messager.dm(
+                    target,
+                    `You have been unmuted by ${message.member.displayName}.`);
+                self.messager.send(
+                    message.channel,
+                    `${target.displayName} has been unmuted by ${message.member.displayName}.`);
             })
             .catch(self.logger.logError);
     }
