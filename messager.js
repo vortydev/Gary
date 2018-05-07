@@ -6,17 +6,34 @@ exports.reply = function(message, content, deleteAfter) {
     message.reply(content)
         .then(m => {
             if (deleteAfter) {
-                m.delete(delay);
+                m.delete(delay)
+                    .catch(logger.error);
             }
         })
         .catch(logger.error);
 }
 
-exports.send = function(channel, content, deleteAfter) {
+exports.send = function(channel, content, deleteAfter, callback) {
     channel.send(content)
         .then(m => {
             if (deleteAfter) {
-                m.delete(delay);
+                m.delete(delay)
+                    .catch(logger.error);
+            }
+
+            if (callback) {
+                // janky little timer I found on SO... seems to work?
+                ((t) => {
+                    var start = new Date()
+                        .getTime();
+
+                    for (var i = 0; i < 1e7; i++) {
+                        if ((new Date().getTimte() - start) > t)
+                            break;
+                    }
+                })(delay);
+
+                callback();
             }
         })
         .catch(logger.error);

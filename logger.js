@@ -23,6 +23,11 @@ exports.error = function (err, source) {
     }
 
     logMessage('Error at ' + getErrorLocation(err) + ' - ' + err, source);
+    if (err.stack) {
+        logMessage('Stack trace: ' + err.stack);
+    } else {
+        logMessage('Stack trace not available');
+    }
 }
 
 function getErrorLocation(err) {
