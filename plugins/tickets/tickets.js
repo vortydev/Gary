@@ -26,7 +26,7 @@ exports['ticket new'] = {
     process: function (message, args) {
         if (!message.guild.roles.exists("name", "perms")) { // If role not found
             message.reply("this server doesn't have a \`perms` role, so the ticket won't be opened.\n"+
-                          "If you are an administrator, make a role with that name exactly and give it to users that will answer the tickets.");
+                          "If you are an administrator, make a role with that name exactly and give it to users that will answer the tickets.").catch(self.logger.error);
             return;
         }
 
@@ -34,11 +34,12 @@ exports['ticket new'] = {
 
         let ticketData = tickets[client.user.id];
         if (ticketData.tickets < 10000) {
-        ticketData.tickets++; // adds 1 to the ticket count
+        // adds 1 to the ticket count
+        ticketData.tickets++.catch(self.logger.error);
         };
 
         fs.writeFile(ticketsPath, JSON.stringify(tickets), (err) => {
-            if (err) console.error(err)
+            if (err) console.error(err);
         });
 
         message.guild.createChannel("ticket-"+ticketData.tickets, "text").then(chnl => {
@@ -59,9 +60,9 @@ exports['ticket new'] = {
             });
 
             message.reply("your ticket has been created: `"+chnl.name+"`.");
-            chnl.send(message.author+", please explain the reason for this ticket with as much precision and details as you can. Our **"+support.name+"** will be here to help you as soon as possible.");
+            chnl.send(message.author+", please explain the reason for this ticket with as much precision and details as you can. Our **"+support.name+"** will be here to help you as soon as possible.").catch(self.logger.error);
 
-        }).catch(console.error);
+        }).catch(self.logger.error);
 
         return;
     }
@@ -72,12 +73,12 @@ exports['ticket close'] = {
     process: function (message, args) {
         if (!message.guild.roles.exists("name", "Support Team")) { // If role not found
             message.reply("this server doesn't have a \`Support Team\` role made, so the ticket won't be opened.\n"+
-                          "If you are an administrator, make a role with that name exactly and give it to users that will answer the tickets.");
+                          "If you are an administrator, make a role with that name exactly and give it to users that will answer the tickets.").catch(self.logger.error);
             return;
         }
 
         if (!message.channel.name.startsWith("ticket-")) {
-            message.reply("you can't use the close command outside of a ticket channel.");
+            message.reply("you can't use the close command outside of a ticket channel.").catch(self.logger.error);
             return;
         }
 
@@ -108,7 +109,7 @@ exports['ticket count'] = {
     process: function (message, args) {
         if (!message.guild.roles.exists("name", "Support Team")) { // If role not found
             message.reply("this server doesn't have a \`Support Team\` role made, so the ticket won't be opened.\n"+
-                          "If you are an administrator, make a role with that name exactly and give it to users that will answer the tickets.");
+                          "If you are an administrator, make a role with that name exactly and give it to users that will answer the tickets.").catch(self.logger.error);
             return;
         }
         if (!tickets[client.user.id]) tickets[client.user.id] = {tickets:0}; // sets values to 0
