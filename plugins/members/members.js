@@ -18,8 +18,7 @@ exports.commands = [
     'members',
     'memberlist',
     'avatar',
-    'joined',
-    'contest'
+    'joined'
 ];
 
 exports.init = function (context) {
@@ -152,18 +151,6 @@ exports['joined'] = {
             })
             .catch(e => self.logger.error(e, 'joined'));
    }
-}
-
-exports['contest'] = {
-    usage: "Logs the user's entry on a private channel.",
-    process: function (message, args) {
-        var chnl = message.guild.channels.find('name', contestChannelName); //searches for a channel named #member-log
-        if (!chnl) return;  // if channel not found, abort
-        var msgcontent = message.content.slice(config.prefix.length + 7);
-        var member = message.member.user;
-
-        chnl.send(member+"#"+member.discriminator+"\nUsed medium:\nLink: "+msgcontent);
-    }
 }
 
 function memberAdd(member) {
