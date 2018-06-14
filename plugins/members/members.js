@@ -163,7 +163,8 @@ function memberAdd(member) {
         .setColor(parseInt(self.config.embedCol, 16))
         .setTitle('Welcome!')
         .setDescription(welcomeText)
-        .setFooter(new Date());
+        .setFooter("Member no. "+ message.guild.memberCount)
+        .setTimestamp()
 
     member.send({ embed: embed })
         .catch(self.logger.error);
@@ -188,7 +189,7 @@ function log(member, message, colour, joined) {
         .setFooter(new Date());
 
     if (!joined)
-        embed.setDescription(`**${member.user.username}#${member.user.discriminator}** ${message}`);
+        embed.setDescription(`**${member.user.tag}** ${message}`);
 
 
     channel.send({ embed: embed });
