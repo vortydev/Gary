@@ -5,16 +5,7 @@ var Discord = require("discord.js");
 
 const ticketsPath = './plugins/tickets/tickets.json';
 
-if (!fs.existsSync(ticketsPath)) {
-    fs.writeFile(
-        './plugins/tickets/tickets.json',
-        '{}',
-        function (ticketsLog) {
-        console.log('"tickets.json" was created.');
-    });
-}
-
-var tickets = JSON.parse(fs.readFileSync("./plugins/tickets/tickets.json", "utf8")); // ticket system
+var tickets = JSON.parse(fs.readFileSync(ticketsPath, 'utf8')); // ticket system
 
 self.config = null;
 self.logger = null;
