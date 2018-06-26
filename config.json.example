@@ -3,6 +3,7 @@
     "prefix":"",
     "embedCol":"0xffffff",
     "muteRoleName":"",
+    "supportRoleName":"perms",
     "immuneRoleNames":[],
     "messageFilter": {
         "caseSensitive":true,
