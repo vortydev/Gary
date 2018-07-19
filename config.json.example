@@ -20,12 +20,13 @@
         ]
     },
     "roles": {
-	"enforceDefaultRoles":false,
+	      "enforceDefaultRoles":false,
         "mutuallyExclusiveRoles":false,
         "assignableRoles": [],
         "defaultRoles": [],
         "roles":[
             {"id":0,"name":""}
-        ]
+        ],
+        "verifiedRole":""
     }
 }
