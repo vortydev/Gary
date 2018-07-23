@@ -49,7 +49,7 @@ exports['role'] = {
             if (!self.config.assignableRoles.includes(role.id)) {
                 message.reply('this role is off limits!')
                     .then(m => m.delete(5000));
-                keturn;
+                return;
             }
         } else {
             // role wasn't in configured roles, it could be a subrole
