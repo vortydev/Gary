@@ -10,14 +10,16 @@ exports.commands = [
     'serverinfo'
 ];
 
-exports.init = function (client, config, _, logger) {
-    self.config = config;
-    self.logger = logger;
+exports.init = function (context) {
+    self.config = context.config;
+    self.logger = context.logger;
 }
 
 exports['emojilist'] = {
     usage: 'Get the servers custom emoji',
     process: function (message, args) {
+        var guild = message.channel.guild;
+
         var embed = new Discord.RichEmbed()
             .setColor(parseInt(self.config.embedCol, 16))
             .setTitle("Custom Emoji:")

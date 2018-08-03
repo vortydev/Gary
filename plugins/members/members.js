@@ -4,6 +4,7 @@ var Discord = require('discord.js'),
     fs = require('fs');
 
 var logChannelName = 'member-log';
+var contestChannelName = 'contest-entry-log'
 var welcomeTextPath = './plugins/members/welcome.md';
 var rulesTextPath = './plugins/members/rules.md';
 var welcomeText;
@@ -20,11 +21,10 @@ exports.commands = [
     'joined'
 ];
 
-exports.init = function (client, config, package, logger) {
-    self.client = client;
-    self.config = config;
-    self.logger = logger;
-    self.config = config;
+exports.init = function (context) {
+    self.client = context.client;
+    self.config = context.config;
+    self.logger = context.logger;
 
     if (!fs.existsSync(welcomeTextPath)) {
         self.logger.log("The file " + welcomeTextPath + " does not exist. This may cause command responses.")
@@ -42,10 +42,8 @@ exports.init = function (client, config, package, logger) {
         self.logger.log("The file " + rulesTextPath + " does not exist. This may cause command responses.")
     }
 
-
-
-    client.on('guildMemberAdd', memberAdd);
-    client.on('guildMemberRemove', memberRemove);
+    self.client.on('guildMemberAdd', memberAdd);
+    self.client.on('guildMemberRemove', memberRemove);
 }
 
 // Commands
@@ -165,7 +163,8 @@ function memberAdd(member) {
         .setColor(parseInt(self.config.embedCol, 16))
         .setTitle('Welcome!')
         .setDescription(welcomeText)
-        .setFooter(new Date());
+        .setFooter("Member no. "+ message.guild.memberCount)
+        .setTimestamp()
 
     member.send({ embed: embed })
         .catch(self.logger.error);
@@ -190,7 +189,7 @@ function log(member, message, colour, joined) {
         .setFooter(new Date());
 
     if (!joined)
-        embed.setDescription(`**${member.user.username}#${member.user.discriminator}** ${message}`);
+        embed.setDescription(`**${member.user.tag}** ${message}`);
 
 
     channel.send({ embed: embed });

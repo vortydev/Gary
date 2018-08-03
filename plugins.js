@@ -2,9 +2,7 @@ var self = this;
 
 var Discord = require('discord.js'),
     fs = require('fs'),
-    path = require('path'),
-    permissions = require('./permissions.js'),
-    package = require('./package.json');
+    path = require('path');
 
 var pluginDirectory = 'plugins/';
 var pluginFolders = null;
@@ -14,6 +12,9 @@ self.commands = null;
 self.config = null;
 self.plugins = [];
 self.logger = null;
+self.permissions = null;
+self.messager = null;
+self.package = null;
 
 var specialCommands = [
     {
@@ -54,11 +55,15 @@ function getDirectories(srcPath) {
         });
 }
 
-exports.init = function (commands, client, config, package, logger) {
-    self.client = client;
-    self.commands = commands;
-    self.config = config;
-    self.logger = logger;
+exports.init = function (context) {
+
+    self.client = context.client;
+    self.commands = context.commands;
+    self.config = context.config;
+    self.logger = context.logger;
+    self.permissions = context.permissions;
+    self.messager = context.messager;
+    self.package = context.package;
 
     var pluginsPath = path.join(__dirname, pluginDirectory);
     self.logger.log(pluginsPath);
@@ -75,14 +80,14 @@ exports.init = function (commands, client, config, package, logger) {
         var plugin = null;
         try {
             plugin = require(path.join(pluginsPath, pluginFolders[i]));
-            plugin.init(client, config, package, logger, permissions);
+            plugin.init(context);
 
             if (!('commands' in plugin))
                 continue;
 
             for (var j = 0; j < plugin.commands.length; j++) {
                 if (plugin.commands[j] in plugin) {
-                    commands[plugin.commands[j]] = plugin[plugin.commands[j]];
+                    self.commands[plugin.commands[j]] = plugin[plugin.commands[j]];
                     self.logger.log(':: loaded command: ' + plugin.commands[j], pluginFolders[i]);
                 }
             }
@@ -101,7 +106,7 @@ exports.init = function (commands, client, config, package, logger) {
     self.logger.log('loading default commands', 'plugins');
     for (var i = 0; i < specialCommands.length; i++) {
         var commandData = specialCommands[i];
-        commands[commandData.name] = commandData.command;
+        self.commands[commandData.name] = commandData.command;
         self.logger.log(':: loaded command: ' + commandData.name, 'plugins');
     }
 }
@@ -112,7 +117,7 @@ function help(message) {
 
     for (var i = 0; i < specialCommands.length; i++) {
         var commandData = specialCommands[i];
-        if(!permissions.hasPermission(member, commandData.name))
+        if(!self.permissions.hasPermission(member, commandData.name))
             continue;
 
         result += '`' + self.config.prefix + commandData.name + '` - ';
@@ -142,7 +147,7 @@ function help(message) {
         var commandLines = [];
         for (var c = 0; c < plugin.commands.length; c++) {
             var commandName = plugin.commands[c];
-            if (!permissions.hasPermission(member, commandName))
+            if (!self.permissions.hasPermission(member, commandName))
                 continue;
 
             var command = plugin[commandName];
@@ -168,17 +173,12 @@ function help(message) {
         .setFooter('For additional help, contact TheV0rtex#4553')
         .setTimestamp();
 
-    message.reply('help has been sent.')
-        .then(m => m.delete(5000))
-        .catch(console.error);
-
-    message.author.send({ embed: embed })
-        .then(() => { })
-        .catch(console.error);
+    self.messager.reply(message, 'help has been sent.', true);
+    self.messager.dm(message.author, { embed });
 }
 
 function version(message) {
-    message.author.send("Currrently version **" + package.version + "**.");
+    self.messager.dm(message.author, `Currently version **${self.package.version}**.`);
 }
 
 function stop(message) {
@@ -186,15 +186,29 @@ function stop(message) {
     process.exit(0);
 }
 
-function uptime(message) {
-    var date = new Date(new Date() - self.client.readyAt);
+function getUptime() {
+    let days = Math.floor(process.uptime() / 86400);
+    let hours = Math.floor((process.uptime() % 86400) / 3600);
+    let minutes = Math.floor(((process.uptime() % 86400) % 3600) / 60);
+    let seconds = Math.floor(((process.uptime() % 86400) % 3600) % 60);
 
-    var embed = new Discord.RichEmbed()
+    if (days === 0 && hours !== 0) {
+        return `${hours} hour(s), ${minutes} minute(s) and ${seconds} second(s)`;
+    } else if (days === 0 && hours === 0 && minutes !== 0) {
+        return `${minutes} minute(s) and ${seconds} second(s)`;
+    } else if (days === 0 && hours === 0 && minutes === 0) {
+        return `${seconds} second(s)`;
+    } else {
+        return `${days} day(s), ${hours} hour(s), ${minutes} minute(s) and ${seconds} second(s)`;
+    }
+}
+
+function uptime(message) {
+    let embed = new Discord.RichEmbed()
         .setColor(parseInt(self.config.embedCol, 16))
         .setTitle("Uptime")
-        .setDescription(`I have been online for ${Math.floor(date.getTime() / 86400000)} days, ${date.getHours()} hours and ${date.getMinutes()} minutes.`)
+        .setDescription('I have been online for ' + getUptime() + ".")
         .setFooter(new Date());
 
-    message.channel.send({ embed })
-        .catch(self.logger.error);
+    self.messager.send(message.channel, { embed });
 }

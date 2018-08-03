@@ -7,7 +7,6 @@ self.config = null;
 self.fullconfig = null;
 
 exports.commands = [
-    'verify',
     'role',
     'rolelist',
     'subrole'
@@ -15,10 +14,12 @@ exports.commands = [
 
 self.logger = null;
 
-exports.init = function (client, config, _, logger) {
-    self.config = config.roles;
-    self.fullconfig = config;
-    self.logger = logger;
+exports.init = function (context) {
+    self.config = context.config.roles;
+    self.fullconfig = context.config;
+    self.logger = context.logger;
+
+    var client = context.client;
 
     client.on('guildMemberAdd', addDefaultRoles);
 
@@ -26,23 +27,10 @@ exports.init = function (client, config, _, logger) {
         if (!self.config.enforceDefaultRoles || !message.guild)
             return;
 
-        enforceDefaultRoles(message.member);
+        enforceDefaultRoles(message.member); 
     });
 
-    subrole.init(config, logger);
-}
-exports['verify'] = {
-    usage: 'Verifies the user.',
-    process: function(message, args, config) {
-        var role = message.guild.roles.find("name", self.config.verifiedRole);
-
-        if (!message.member.roles.has(role.id)) {
-            message.member.addRole(role).catch(console.error);
-            message.channel.send(message.member +" was verified. ✅").then(m => m.delete(5000));
-        }
-
-        else return;
-    }
+    subrole.init(context);
 }
 
 exports['role'] = {
@@ -88,7 +76,7 @@ exports['role'] = {
 
         if (!message.member.roles.has(serverRole.id)) {
             if (self.config.mutuallyExclusiveRoles) {
-
+                
                 for (var i = 0; i < self.config.assignableRoles.length; i++) {
                     for (var j = 0; j < self.config.roles.length; j++) {
                         var otherServerRole = message.guild.roles.find("name", self.config.roles[i].name);

@@ -19,6 +19,7 @@ const cooldownMessage = 'please wait a little while before using that command ag
 self.logger = null;
 self.config = null;
 self.package = null;
+self.messager = null;
 
 exports.commands = [
     'link',
@@ -29,10 +30,11 @@ exports.commands = [
 
 const defineCooldown = new Set();
 
-exports.init = function (client, config, package, logger) {
-    self.config = config;
-    self.logger = logger;
-    self.package = package;
+exports.init = function (context) {
+    self.config = context.config;
+    self.logger = context.logger;
+    self.package = context.package;
+    self.messager = context.messager;
 
     var linksPath = path.join(__dirname, linksFile);
     if (fs.existsSync(linksPath)) {
@@ -46,6 +48,10 @@ exports.init = function (client, config, package, logger) {
 
                 if (app_id != "" && app_key != "") {
                     dict = new Dictionary(app_id, app_key);
+                } else {
+                    self.logger.error(
+                        'App key and ID not configured. define command will not be available.',
+                        'links');
                 }
             } catch (e) {
                 self.logger.error('links', 'unable to parse links.json');
@@ -74,7 +80,8 @@ exports['link'] = {
             }
 
             embed.setDescription(text);
-            message.channel.send({ embed });
+            self.messager.send(message.channel, { embed }, false);
+
             return;
         }
 
@@ -86,9 +93,10 @@ exports['link'] = {
         }
 
         if (x == null) {
-            message.reply("the link `" + args[0].toLowerCase() + "` does not exist.")
-                .then((msg) => { msg.delete(5000) })
-                .catch(self.logger.error);
+            var linkName = args[0].toLowerCase();
+            var content = `the link \`${args}\` does not exist.`;
+            self.messager.reply(message, content, true);
+
             return;
         }
 
@@ -99,7 +107,8 @@ exports['link'] = {
             .setFooter(new Date())
             .setAuthor(message.author.tag, message.author.avatarURL);
 
-        message.channel.send({ embed });
+
+        self.messager.send(message.channel, { embed }, false);
     }
 }
 
@@ -110,35 +119,41 @@ exports['define'] = {
             self.logger.log("The app_id and app_key needed to access the Oxford Dictionary api are either invalid or non-existent.");
             return;
         }
+        
         if (defineCooldown.has(message.author.id)) {
-          message.reply(cooldownMessage)
-            .then(m => m.delete(5000))
-            .catch(self.logger.error);
-          return;
+            self.messager.reply(message, cooldownMessage, true);
+            return;
         }
+       
         defineCooldown.add(message.author.id);
         setTimeout(() => {
-          // Removes the user from the set after a minute
-          defineCooldown.delete(message.author.id);
+            // Removes the user from the set after a minute
+            defineCooldown.delete(message.author.id);
         }, linksConfig.defineCooldown * 1000);
+        
         dict.find(args[0], function (error, data) {
+            
             if (error || !data.results) {
-                message.reply('I could not find a definition for this word')
-                    .then(m => m.delete(5000))
-                    .catch(self.logger.error);
+                self.messager.reply(
+                    message,
+                    `I could not find a definition for ${args[0]}.`,
+                    true);
+                
                 return;
             }
+           
             var definitions = "";
             var examples = "";
+            
             for (var i = 0; i < data.results[0].lexicalEntries[0].entries[0].senses[0].definitions.length; i++) {
                 definitions += (i+1) + ") " + data.results[0].lexicalEntries[0].entries[0].senses[0].definitions[i] + "\n";
             }
+            
             if (data.results[0].lexicalEntries[0].entries[0].senses[0].examples != undefined) {
                 for (var i = 0; i < data.results[0].lexicalEntries[0].entries[0].senses[0].examples.length; i++) {
                     examples += (i+1) + ") " + data.results[0].lexicalEntries[0].entries[0].senses[0].examples[i].text + "\n";
                 }
-            }
-            else {
+            } else {
                 examples = "None.";
             }
             var embed = new Discord.RichEmbed()
@@ -146,8 +161,8 @@ exports['define'] = {
                 .setTitle("'" + args[0] + "' definition")
                 .setDescription(definitions)
                 .addField("Examples", examples);
-            message.channel.send({embed})
-                .catch(self.logger.error);
+            
+            self.messager.send(message.channel, { embed }, false); 
         });
     }
 }
@@ -157,29 +172,28 @@ exports['urban'] = {
     process: function (message, args) {
         ud.term(args[0], function (error, entries, tags, sounds) {
             if (error) {
-                message.reply('I could not find a definition for this word')
-                    .then(m => m.delete(5000))
-                    .catch(self.logger.error);
-                return;
+                self.messager.reply(
+                    message,
+                    `I could not find a definition for ${args[0]}.`,
+                    true);
+return;
             }
             if (defineCooldown.has(message.author.id)) {
-              message.reply(cooldownMessage)
-                .then(m => m.delete(5000))
-                .catch(self.logger.error);
-              return;
+                self.messager.reply(message, cooldownMessage, true);
+                return;
             }
             defineCooldown.add(message.author.id);
             setTimeout(() => {
-              // Removes the user from the set after a minute
-              defineCooldown.delete(message.author.id);
+                // Removes the user from the set after a minute
+                defineCooldown.delete(message.author.id);
             }, linksConfig.defineCooldown * 1000);
             var embed = new Discord.RichEmbed()
                 .setColor(parseInt(self.config.embedCol, 16))
                 .setTitle("'" + entries[0].word + "' definition")
                 .setDescription(entries[0].definition)
                 .addField("Example", entries[0].example);
-            message.channel.send({embed})
-                .catch(self.logger.error);
+            
+            self.messager.send(message.channel, { embed }, false);
         });
     }
 }
@@ -187,10 +201,9 @@ exports['urban'] = {
 exports['patchnotes'] = {
     usage: 'patchnotes <version> | Get a version\'s patch notes',
     process: function (message, args) {
-        if (args[0] == null) {
-            message.channel.send(`https://github.com/TheV0rtex/Gary/releases/tag/v${self.package.version}`)
-            return;
-        }
-        message.channel.send(`https://github.com/TheV0rtex/Gary/releases/tag/v${args[0]}`)
+        var version = args[0] == null ? self.package.version : args[0]; 
+        var releasesUrl = `https://github.com/TheV0rtex/Gary/releases/tag/v${version}`; 
+        
+        self.messager.send(message.channel, releasesUrl, false); 
     }
 }

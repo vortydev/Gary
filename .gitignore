@@ -4,6 +4,7 @@ config.json
 pluginorder.json
 links.json
 quizconfig.json
+catsconfig.json
 channel.txt
 
 rules.md

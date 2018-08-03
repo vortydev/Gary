@@ -2,10 +2,12 @@ var self = this;
 
 self.logger = null;
 self.prefix = '';
+self.messager = null;
 
-exports.init = function (client, config, _, logger) {
-    self.logger = logger;   
-    self.prefix = config.prefix;
+exports.init = function (context) {
+    self.logger = context.logger;   
+    self.prefix = context.config.prefix;
+    self.messager = context.messager;
 }
 
 exports.commands = [
@@ -17,9 +19,7 @@ exports['coinflip'] = {
     usage: 'Flip a coin',
     process: function (message) {
         var flip = Math.floor(Math.random() * 2 + 1 == 1) ? 'Tails' : 'Heads';
-        message.reply('you flipped **' + flip + '**')
-            .then(m => m.delete(5000))
-            .catch(self.logger.error);
+        self.messager.reply(message, `you flipped **${flip}**`, true);
     }
 }
 
@@ -39,8 +39,6 @@ exports['roll'] = {
             return;
 
         var total = Math.floor(dice * (Math.random() * sides + 1));
-        message.reply('you rolled **' + dice + '** ' + sides + '-sided dice and got **' + total + '**')
-            .then(m => m.delete(5000))
-            .catch(self.logger.error);
+        self.messager.reply(message, `you rolled **${dice}** ${sides}-sided dice and got **${total}**`, true);
     }
 }

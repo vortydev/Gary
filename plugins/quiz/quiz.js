@@ -18,9 +18,12 @@ exports.commands = [
     "quiz"
 ]
 
-exports.init = function (client, config, _, logger) {
-    self.client = client;
-    self.logger = logger;
+exports.init = function (context) {
+    self.client = context.client;
+    self.logger = context.logger;
+
+    var config = context.config;
+
     prefix = config.prefix;
     embedCol = parseInt(config.embedCol, 16);
 }
