@@ -90,12 +90,12 @@ exports['purge'] = {
             .map((member, _) => member)[0];
 
         if (!target) {
-            
+
             self.messager.send(
                 message.channel,
                 `Deleting the last ${number} message(s)...`,
-                false, 
-                // Don't delete the message after; 
+                false,
+                // Don't delete the message after;
                 // the callback will take care of that
                 () => {
                     message.channel.bulkDelete(number + 1, false)
@@ -103,7 +103,7 @@ exports['purge'] = {
                 });
 
         } else {
-        
+
             message.channel.fetchMessages({ limit: 100 })
                 .then(messages => {
                     messages = messages.array();
@@ -119,17 +119,17 @@ exports['purge'] = {
                         for (var i = 0; i < messages.length; i++) {
                             messages[i].delete()
                                 .catch(self.logger.error);
-                        }         
-                    };                   
-                        
+                        }
+                    };
+
                     self.messager.send(
-                        message.channel, 
+                        message.channel,
                         `Deleting ${messagesFromTarget.length} messages by ${target.user.tag} in this channel.`,
                         true,
                         () => deleteMessages(messagesFromTarget));
                 })
                 .catch(self.logger.error);
-            
+
         }
     }
 }
@@ -138,7 +138,7 @@ exports['ping'] = {
     usage: 'Get bot response time',
     process: function (message, args) {
         var ping = Math.round(self.client.ping);
-        self.messager.send(`Latency of **${ping}** ms`);
+        self.messager.send(message.channel, `Latency of **${ping}** ms`);
     }
 }
 
@@ -155,7 +155,7 @@ exports['tempmute'] = {
                     message,
                     'I cannot mute this member!',
                     true);
-                
+
                 return;
             }
         }
@@ -180,18 +180,18 @@ exports['tempmute'] = {
                 message,
                 'that user is already muted!',
                 true);
-            
+
             return;
         }
 
         target.addRole(muteRole)
             .then(() => {
                 self.logger.log('Muting ' + target.user.username + ' for ' + seconds + ' seconds', 'admin');
-                
+
                 self.messager.dm(
                     target,
-                    `You have been muted by ${message.member.displayName} for ${seconds} seconds.`); 
-                
+                    `You have been muted by ${message.member.displayName} for ${seconds} seconds.`);
+
                 self.messager.send(
                     message.channel,
                     `${target.displayName} has been muted by ${message.member.displayName} for ${seconds} seconds`,
@@ -230,7 +230,7 @@ exports['unmute'] = {
                     message,
                     'I cannot unmute this member!',
                     true);
-                
+
                 return;
             }
         }
@@ -251,7 +251,7 @@ exports['unmute'] = {
                 message,
                 'that user is not muted!',
                 true);
-            
+
             return;
         }
 

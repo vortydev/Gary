@@ -28,7 +28,7 @@ exports.send = function(channel, content, deleteAfter, callback) {
                         .getTime();
 
                     for (var i = 0; i < 1e7; i++) {
-                        if ((new Date().getTimte() - start) > t)
+                        if ((new Date().getTime() - start) > t)
                             break;
                     }
                 })(delay);

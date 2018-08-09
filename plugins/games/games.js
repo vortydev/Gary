@@ -5,7 +5,7 @@ self.prefix = '';
 self.messager = null;
 
 exports.init = function (context) {
-    self.logger = context.logger;   
+    self.logger = context.logger;
     self.prefix = context.config.prefix;
     self.messager = context.messager;
 }
@@ -18,7 +18,7 @@ exports.commands = [
 exports['coinflip'] = {
     usage: 'Flip a coin',
     process: function (message) {
-        var flip = Math.floor(Math.random() * 2 + 1 == 1) ? 'Tails' : 'Heads';
+        var flip = Math.floor(Math.random() * 2) == 1 ? 'Tails' : 'Heads';
         self.messager.reply(message, `you flipped **${flip}**`, true);
     }
 }
