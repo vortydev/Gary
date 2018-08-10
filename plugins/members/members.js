@@ -12,6 +12,7 @@ var welcomeText;
 self.client = null;
 self.config = null;
 self.logger = null;
+self.messager = null;
 
 exports.commands = [
     'rules',
@@ -25,6 +26,7 @@ exports.init = function (context) {
     self.client = context.client;
     self.config = context.config;
     self.logger = context.logger;
+    self.messager = context.messager;
 
     if (!fs.existsSync(welcomeTextPath)) {
         self.logger.log("The file " + welcomeTextPath + " does not exist. This may cause command responses.")
@@ -50,7 +52,9 @@ exports.init = function (context) {
 exports['members'] = {
     usage: 'Gets how many people are on the server',
     process: function (message) {
-        message.channel.send("There are currently **" + message.guild.memberCount + "** members on this server.");
+        self.messager.send(
+            message.channel,
+            `There are currently **${message.guild.memberCount}** members on this server.`);
     }
 }
 
@@ -59,8 +63,11 @@ exports['memberlist'] = {
     process: function (message) {
         var rolesConfig = self.config.roles;
 
-        message.channel.send('Generating memberlist...')
-            .then(m => {
+        self.messager.send(
+            message.channel,
+            'Generating memberlist...',
+            false,
+            m => {
                 reply = `There are currently **${message.guild.memberCount}** members on this server\n`;
 
                 var serverRoles = message.guild.roles
@@ -74,12 +81,12 @@ exports['memberlist'] = {
                     }
                     reply += `**${role.name}**: ${role.members.keyArray().length}\n`;
                 }
-
-                message.channel.send(reply)
-                    .then(_ => m.delete())
+                
+                self.messager.send(message.channel, reply);
+                m
+                    .delete()
                     .catch(e => self.logger.error(e, 'memberlist'));
-            })
-            .catch(e => self.logger.error(e, 'memberlist'));
+            });
     }
 }
 
@@ -93,9 +100,8 @@ exports['avatar'] = {
             .setFooter(new Date())
             .setAuthor(message.author.tag, message.author.avatarURL);
 
-        message.reply('your avatar:');
-        message.channel.send({ embed: embed })
-            .catch(self.logger.error);
+        self.messager.reply(message, 'your avatar:');
+        self.messager.send(message.channel, { embed: embed });
     }
 }
 
@@ -115,12 +121,8 @@ exports['rules'] = {
                 .setFooter(new Date())
                 .setAuthor(self.client.user.username, self.client.user.avatarURL);
 
-            message.reply('rules have been sent.')
-                .then(m => m.delete(5000))
-                .catch(self.logger.error);
-
-            message.author.send({ embed: embed })
-                .catch(self.logger.error);
+            self.messager.reply(message, 'rules have been sent.', true);
+            self.messager.dm(message.author, { embed: embed });
         });
     }
 }
@@ -143,11 +145,10 @@ exports['joined'] = {
                 if (mins.toString().length == 1)
                     end += "0";
 
-                end += mins.toString() + " (UTC)"
+                end += mins.toString() + " (UTC)";
 
                 //NameHere joined on 30/12/2017 at 16:56
-                message.reply("you joined on " + end)
-                    .catch(self.logger.error);
+                self.messager.reply(message, `you joined on ${end}`);
             })
             .catch(e => self.logger.error(e, 'joined'));
    }
@@ -166,8 +167,7 @@ function memberAdd(member) {
         .setFooter("Member no. "+ message.guild.memberCount)
         .setTimestamp()
 
-    member.send({ embed: embed })
-        .catch(self.logger.error);
+    self.messager.dm(member, { embed: embed });
 }
 
 function memberRemove(member) {
@@ -191,7 +191,5 @@ function log(member, message, colour, joined) {
     if (!joined)
         embed.setDescription(`**${member.user.tag}** ${message}`);
 
-
-    channel.send({ embed: embed });
-
+    self.messager.send(channel, { embed: embed });
 }

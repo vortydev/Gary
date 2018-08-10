@@ -2,6 +2,7 @@ var logger = require('./logger.js');
 
 var delay = 5000; // TODO: make this configurable
 
+
 exports.reply = function(message, content, deleteAfter) {
     message.reply(content)
         .then(m => {
@@ -33,7 +34,7 @@ exports.send = function(channel, content, deleteAfter, callback) {
                     }
                 })(delay);
 
-                callback();
+                callback(m);
             }
         })
         .catch(logger.error);
